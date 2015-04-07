@@ -1,0 +1,36 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.ItensFrigobar;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoItensFrigobar extends Dao<ItensFrigobar>{
+	
+	public DaoItensFrigobar (Session session) {
+		super(session, ItensFrigobar.class);
+	}
+	
+	public Collection<ItensFrigobar> buscaItemFrigobar(Long id) {
+		Collection<ItensFrigobar> itemList = new ArrayList<ItensFrigobar>();
+
+		String consulta = "FROM HOTEL_ITENSFRIGOBAR WHERE fk_frigobar = :id";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("id", id);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItensFrigobar item = (ItensFrigobar) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+}

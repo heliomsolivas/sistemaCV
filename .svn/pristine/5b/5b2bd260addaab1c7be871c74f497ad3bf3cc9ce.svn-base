@@ -1,0 +1,134 @@
+package clientes.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import estoque.bean.Produto;
+
+@Entity(name = "CLIENTES_ITEMCONSUMO")
+@Table(name = "CLIENTES_ITEMCONSUMO")
+public class ItemConsumo implements Serializable {
+
+	private static final long serialVersionUID = -7490984665066482184L;
+
+	private Long id;
+	private Produto produto;
+	private String diversos;
+	private String categoria;
+	private Integer quantidade;
+	private Double valorUnitario;
+	private Double valorTotal;
+	private Calendar data;
+	private Collection<Consumo> consumoList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_produto", nullable = true)
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	@Column(name = "diversos", nullable = true)
+	public String getDiversos() {
+		return diversos;
+	}
+
+	public void setDiversos(String diversos) {
+		this.diversos = diversos;
+	}
+	
+	@Column(name = "categoria", nullable = true)
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	@Column(name = "quantidade", nullable = true)
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+	
+	@Column(name = "valorUnitario", nullable = true)
+	public Double getValorUnitario() {
+		return valorUnitario;
+	}
+
+	public void setValorUnitario(Double valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	@Column(name = "valorTotal", nullable = true)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+	
+	@Column(name = "data", nullable = true)
+	public Calendar getData() {
+		return data;
+	}
+
+	public void setData(Calendar data) {
+		this.data = data;
+	}
+
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Consumo> getConsumoList() {
+		return consumoList;
+	}
+
+	public void setConsumoList(
+			Collection<Consumo> consumoList) {
+		this.consumoList = consumoList;
+	}
+	
+	@Transient
+	public String getValorUnitarioString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorUnitario);
+	}
+	
+	@Transient
+	public String getValorTotalString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotal);
+	}
+}

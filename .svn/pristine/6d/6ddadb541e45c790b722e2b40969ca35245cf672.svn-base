@@ -1,0 +1,235 @@
+package clientes.bean;
+
+import generic.converter.CalendarConverter;
+import hotel.bean.Acomodacao;
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import agenda.bean.Reserva;
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "CLIENTES_HOSPEDAGEM")
+@Table(name = "CLIENTES_HOSPEDAGEM")
+public class Hospedagem implements Serializable {
+
+	private static final long serialVersionUID = 4300105083132813300L;
+	
+	private Long id;
+	private Hotel hotel;
+	private Acomodacao acomodacao;
+	private Reserva reserva;
+	private Calendar dataCheckIn;
+	private Calendar dataCheckOut;
+	private Double valorDiaria;
+	private Double valorTotalConsumo;
+	private Double valorTotalDiaria;
+	private Double valorTotalDiversos;
+	private Double valorTotal;
+	private Boolean checkOutEstendidoGratuito;
+	private Integer numeroDiarias;
+	private String observacao;
+	private Collection<HospedeHospedagem> hospedeHospedagemList;
+	private Collection<Consumo> consumoList;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+	
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_acomodacao", nullable = false)
+	public Acomodacao getAcomodacao() {
+		return acomodacao;
+	}
+	
+	public void setAcomodacao(Acomodacao acomodacao) {
+		this.acomodacao = acomodacao;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_reserva", nullable = true)
+	public Reserva getReserva() {
+		return reserva;
+	}
+	
+	public void setReserva(Reserva reserva) {
+		this.reserva = reserva;
+	}
+	
+	@Column(name = "dataCheckIn", nullable = false)
+	public Calendar getDataCheckIn() {
+		return dataCheckIn;
+	}
+	
+	@Convert(CalendarConverter.class)
+	public void setDataCheckIn(Calendar dataCheckIn) {
+		this.dataCheckIn = dataCheckIn;
+	}
+	
+	@Column(name = "dataCheckOut", nullable = true)
+	public Calendar getDataCheckOut() {
+		return dataCheckOut;
+	}
+
+	@Convert(CalendarConverter.class)
+	public void setDataCheckOut(Calendar dataCheckOut) {
+		this.dataCheckOut = dataCheckOut;
+	}
+	
+	@Column(name = "valorDiaria", nullable = false)
+	public Double getValorDiaria() {
+		return valorDiaria;
+	}
+	
+	public void setValorDiaria(Double valorDiaria) {
+		this.valorDiaria = valorDiaria;
+	}
+	
+	@Column(name = "valorTotalConsumo", nullable = true)
+	public Double getValorTotalConsumo() {
+		return valorTotalConsumo;
+	}
+	
+	public void setValorTotalConsumo(Double valorTotalConsumo) {
+		this.valorTotalConsumo = valorTotalConsumo;
+	}
+	
+	@Column(name = "valorTotalDiaria", nullable = true)
+	public Double getValorTotalDiaria() {
+		return valorTotalDiaria;
+	}
+
+	public void setValorTotalDiaria(Double valorTotalDiaria) {
+		this.valorTotalDiaria = valorTotalDiaria;
+	}
+
+	@Column(name = "valorTotalDiversos", nullable = true)
+	public Double getValorTotalDiversos() {
+		return valorTotalDiversos;
+	}
+
+	public void setValorTotalDiversos(Double valorTotalDiversos) {
+		this.valorTotalDiversos = valorTotalDiversos;
+	}
+
+	@Column(name = "valorTotal", nullable = true)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+	
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+	
+	@Column(name = "checkOutEstendidoGratuito", nullable = false)
+	public Boolean getCheckOutEstendidoGratuito() {
+		return checkOutEstendidoGratuito;
+	}
+	
+	public void setCheckOutEstendidoGratuito(Boolean checkOutEstendidoGratuito) {
+		this.checkOutEstendidoGratuito = checkOutEstendidoGratuito;
+	}
+	
+	@Column(name = "numeroDiarias", nullable = true)
+	public Integer getNumeroDiarias() {
+		return numeroDiarias;
+	}
+
+	public void setNumeroDiarias(Integer numeroDiarias) {
+		this.numeroDiarias = numeroDiarias;
+	}
+
+	@Column(name = "observacao", nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+	
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}	
+	
+	@OneToMany(mappedBy = "hospede", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<HospedeHospedagem> getHospedeHospedagemList() {
+		return hospedeHospedagemList;
+	}
+	
+	public void setHospedeHospedagemList(Collection<HospedeHospedagem> hospedeHospedagemList) {
+		this.hospedeHospedagemList = hospedeHospedagemList;
+	}
+	
+	@OneToMany(mappedBy = "hospedagem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Consumo> getConsumoList() {
+		return consumoList;
+	}
+	
+	public void setConsumoList(Collection<Consumo> consumoList) {
+		this.consumoList = consumoList;
+	}
+
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+
+	@Transient
+	public String getValorDiariaString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valorDiaria);
+	}
+
+	@Transient
+	public String getValorTotalString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valorTotal);
+	}
+
+	@Transient
+	public String getValorTotalConsumoString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotalConsumo);
+	}
+	
+	@Transient
+	public String getValorTotalDiariaString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotalDiaria);
+	}
+	
+	@Transient
+	public String getValorTotalDiversosString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotalDiversos);
+	}
+}

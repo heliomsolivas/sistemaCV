@@ -1,0 +1,36 @@
+@CHARSET "ISO-8859-1";
+
+*{
+margin:0;
+padding:0;
+}
+form{
+width:420px;
+margin-left:15px;
+}
+label{
+margin-top:8px;
+}
+.esq{
+width:304px;
+display:inline-block;
+margin-right:10px;
+}
+.dir{
+width:100px;
+display:inline-block;
+}
+.custom-1{
+width:150px;
+display:inline-block;
+margin-right:10px;
+}
+.custom-2{
+width:140px;
+display:inline-block;
+}
+.botoes{
+	position:absolute;
+	bottom:50px;
+	left:185px;
+}

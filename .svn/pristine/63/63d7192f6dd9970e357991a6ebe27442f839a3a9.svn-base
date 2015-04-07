@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#total").maskMoney({symbol:'R$ ', showSymbol:true, thousands:'.', decimal:',', symbolStay: true});
+				$("#quant").kendoNumericTextBox({
+					format : "#"
+				});
+				
+				$("#selectProduto").change(
+					function(){
+						if ($("#selectProduto").val() != "") {
+							var id = $("#selectProduto").val();
+							$.ajax({
+								contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+								type: "GET",
+								url: "<c:url value="/estoque/atualizaDadosProduto/"/>" + id,
+								success: function(retorno){
+											if (retorno != "") {
+												retorno = retorno.split("],[");
+												$("#categoriaProduto").val(retorno[0]);
+												$("#unitario").val(retorno[1]);
+												$("#valorUnit").val(retorno[2]);
+											} else
+												$("#teste").empty().append("Produto não Encontrado");
+											}
+							});
+						}
+					}
+				);
+				
+				$("#quant").change(
+					function(){
+						if ($("#quant").val() != "") {
+							var valorTotal = ($("#quant").val() * $("#valorUnit").val());
+							var valorTotalString = ($("#quant").val() * $("#valorUnit").val());
+							
+							$("#total").val(valorTotalString);
+							$("#valorTtal3").val(valorTotal);
+						}
+					}
+				);
+			});
+			
+			function gravarItemProduto() {
+			 	$.ajax({
+				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+				type: "POST",
+				url: "<c:url value="/clientes/gravarItemConsumo"/>",
+				data: $("#formItemProduto").serialize(),
+				success: function(retorno) {
+							$("#cadastrarItemProduto").data("kendoWindow").destroy();
+							$("#cadastrarItemCompra").data("kendoWindow").destroy();
+							$("#divConsumo").load("<c:url value="/clientes/divConsumoList/${hospedeHospedagem.id}"/>");
+							$("#divResumo").load("<c:url value="/clientes/divResumoLancamento/${hospedeHospedagem.id}"/>");
+						 }
+				});
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formItemProduto" name="formItemProduto" action="#">
+			<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+				<tr valign="bottom" style="height: 0px;">
+	   				<td rowspan="8" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					Nome do Produto
+	   				</td>
+	   				<td style="width: 175px;">
+	   					Local do Consumo
+	   				</td>
+	   				<td rowspan="8" style="width: 15px;"></td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="hidden" value="${hospedeHospedagem.hospedagem.id}" name="idHospedagem">
+	   					<input type="hidden" value="Produto" name="item.categoria">
+	   					<select id="selectProduto" name="item.produto.id" required style="width: 370px;">
+							<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${produtoList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<select name="item.localConsumo" required style="width: 175px;">
+							<option value=""><f:message key="selecione"/></option>
+							<option value="Recepção">Recepção</option>
+							<option value="Acomodação">Acomodação</option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195x;">
+	   					Quantidade
+	   				</td>
+	   				<td style="width: 195x;">
+	   					Valor Unit.
+	   				</td>
+	   				<td style="width: 175px;">
+	   					Valor Total
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195x;">
+	   					<input id="quant" type="text" min="0" required name="item.quantidade" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valorUnit" type="hidden" name="item.valorUnitario">
+	   					<input id="unitario" type="text" class="k-textbox" required placeholder="R$ 00,00" style="width: 175px;" disabled>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<input id="valorTtal3" type="hidden" name="item.valorTotal">
+	   					<input id="total" type="text" class="k-textbox" required placeholder="R$ 00,00" style="width: 175px;">
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+	   			<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+            			<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span><f:message key="limpar"/></button>
+	            		<button type="button" class="k-button" onclick="gravarItemProduto()"><span class='k-icon k-update'></span><f:message key="gravar"/></button>
+            		</td>
+            	</tr>
+	   		</form>
+	   	</table>
+	</body>
+</html>

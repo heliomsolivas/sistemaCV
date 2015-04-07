@@ -1,0 +1,76 @@
+package estoque.controller;
+
+import estoque.bean.Fabricante;
+import estoque.bean.Produto;
+import estoque.dao.DaoFabricante;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("estoque/")
+public class EstoqueController {
+	
+	private final DaoProduto daoProduto;
+	private final DaoFabricante daoFabricante;
+	private final Erro erro;
+	private final Result result;
+
+	public EstoqueController(DaoProduto daoProduto, DaoFabricante daoFabricante, Erro erro, Result result) {
+		this.daoProduto = daoProduto;
+		this.daoFabricante = daoFabricante;
+		this.erro = erro;
+		this.result = result;
+	}
+
+	@Path("cadastrarProduto")
+	public void formProduto() {
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listarProduto")
+	public void listarProduto() {
+		result.include("produtoList", daoProduto.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarFornecedor")
+	public void formFornecedor() {
+	}
+	
+	@Path("cadastrarFabricante")
+	public void formFabricante() {
+	}
+	
+	@Post("gravarProduto")
+	public void gravarProduto(Produto produto) {
+		try {
+			daoProduto.adicionar(produto);
+			
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarFabricante")
+	public void gravarFabricante(Fabricante fabricante) {
+		try {
+			daoFabricante.adicionar(fabricante);
+			
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+}

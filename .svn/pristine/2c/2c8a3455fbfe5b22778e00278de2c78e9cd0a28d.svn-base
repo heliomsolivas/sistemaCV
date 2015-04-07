@@ -1,0 +1,37 @@
+package generic.converter;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ResourceBundle;
+
+import br.com.caelum.vraptor.Convert;
+import br.com.caelum.vraptor.Converter;
+import br.com.caelum.vraptor.converter.ConversionError;
+import br.com.caelum.vraptor.ioc.RequestScoped;
+
+@Convert(Calendar.class)
+@RequestScoped
+public class CalendarConverter implements Converter<Calendar> {
+
+	public Calendar convert(String value, Class<? extends Calendar> type, ResourceBundle bundle) {
+		if (isNullOrEmpty(value))
+			return null;
+
+		try {
+			Date date = new SimpleDateFormat("dd/MM/yy HH:mm").parse(value);
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+
+			return calendar;
+		} catch (ParseException e) {
+			throw new ConversionError(MessageFormat.format(bundle.getString("is_not_a_valid_date"), value));
+		}
+	}
+
+}

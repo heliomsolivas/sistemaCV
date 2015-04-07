@@ -1,0 +1,566 @@
+#----------------------
+aplicativo = LedHotel
+ledware = Ledware Tecnologia
+
+
+#--Genéricas-----------
+#----------------------
+adicionar = Adicionar
+alterar = Alterar
+andamento = Em andamento
+ativa = Ativa
+ativo = Ativo
+campo.obrigatorio = Campo Obrigatório
+cadastrar = Cadastrar
+casado = Casado(a)
+continuar = Continuar
+cor.amarela = Amerela
+cor.branca = Branca
+cor.indigena = Indígena
+cor.negra = Negro
+cor.parda = Parda
+data = Hoje é {0}
+divorciado = Divorciado(a)
+editar = Editar
+encerrada = Encerrada
+erro = Erro
+excluir = Excluir
+feminino = Feminino
+frigobar = Frigobar
+gravar = Gravar
+in = In:
+inativa = Inativa
+inativo = Inativo
+limpar = Limpar
+limpeza = LIMPEZA
+manutencao = MANUTENÇÃO
+masculino = Masculino
+nao = Não
+nenhum = Nenhum
+nenhuma = Nenhuma
+nova = Nova
+novo = Novo
+observacoes = Observações
+out = Out:
+pesquisar = Pesquisar
+previsao = Previsão
+recepcao = Recepção
+reservas = Reservas
+selecione = Selecione
+sim = Sim
+situacao = Situação:
+solteiro = Solteiro(a)
+viuvo = Viúvo(a)
+voltar = Voltar
+saudacao.manha = Bom Dia {0}
+saudacao.noite = Boa Noite {0}
+saudacao.tarde = Boa Tarde {0}
+username = Username
+senha = Senha
+
+
+#--Genéricas(campos)---
+#----------------------
+campo.bairro = Bairro
+campo.cep = CEP
+campo.cidade = Cidade
+campo.cnpj = CNPJ
+campo.complemento = Complemento
+campo.email = Email
+campo.endereco = Endereço
+campo.estado = Estado
+campo.observacao = Observação
+campo.quantidade = Quantidade
+campo.situacao = Situação
+campo.telefone = Telefone
+campo.telefone.comercial = Telefone Comercial
+campo.telefone.contato = Telefone Contato
+campo.valor = Valor
+campo.valor.total = Valor Total
+campo.valor.unitario = Valor Unitário
+
+
+#--Titulo(janelas)-----
+#----------------------
+alterar.senha = Alterar Senha
+cadastrar.acomodacao = Cadastrar Nova Acomodação
+cadastrar.cheque = Cadastrar Novo Cheque
+cadastrar.compra = Cadastrar Nova Compra
+cadastrar.conta.caixa = Cadastrar Nova Conta Caixa
+cadastrar.conta.contabil = Cadastrar Nova Conta Contábil
+cadastrar.conta.pagar = Cadastrar Nova Conta a Pagar
+cadastrar.conta.receber = Cadastrar Nova Conta a Receber
+cadastrar.fabricante = Cadastrar Novo Fabricante
+cadastrar.fornecedor = Cadastrar Novo Fornecedor
+cadastrar.frigobar = Cadastrar Novo Frigobar
+cadastrar.historico = Cadastrar Novo Histórico
+cadastrar.hospedagem = Cadastrar Nova Hospedagem
+cadastrar.hospede = Cadastrar Novo Hóspede
+cadastrar.hotel = Cadastrar Hotel
+cadastrar.item.diaria = Cadastrar Item Diária
+cadastrar.item.diverso = Cadastrar Item Diverso
+cadastrar.item.produto = Cadastrar Item Produto
+cadastrar.lancamento = Cadastrar Novo Lançamento
+cadastrar.movimentacao = Cadastrar Nova Movimentação
+cadastrar.perfil = Cadastrar Novo Perfil
+cadastrar.produto = Cadastrar Novo Produto
+cadastrar.reserva = Cadastrar Nova Reserva
+cadastrar.tipo.acomodacao = Cadastrar Novo Tipo de Acomodação
+cadastrar.usuario = Cadastrar Novo Usuário
+conferencia.consumo = Conferência de Consumo
+consultar.acomodacao = Consultar Acomodação
+consultar.agenda = Consultar Agenda
+consultar.frigobar = Frigobar da Acomodação
+consultar.hospedagem = Consultar Hospedagem
+efetuar.checkout = Efetuar check-out
+efetuar.hospedagem = Efetuar Hospedagem
+informacoes.acomodacao = Informações da Acomodação
+informacoes.hospedagem = Informações da Hospedagem
+informacoes.hotel = Informações do Hotel
+informacoes.reserva = Informações da Reserva
+informar.reserva = Informar Reserva
+lista.acomodacao = Lista das Acomodações
+lista.cheque = Lista dos Cheques
+lista.compra = Lista das Compras
+lista.conta.caixa = Lista das Contas Caixa
+lista.conta.contabil = Lista das Contas Contábeis
+lista.conta.pagar = Lista das Contas a Pagar
+lista.conta.receber = Lista das Contas a Receber
+lista.fabricante = Lista dos Fabricantes
+lista.fornecedor = Lista dos Fornecedores
+lista.frigobar = Lista dos Frigobares
+lista.hospedagem = Lista das Hospedagens
+lista.hospede = Lista dos Hóspedes
+lista.historico = Lista dos Históricos
+lista.lancamento = Lista dos Lançamentos
+lista.movimentacao = Lista das Movimentações
+lista.perfil = Lista dos Perfis
+lista.produto = Lista dos Produtos
+lista.reserva = Lista das Reservas
+lista.tipo.acomodacao = Lista dos Tipos de Acomodações
+lista.usuario = Lista dos Usuários
+
+
+#--Administrativo-----------
+#---------------------------
+campo.codigo.usuario = Código
+campo.confirmar.nova.senha = Confirmar Nova Senha
+campo.descricao.perfil = Descrição
+campo.email.usuario = Email
+campo.nome.perfil = Nome
+campo.nome.usuario = Nome
+campo.nome.acesso.usuario = Nome de Acesso
+campo.nova.senha = Nova Senha
+campo.perfil = Perfil
+campo.permissoes.perfil = Permissões
+campo.senha = Senha
+campo.senha.atual = Senha Atual
+campo.selecionar.todos = Selecionar Todos
+campo.usuario = Usuário
+campo.usuario.ativo = Usuário Ativo?
+titulo.lista.codigo.usuario = Código
+titulo.lista.codigo.perfil = Código
+titulo.lista.descricao.perfil = Descrição
+titulo.lista.nome.perfil = Nome do Perfil
+titulo.lista.nome.usuario = Nome do Usuário
+titulo.lista.perfil.usuario = Perfil
+titulo.lista.situacao.usuario = Situação
+
+
+#--Clientes--------------
+#------------------------
+campo.acomodacao = Acomodação:
+campo.camas = Camas
+campo.codigo.hospede = Código
+campo.codigo.hospedagem = Código
+campo.consumo.data = Data
+campo.consumo.dc = D/C
+campo.consumo.descricao = Descrição
+campo.consumo.pdv = PDV
+campo.consumo.quantidade = Quant
+campo.consumo.saldo = Saldo
+campo.consumo.usuario = Usuário
+campo.consumo.valor.unitario = Vlr Unit
+campo.consumo.valor.total = Vlr Total
+campo.cor = Cor / Raça
+campo.checkIn = Check-in
+campo.checkOut = Check-out
+campo.checkOut.estendido.gratuito = Check-out Estendido Gratuito?
+campo.cpf = CPF
+campo.data.hospedagem = Data:
+campo.data.nascimento = Data Nascimento
+campo.descricao.servico = Descrição do Serviço Diverso
+campo.estado.civil = Estado Cívil
+campo.horario.checkIn = Horário check-in:
+campo.horario.checkOut = Horário check-out:
+campo.hospede = Hóspede:
+campo.info = + Info
+campo.local.consumo = Local do Consumo
+campo.meio.transporte = Meio de Transporte
+campo.motivo.viagem = Motivo da Viagem
+campo.nacionalidade = Nacionalidade
+campo.naturalidade = Naturalidade
+campo.nome.hospede = Nome do Hóspede
+campo.numero = Número
+campo.pais = País
+campo.pessoas = Pessoas
+campo.placeholder.hospede.acomodacao = Nome do Hóspede ou da Acomodação
+campo.preco = Preço
+campo.profissao = Profissão
+campo.proximo.destino = Próximo Destino (Cidade, País)
+campo.reserva = Reserva
+campo.rg = RG
+campo.resumo.consumo = Consumo:
+campo.resumo.diaria = Diária:
+campo.resumo.diverso = Diverso:
+campo.resumo.financeiro = Financeiro
+campo.resumo.hospedes = HÓSPEDES
+campo.resumo.lancamentos = RESUMO DE LANÇAMENTOS
+campo.resumo.nome.hospede1 = Nome do Hóspede 1
+campo.resumo.nome.hospede2 = Nome do Hóspede 2
+campo.resumo.nome.hospede3 = Nome do Hóspede 3
+campo.resumo.valor.total = VALOR TOTAL
+campo.selecione.acomodacao = Selecione a Acomodação
+campo.selecione.foto = Selecione uma Foto
+campo.sexo = Sexo
+campo.situacao.hospedagem = Situação
+campo.tabela.nPessoas = Nº Pessoas
+campo.tabela.nCamas = Nº Camas
+campo.tabela.preco = Preço
+campo.tabela.nAcomodacoes = Nº Acomodações
+campo.telefone.celular = Telefone Celular
+campo.telefone.residencial = Telefone Residencial
+campo.ultima.procedencia = Ultima Procedência (Cidade, País)
+checkOut = Check-out
+titulo.acomodacao = Acomodação
+titulo.alterar.hospedagem = Alterar Hospedagem
+titulo.confirmar = Confirmar
+titulo.diaria = <b> Diária </b>
+titulo.diverso = <b> Diverso </b>
+titulo.hospede = Hóspede
+titulo.periodo = Período
+titulo.produto = <b> Produto </b>
+titulo.lista.codigo.hospede = Código
+titulo.lista.codigo.hospedagem = Código
+titulo.lista.nome.hospede = Nome do Cliente
+titulo.lista.cpf.hospede = CPF
+titulo.lista.situacao.hospedagem = Situação
+sub.titulo.informacoes.hospede = Informações do Hóspede
+sub.titulo.informacoes.adicionais = Informações Adicionais
+
+
+#--Contabil--------------
+#------------------------
+campo.codigo.historico = Código
+campo.codigo.reduzido = Cód. Reduzido
+campo.complemento.lancamento = Complemento
+campo.conta.credito.lancamento = Conta Crédito
+campo.conta.debito.lancamento = Conta Débito
+campo.data.lancamento = Data Lan\u00E7amento
+campo.historico.lancamento = Histórico
+campo.nome.conta.contabil = Nome da Conta
+campo.nome.historico = Nome do Histórico
+campo.numero.conta.contabil = Número
+campo.numero.documento.lancamento = Número do Documento
+campo.placeholder.nome.numero.conta = Nome ou Número da Conta
+campo.situacao.conta.contabil = Situação
+campo.saldo.conta.contabil = Saldo
+campo.valor.lancamento = Valor
+
+titulo.lista.codigo.historico = Código
+titulo.lista.codigo.reduzido = Cód. Reduzido
+titulo.lista.data.lancamento = Data
+titulo.lista.documento.lancamento = Documento
+titulo.lista.historico.lancamento = Histórico
+titulo.lista.nome.conta.contabil = Nome da Conta
+titulo.lista.nome.historico = Nome do Histórico
+titulo.lista.situacao.conta.contabil = Situação
+titulo.lista.saldo.conta.contabil = Saldo
+titulo.lista.valor.lancamento = Valor
+
+
+#--Estoque------------------
+#---------------------------
+campo.categoria = Categoria
+campo.codigo.fabricante = Código
+campo.codigo.fornecedor = Código
+campo.codigo.produto = Código
+campo.contato.vendas = Contato de Vendas
+campo.fabricante = Fabricante
+campo.inscricao.estadual = Inscrição Estadual
+campo.nome.fabricante = Nome do Fabricante
+campo.nome.fornecedor = Nome do Fornecedor
+campo.nome.produto = Nome do Produto
+titulo.lista.cnpj = CNPJ
+titulo.lista.codigo.fabricante = Código
+titulo.lista.codigo.fornecedor = Código
+titulo.lista.codigo.produto = Código
+titulo.lista.fabricante = Fabricante
+titulo.lista.nome.fabricante = Nome do Fabricante
+titulo.lista.nome.fornecedor = Nome do Fornecedor
+titulo.lista.nome.produto = Nome do Produto
+titulo.lista.quantidade = Quant
+titulo.lista.valor.unitario = Vlr Unit
+
+
+#--Financeiro---------------
+#---------------------------
+campo.agencia = Agência
+campo.caixa = Caixa
+campo.cheque.terceiro = Cheque de Terceiro?
+campo.cpf.cnpj = CPF / CNPJ
+campo.codigo.banco = Código do Banco
+campo.conta.caixa = Conta Caixa
+campo.contato = Contato
+campo.data = Data
+campo.data.abertura = Data de Abertura
+campo.data.agendamento = Data Agendamento
+campo.data.apresentacao = Data Apresentação
+campo.data.encerramento = Data de Encerramento
+campo.data.emissao = Data Emissão
+campo.data.pagamento = Data Pagamento
+campo.data.vencimento = Data Vencimento
+campo.desconto = Desconto
+campo.documento.cancelado = Documento Cancelado
+campo.fim = Fim:
+campo.forma.pagamento = Forma de Pagamento
+campo.historico = Histórico
+campo.inicio = Início:
+campo.juros = Juros
+campo.nome.banco = Nome do Banco
+campo.nome.titular = Nome do Titular
+campo.numero.banco = Número do Banco
+campo.numero.cheque = Número do Cheque
+campo.numero.conta = Número da Conta
+campo.numero.documento = Número do Documento
+campo.multa = Multa
+campo.placeholder.nome.banco = Nome do Banco ou Número da Conta
+campo.placeholder.numero.documento = Número do Documento
+campo.saldo = Saldo
+campo.saldo.maximo = Saldo Máximo
+campo.saldo.minimo = Saldo Mínimo
+campo.situacao.conta = Situação da Conta
+campo.tipo.documento = Tipo de Documento
+campo.tipo.movimentacao = Tipo de Movimentação
+campo.valor.pagamento = Valor Pagamento
+titulo.lista.agencia = Agência
+titulo.lista.banco = Banco
+titulo.lista.conta = Conta
+titulo.lista.data = Data
+titulo.lista.data.pagamento = Pagamento
+titulo.lista.data.vencimento = Vencimento
+titulo.lista.documento = Documento
+titulo.lista.nome.titular = Titular
+titulo.lista.numero.cheque = Cheque
+titulo.lista.tipo.movimentacao = Movimentação
+titulo.lista.saldo = Saldo
+titulo.lista.situacao = Situação
+titulo.lista.valor = Valor
+titulo.lista.valor.total = Valor Total
+
+
+#--Hotel--------------------
+#---------------------------
+campo.ar.condicionado = Ar Condicionado:
+campo.cama.box = Cama Box:
+campo.codigo.frigobar = Código
+campo.codigo.tipo.acomodacao = Código
+campo.cofre = Cofre:
+campo.dvd = DVD:
+campo.descricao = Descrição
+campo.descricao.tipo.acomodacao = Descrição do Tipo de Acomodação
+campo.fogao = Fogão:
+campo.frigobar = Frigobar:
+campo.grupo.acomodacao = Tipo de Acomodação
+campo.item = Item
+campo.microondas = Microondas:
+campo.nome.acomodacao = Nome da Acomodação
+campo.nome.frigobar = Nome do Frigobar
+campo.nome.hotel = Nome do Hotel
+campo.nome.padrao = Nome do Padrão
+campo.nome.tipo.acomodacao = Nome do Tipo da Acomodação
+campo.numero.acomodacao = Número
+campo.numero.camas = Nº Camas
+campo.numero.hospedes = Nº Hóspedes
+campo.observacoes = Observações
+campo.padrao.checkIn = Padrão check-in
+campo.padrao.checkOut = Padrão check-out
+campo.padrao.checkOut.estendido = Padrão check-out estendido
+campo.permite.meia.diaria.checkOut.estendido = Permite meia diária check-out estendido ?
+campo.quantidade.item = Quantidade
+campo.secador.cabelo = Secador de Cabelo:
+campo.site = Site / Blog / Twitter / Facebook / Google+ ...
+campo.situacao.acomodacao = Situação
+campo.selecione.logo = Selecione o Logo do Hotel
+campo.tipo.acomodacao = Tipo de Acomodação
+campo.tv.lcd = TV LCD:
+campo.tv.tubo = TV Tubo:
+campo.utensilios.cozinha = Utensílios Cozinha:
+campo.valor.diaria = <b> Valor da Diária </b>
+campo.ventilador = Ventilador:
+titulo.lista.acomodacao = Acomodação
+titulo.lista.nome.acomodacao = Nome da Acomodação
+titulo.lista.codigo.tipo.acomodacao = Código
+titulo.lista.nome.tipo.acomodacao = Tipo da Acomodação
+titulo.lista.numero.acomodacao = Número
+titulo.lista.tipo.acomodacao = Tipo
+titulo.lista.situacao.acomodacao = Situação
+titulo.lista.valor.diaria = Diária
+sub.titulo.especificacoes = <b> Especificações </b>
+sub.titulo.informacoes.acomodocao = <b> Informações da Acomodação </b>
+sub.titulo.informacoes.hotel = <b> Informações do Hotel </b>
+sub.titulo.frigobar.atual.acomodacao = <b> Frigobar Atual da Acomodação </b>
+sub.titulo.frigobar.padrao.acomodacao = <b> Frigobar Padrão da Acomodação </b>
+sub.titulo.selecione.imagens.acomodacao = <b> Selecione Imagens da Acomodoção </b>
+
+#--Index---------------
+#----------------------
+menu.acomodacao = Acomodação
+menu.cheque = Cheque
+menu.compra = Compra
+menu.configuracoes = Configurações
+menu.conta.caixa = Conta Caixa
+menu.conta.contabil = Conta Contábil
+menu.conta.pagar = Conta a Pagar
+menu.conta.receber = Conta a Receber
+menu.contabil = Contábil
+menu.estoque = Estoque
+menu.fabricante = Fabricante
+menu.financeiro = Financeiro
+menu.fornecedor = Fornecedor
+menu.historico = Histórico
+menu.hospede = Hóspede
+menu.hospedagem = Hospedagem
+menu.hotel = Hotel
+menu.lancamento = Lançamento
+menu.movimentacao = Movimentação
+menu.padrao.frigobar = Padrão Frigobar
+menu.pesquisar.acomodacao = Pesquisar Acomodação
+menu.produto = Produto
+menu.reserva = Reserva
+menu.tipo.acomodacao = Tipo Acomodação
+sub.menu.agenda = Agenda
+sub.menu.alterar.senha = Alterar Senha
+sub.menu.cadastrar = Cadastrar
+sub.menu.cadastrar.hotel = Cadastrar Hotel
+sub.menu.consultar.hotel = Consultar Hotel
+sub.menu.listar = Listar
+sub.menu.lista.perfil = Listar Perfil
+sub.menu.lista.usuario = Listar Usuários
+sub.menu.novo.perfil = Novo Perfil
+sub.menu.novo.usuario = Novo Usuário
+sub.menu.sair = Sair
+
+
+#--Reserva---------------
+#------------------------
+campo.acomodacao.reserva = Acomodação
+campo.codigo.reserva = Código
+campo.codigo.responsavel = Código
+campo.checkIn.reserva = Check-in
+campo.checkOut.reserva = Check-out
+campo.cpf.responsavel = CPF
+campo.data.reserva = Data
+campo.diaria.reserva = Diária
+campo.email.responsavel = Email
+campo.hospedagem.reserva = Hospedagem
+campo.hospede.reserva = Hóspede
+campo.nome.responsavel.consultar = Nome
+campo.nome.responsavel = Nome do Responsável
+campo.numero.dias = Nº Dias
+campo.numero.pessoas = Nº Pessoas
+campo.permitir.consumo = Consumo?
+campo.previsao.checkIn = Previsão check-in
+campo.reembolsar.reserva = Reembolsar
+campo.responsavel = Responsável
+campo.rg.responsavel = RG
+campo.selecione.reserva.hospedagem = Selecione a Reserva a baixo e clique em Continuar
+campo.sexo.responsavel = Sexo
+campo.situacao.reserva = Situação
+campo.telefone.responsavel = Telefone
+campo.total.reserva = Total
+mensagem.existe.reserva.hospedagem = Existe Reserva Cadastrada e Aprovada para essa Hospedagem?
+mensagem.selecione.reserva.hospedagem = Selecione uma Reserva para Continuar
+titulo.reserva = Reserva
+titulo.responsavel = Responsável
+titulo.informacoes.hospedagem = Informações da Hospedagem
+titulo.informacoes.reserva = Informações da Reserva
+titulo.informacoes.responsavel = Informações do Responsável
+
+
+#--Mensagens----------------
+#---------------------------
+mensagem.aguarde = Aguarde...
+mensagem.carregando = Carregando...
+mensagem.erro.excluir.acomodacao = Erro ao tentar excluir a acomodação selecionada. <br/> Verifique se a acomodação não está ocupada ou se não está ocupando nenhuma hospedagem e tente novamente!
+mensagem.erro.excluir.item = Erro ao tentar excluir o item selecionado. <br/> Verifique se o item não está sendo utilizado em outro local no sistema e tente novamente!
+mensagem.erro.excluir.hospedagem = Erro ao tentar excluir a hospedagem selecionada. <br/> Verifique se a hospedagem não está em andamento e tente novamente!
+mensagem.erro.excluir.perfil = Erro ao tentar excluir o perfil selecionado. <br/> Verifique o perfil não está sendo utilizado em algum usuário e tente novamente!
+mensagem.erro.excluir.reserva = Erro ao tentar excluir a reserva selecionada. <br/> Verifique se a reserva não está em andamento ou aguardando pagamento/retorno e tente novamente!
+mensagem.erro.excluir.usuario = Erro ao tentar excluir o usuário selecionado. <br/> Verifique se o usuário não está logado no momento e tente novamente!
+mensagem.excluir.acomodacao = Você tem certeza que deseja excluir.<br/> A acomodação não poderá ser restaurada mais tarde! Continuar?
+mensagem.excluir.item = Você tem certeza que deseja excluir esse item. <br/>Ele não poderá ser restaurado mais tarde! Continuar?
+mensagem.excluir.hospedagem = Você tem certeza que deseja excluir.<br/> A hospedagem não poderá ser restaurada mais tarde! Continuar?
+mensagem.excluir.perfil = Você tem certeza que deseja excluir.<br/> O perfil não poderá ser restaurado mais tarde! Continuar?
+mensagem.excluir.reserva = Você tem certeza que deseja excluir.<br/> A reserva não poderá ser restaurada mais tarde! Continuar?
+mensagem.excluir.usuario = Você tem certeza que deseja excluir.<br/> O usuário não poderá ser restaurado mais tarde! Continuar?
+mensagem.checkOut.hospedagem = Você tem certeza que deseja efetuar o check-out.<br/> A hospedagem será encerrada! Continuar?
+mensagem.selecione = Selecione...
+mensagem.camposObrigatorios = Termine de Preencher Todos os Campos Destacadas Antes de Prosseguir
+mensagem.preencherCampos = Por Favor Preencha os Campos Antes de Continuar
+
+mensagem.senha.diferente = As senhas não correspondem
+mensagem.usuario.disponivel = Usuário Disponível
+mensagem.usuario.nao.disponivel = Usuário não Disponível
+
+#--Mensagens-----------
+#----------------------
+logon.senha.incorreta = A Senha Digitada Não Confere, Verifique as Informações e Tente Novamente.
+logon.sessao.expirada = Sua sessão expirou, por favor acesse novamente.
+logon.usuario.invalido = O Usuário não existe
+logout.agradecimento = Obrigado por Utilizar o Nosso Sistema.
+
+perfil.consultar = Consultar Perfil de Acesso
+perfil.gravar.sucesso = Perfil Gravado com Sucesso.
+perfil.gravar.erro = Erro ao Gravar Perfil, Verifique as Informações e tente novamente.
+perfil.remover.emUso = O Perfil não pode ser removido porque ao menos um Usuário está utilizando.
+perfil.remover.sucesso = Perfil removido com Sucesso.
+perfil.remover.erro = Erro ao Remover Perfil, Verifique as Informações e tente novamente.
+perfil.listar = Lista de Perfis de Acesso
+perfil.nenhum.resultado = Nenhum Perfil foi encontrado, Verifique os parametros e refaça a pesquisa.
+perfil.novo = Novo Perfil de Acesso
+
+=-----------------------------------------------------------------------------------------------------------------
+usuario.alterarSenha.sucesso = Senha alterada com sucesso.
+usuario.alterarSenha.erro = Erro ao alterar Senha, Verifique as informações e tente novamente.
+usuario.consultar = Consultar Usuário
+usuario.gravar.sucesso = Usuário Gravado com Sucesso.
+usuario.gravar.erro = Erro ao Gravar Usuário, Verifique as Informações e tente novamente.
+usuario.invalido = Usuário Inexistente
+usuario.listar = Lista de Usuários
+usuario.novo = Novo Usuário
+usuario.nenhum.resultado = Nenhum Usuário foi encontrado, Verifique os parametros e refaça a pesquisa.
+usuario.redefinirSenha.sucesso = Senha redefinida com sucesso.
+usuario.redefinirSenha.erro =  Erro ao redefinir Senha, Verifique as informações e tente novamente.
+usuario.senha.incorreta = Senha Incorreta, entre em contato com o Administrador do sistema.
+usuario.senhas.diferentes = As Senhas Digitadas não conferem, Verifique os campos destacados.
+usuario.username.disponivel = O Nome de Acesso escolhido está disponível.
+usuario.username.indisponivel = O Nome de Acesso escolhido já está em uso.
+titulo.cadastrarAcomodacao = Cadastro de Acomodação
+titulo.cadastrarHotel = Cadastro do Hotel 
+
+#--Mensagens-----------
+#----------------------
+mensagem.hotel.gravar.sucesso = Hotel Cadastrado com Sucesso.
+mensagem.hotel.gravar.erro = Erro ao Cadastrar o Hotel, Verifique as Informações e tente novamente.
+mensagem.clientes.gravar.sucesso = Cliente Cadastrado com Sucesso.
+mensagem.clientes.gravar.erro = Erro ao Cadastrar o Cliente, Verifique as Informações e tente novamente.
+mensagem.erroFinalizar = Erro ao Finalizar a Reserva
+mensagem.tipoAcomodacao = <i> Tipo de Acomodação não Encontrada </i>
+
+subTitulo.hospede = Hóspede
+
+subTitulo.confirmar = Confirmar
+
+#--Hotel--------------------
+#---------------------------

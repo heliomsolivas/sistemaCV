@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#tabelaFrigobar").tablesorter({
+					headers: {
+						3: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : false,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : '', // or []
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_formatter : null,
+				     	filter_hideFilters : false,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '#filterFrigobar',
+				     	filter_saveFilters : false,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value',
+				     	filter_functions : null
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoFrigobar"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+			});
+			
+			function excluirFrigobar(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.item"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#listaFrigobar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/hotel/frigobar/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+	    										$("#listaFrigobar").load("<c:url value="/hotel/frigobar/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.item"/>', '<f:message key="erro"/>');
+  								 				$("#listaFrigobar").load("<c:url value="/hotel/frigobar/lista"/>");
+					                		}
+		    					});
+		                    }
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+			
+			function consultarFrigobar(id) {
+				consultar(null, '<f:message key="informacoes.frigobar.padrao"/>', '515', '430', 'consultarFrigobar');
+				
+				$("#consultarFrigobar").load("<c:url value="/hotel/frigobar/consultar/"/>" + id);
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaFrigobar">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 90px;"><f:message key="campo.codigo.frigobar"/></th>
+						<th style="width: 430px;"><f:message key="campo.nome.frigobar"/></th>
+						<th style="width: 110px;"><f:message key="campo.quantidade.item"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${frigobarList}" var="frigobar">
+						<tr style="height: 35px;" ondblclick="consultarFrigobar(${frigobar.id});">
+							<td style="width: 90px; text-align: center;">${frigobar.codigo}</td>
+							<td style="width: 430px; text-align: center;">${frigobar.nome}</td>
+							<td style="width: 110px; text-align: center;">${frigobar.contador}</td>
+							<td style="width: 70px; text-align: center;">
+								<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/hotel/frigobar/consultar/${frigobar.id}"/>', '<f:message key="informacoes.frigobar.padrao"/>', '515', '430', 'consultarFrigobar');">
+									<span class="k-icon k-edit"></span>
+								</a>
+								<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirFrigobar(${frigobar.id})">
+									<span class="k-icon k-delete"></span>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoFrigobar" class="paginacao">
+			<div style="margin-left: 222px;">
+				<div class="first"></div>
+				<div class="prev"></div>
+				<input type="text" class="pagedisplay k-textbox" style="height: 20px;">
+				<div class="next"></div>
+				<div class="last"></div>
+			</div>
+			<a id="filterFrigobar" href="#" class="k-button k-button-icontext k-delete filterReset"> 
+				<span class="icon icon-refresh icon-darkgray"></span>
+			</a>
+		</div>
+	</body>
+</html>

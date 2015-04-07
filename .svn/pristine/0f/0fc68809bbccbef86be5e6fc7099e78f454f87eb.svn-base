@@ -1,0 +1,98 @@
+/*TITULOS DA TABELA*/
+#displaytag th {
+	background-color: #E3E3E3;
+	border-bottom: 2px solid #CCCCCC;
+	color: #696969;
+	font-size: 11px;
+	padding: 5px;
+}
+#displaytag th.sorted a, th.sortable a {
+	display: block;
+	text-decoration: none;
+}
+#displaytag th.sorted a:hover, th.sortable a:hover {
+	text-decoration: underline;
+}
+#displaytag th.sorted {
+ 	border-bottom: none;
+	border-top: 2px solid #CCCCCC;
+}
+#displaytag th.order1 a {
+	background-image: url(../imagens/icones/iconeOrdemCrescente.gif);
+	background-position: left;
+	background-repeat: no-repeat;
+}
+#displaytag th.order2 a {
+	background-image: url(../imagens/icones/iconeOrdemDecrescente.gif);
+	background-position: left;
+	background-repeat: no-repeat;
+}
+/*VALORES DA TABELA*/
+#displaytag tbody tr {
+	color: #696969;
+	font-size: 11px;
+}
+#displaytag tbody tr.odd {
+	background-color: #EEEEEE;
+}
+#displaytag tbody tr.even {
+	background-color: #E3E3E3;
+}
+#displaytag tbody tr.total {
+	height: 30px;
+}
+#displaytag tbody tr.total td {
+	text-align: center;
+}
+#displaytag tfoot tr {
+	color: #696969;
+	font-size: 11px;
+}
+#displaytag tfoot tr.total {
+	height: 30px;
+}
+#displaytag tfoot tr.total td {
+	text-align: center;
+}
+span.pagebanner {
+	color: #696969;
+	background-color: #EEEEEE;
+	border: 1px dotted #999;
+	border-bottom: none;
+	display: block;
+	font-size: 11px;
+	margin-top: 10px;
+	padding: 2px 4px 2px 4px;
+}
+span.pagelinks {
+	color: #696969;
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	border-top: none;
+	display:block;
+	font-size: 11px;
+	margin-bottom: 5px;
+	padding: 2px 4px 2px 4px;
+}
+span.pagelinks a {
+	color: #ED3237;
+}
+span.pagelinks a:visited {
+	color: #ED3237;
+}
+span.pagelinks a:hover {
+	font-weight: bold;
+}
+span.export {
+	cursor: pointer;
+	display: inline;
+	padding: 0 4px 1px 20px;
+}
+div.exportlinks {
+	color: #696969;
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	font-size: 11px;
+	margin: 2px 0 10px 0;
+	padding: 2px 4px 2px 4px;
+}

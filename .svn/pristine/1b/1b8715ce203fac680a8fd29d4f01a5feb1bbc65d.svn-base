@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#tabelaContaContabil").tablesorter({
+					headers: {
+						4: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : false,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : '', // or []
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_formatter : null,
+				     	filter_hideFilters : false,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '#filterContaContabil',
+				     	filter_saveFilters : false,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value',
+			     		filter_functions : {
+							3 : {
+								"Ativa": function(e, n, f, i, $r) { return e === f; },
+								"Inativa": function(e, n, f, i, $r) { return e === f; }
+							}
+						}
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoContaContabil"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+			});
+
+			function excluirContaContabil(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.item"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#listaContaContabil").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/contabil/conta/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+		    									$("#listaContaContabil").load("<c:url value="/contabil/conta/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.item"/>', '<f:message key="erro"/>');
+  								 				$("#listaContaContabil").load("<c:url value="/contabil/conta/lista"/>");
+					                		}
+		    					});
+		                    }
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+
+			function consultarContaContabil(id) {
+				consultar(null, '<f:message key="informacoes.conta.contabil"/>', '615', '260', 'consultarContaContabil');
+				
+				$("#consultarContaContabil").load("<c:url value="/contabil/conta/consultar/"/>" + id);
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaContaContabil">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 120px;"><f:message key="titulo.lista.codigo.reduzido"/></th>
+						<th style="width: 270px;"><f:message key="titulo.lista.nome.conta.contabil"/></th>
+						<th style="width: 140px;"><f:message key="titulo.lista.saldo.conta.contabil"/></th>
+						<th style="width: 100px;"><f:message key="titulo.lista.situacao.conta.contabil"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${contaContabilList}" var="conta">
+						<tr style="height: 35px;" ondblclick="consultarContaContabil(${conta.id});">
+							<td style="width: 120px; text-align:center;">${conta.codigoReduzido}</td>
+							<td style="width: 270px; text-align:center;">${conta.nome}</td>
+							<td style="width: 140px; text-align:center;">${conta.saldoString}</td>
+							<td style="width: 100px; text-align:center;">
+								<c:choose>
+									<c:when test="${conta.ativa == true}">
+										<f:message key="ativa"/>
+									</c:when>
+									<c:otherwise>
+										<f:message key="inativa"/>
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<td style="width: 70px; text-align:center;">
+								<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/contabil/conta/consultar/${conta.id}"/>', '<f:message key="informacoes.conta.contabil"/>', '615', '260', 'consultarContaContabil');">
+									<span class="k-icon k-edit"></span>
+								</a>
+								<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirContaContabil(${conta.id})">
+									<span class="k-icon k-delete"></span>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoContaContabil" class="paginacao">
+			<div style="margin-left: 222px;">
+				<div class="first"></div>
+				<div class="prev"></div>
+				<input type="text" class="pagedisplay k-textbox" style="height: 20px;">
+				<div class="next"></div>
+				<div class="last"></div>
+			</div>
+			<a id="filterContaContabil" href="#" class="k-button k-button-icontext k-delete filterReset"> 
+				<span class="icon icon-refresh icon-darkgray"></span>
+			</a>
+		</div>
+	</body>
+</html>

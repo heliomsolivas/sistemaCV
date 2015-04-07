@@ -1,0 +1,18 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.Hospede;
+
+@Component
+public class DaoHospede extends Dao<Hospede>{
+	
+	public DaoHospede(Session session) {
+		super(session, Hospede.class);
+	}
+	
+}
+

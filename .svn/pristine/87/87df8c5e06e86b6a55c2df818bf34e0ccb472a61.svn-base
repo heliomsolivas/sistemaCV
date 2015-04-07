@@ -1,0 +1,53 @@
+package administrativo.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import administrativo.bean.Funcao;
+import administrativo.bean.Perfil;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoPerfil extends Dao<Perfil> {
+
+	public DaoPerfil(Session session) {
+		super(session, Perfil.class);
+	}
+
+	public Boolean permiteAcesso(Long idPerfil, String controller, String metodo) {
+		String consulta = "SELECT * FROM ADMINISTRATIVO_PERMISSAO a, ADMINISTRATIVO_FUNCAO b WHERE a.fk_perfil = :fk_perfil";
+		consulta += " AND a.fk_funcao = b.id AND b.metodo = :metodo AND b.controller = :controller";
+
+		Query query = super.getSession().createSQLQuery(consulta);
+		query.setParameter("fk_perfil", idPerfil);
+		query.setParameter("metodo", metodo);
+		query.setParameter("controller", controller);
+
+		if (query.list().size() > 0)
+			return true;
+		else
+			return false;
+	}
+
+	public Collection<Funcao> listarFuncoes(Long idPerfil) {
+		Collection<Funcao> listaFuncoes = new ArrayList<Funcao>();
+
+		String consulta = "SELECT funcao FROM ADMINISTRATIVO_PERMISSAO WHERE fk_perfil = :idPerfil";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idPerfil", idPerfil);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Funcao funcao = (Funcao) query.list().get(x);
+			listaFuncoes.add(funcao);
+		}
+
+		return listaFuncoes;
+	}
+
+}

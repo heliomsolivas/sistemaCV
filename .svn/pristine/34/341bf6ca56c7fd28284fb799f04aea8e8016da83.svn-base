@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/displaytag.css"/>">
+		
+		<script type="text/javascript">
+	 		 $(document).ready(function () {
+	              $('#paginatorFabricante').smartpaginator({ totalrecords: ${fn:length(fabricanteList)}, recordsperpage: 10, length: 3, datacontainer: 'tabelaFabricante', dataelement: 'tr', initval: 0, next: 'Proximo', prev: 'Anterior', first: 'Primeiro', last: 'Último', theme: 'green',controlsalways: true  });
+	        });
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div style="width: 630px; border: 1px solid #C0C0C0; border-radius: 8px; background-color: white;">
+			<div id="listagem" style="height: 350px;">
+				<table id="tabelaFabricante" class="full_table_list" style="height: auto;">
+					<thead>
+						<tr style="height: 25px;">
+							<th style="width: 70px;">Código</th>
+							<th style="width: 410px;">Nome do Fabricante</th>
+							<th style="width: 150px;"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${fabricanteList}" var="fabricante">
+							<tr style="height: 35px;">
+								<td style="width: 70px; text-align:center;">${fabricante.codigo}</td>
+								<td style="width: 410px; text-align:center;">${fabricante.nome}</td>
+								<td style="width: 150px; text-align:center;">
+									<a href="#" class="k-button k-button-icontext k-edit" onclick="consultar('<c:url value="/estoque/consultarFabricante/${fabricante.id}"/>', 'Informações do Fabricante', '130px', '615', '340', 'consultarFabricante');">
+										<span class="k-icon k-edit"></span>Editar
+									</a>
+									<a href="#" class="k-button k-button-icontext k-edit" onclick="excluir('<c:url value="/estoque/removerFabricante/${fabricante.id}"/>', '<c:url value="/estoque/listarFabricante"/>', 'listarFabricante');">
+										<span class="k-icon k-delete"></span>Excluir
+									</a>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>			
+				</table>
+			</div>
+			<div id="paginatorFabricante" style="margin: auto;"></div>
+		</div>
+	</body>
+</html>

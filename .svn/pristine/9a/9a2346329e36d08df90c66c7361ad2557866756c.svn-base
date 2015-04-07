@@ -1,0 +1,26 @@
+package financeiro.bean;
+
+public enum FormaPagamento {
+
+	CHEQUE("Cheque"),
+	CONVENIO("Convênio"),
+	DEPOSITO("Depósito"),
+	DEVOLUCAO("Devolução"),
+	DINHEIRO("Dinheiro"),
+	DEBITO_AUTOMATICO("Débito Automático"),
+	INTERNET("Internet"),
+	OUTROS("Outros"),
+	TRANSFERENCIA("Transferência"),
+	TROCA("Troca");
+
+	private String nome;
+
+	private FormaPagamento(String nome) {
+		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+}

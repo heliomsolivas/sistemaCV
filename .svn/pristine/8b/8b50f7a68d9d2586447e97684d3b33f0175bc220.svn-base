@@ -1,0 +1,79 @@
+.stepy-header { list-style: none; width: 625px; padding-left: 15px; margin-bottom: 55px; margin-top: 5px;}
+.stepy-header li { 
+	cursor: pointer; 
+	float: left; 
+	width: 140px;
+	height: 40px;
+	pading-bottom: 35px; 
+	background: none repeat scroll 0 0 #fff;
+	margin-left: 10px;
+    border: 1px solid #eeeeee;
+    color: #000;
+    border-radius: 2px; 
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
+.stepy-header li.stepy-error { background: url('../demo/img/error.png') no-repeat right top }
+.stepy-header li div {
+	color: #999;
+    cursor: auto;
+    float: left;
+    height: 40px;
+    width: 40px;
+    padding-top: 3px;
+    font: 22px Verdana, Arial, Helvetica, sans-serif;
+    letter-spacing: 1px; 
+    text-align: center;    
+    font-weight: bold;
+}
+.stepy-header li.stepy-active {
+	border: 1px solid #eeeeee;
+	border-radius: 2px; 
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3); 
+	-webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);	
+}
+.stepy-header li.stepy-active div { color: #000; cursor: auto }
+.stepy-header li span { float: left; color: #999; font: 14px Verdana, Arial, Helvetica, sans-serif; margin-top: 10px;}
+.stepy-header li.stepy-active span { color: #000 }
+
+.stepy-step { border: 1px solid #C0C0C0; clear: left; padding: 10px 20px; margin-left: 15px; width: 575px; height: auto; max-height: 315px; -khtml-border-radius: 3px; -moz-border-radius: 3px; -opera-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px }
+.stepy-step legend { color: #000; font: 20px Verdana, Arial, Helvetica, sans-serif; padding: 0 2px 3px }
+.stepy-step label { color: #000; display: block; font: 16px Verdana, Arial, Helvetica, sans-serif; font-weight: bold; margin: 10px 0 3px 1px }
+
+.stepy-navigator { height: 33px; margin-top: 20px; }
+.button-back { float: left }
+
+.button-next,
+.stepy-navigator input[type="submit"] { float: right }
+
+.button-back,
+.button-next,
+.button-finish,
+.stepy-navigator input[type="submit"] {
+  font: 12px Verdana, Arial, Helvetica, sans-serif; 
+  font-family: inherit; 
+  color: #2e2e2e; 
+  cursor: pointer;
+  display:block;
+  margin-right: 0px;
+  border-radius: 2px 2px 2px 2px;
+  background-color: #F6F6F6;
+  border: 1px solid #C5C5C5;
+  color: #2E2E2E;
+  padding:4px;
+  text-decoration: none;
+  text-align: center;
+  width:100px;
+  height: auto;
+  letter-spacing: 1px;
+  -moz-box-sizing: border-box;
+ }
+
+.button-back:hover,
+.button-next:hover,
+.stepy-navigator input[type="submit"]:hover { color: #2E2E2E;  
+  background: #C5C5C5;
+  border: 1px solid #999; }

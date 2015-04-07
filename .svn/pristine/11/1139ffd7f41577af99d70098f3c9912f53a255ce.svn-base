@@ -1,0 +1,54 @@
+package administrativo.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "ADMINISTRATIVO_PERMISSAO")
+@Table(name = "ADMINISTRATIVO_PERMISSAO")
+public class Permissao implements Serializable {
+
+	private static final long serialVersionUID = 7990847274747328947L;
+
+	private Long id;
+	private Perfil perfil;
+	private Funcao funcao;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_perfil", nullable = false)
+	public Perfil getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_funcao", nullable = false)
+	public Funcao getFuncao() {
+		return funcao;
+	}
+
+	public void setFuncao(Funcao funcao) {
+		this.funcao = funcao;
+	}
+
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+	<table border="0" cellspacing="0" cellpadding="0" style="width: 900px;">
+		<tr valign="bottom" style="height: 0px;">
+			<td rowspan="15" style="width: 15px;"></td>
+			<td colspan="9" style="text-align: right;"></td>
+			<td rowspan="15" style="width: 15px;"></td>
+		</tr>
+		<tr style="height: 20px;">
+			<td class="titulo" style="width: 90px;">
+				<f:message key="campo.codigo.hospedagem"/>:
+			</td>
+			<td colspan="4" class="textoMaiusculo" style="width: 490px;">				
+				${hospedeHospedagem.hospedagem.codigo}
+			</td>
+			<td colspan="2" class="titulo" style="width: 150px; text-align: right;">
+				<span style="margin-right: 15px;">
+					<f:message key="campo.checkIn"/>:
+				</span>				
+			</td>
+			<td colspan="2" class="textoMaiusculo" style="width: 150px;">
+				<span style="margin-left: 20px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</span>
+			</td>				
+		</tr>
+		<tr style="height: 20px;">
+			<td class="titulo" style="width: 90px;">
+				<f:message key="campo.acomodacao"/>
+			</td>
+			<td colspan="4" class="textoMaiusculo" style="width: 490px;">
+				${hospedeHospedagem.hospedagem.acomodacao.numero} - ${hospedeHospedagem.hospedagem.acomodacao.nome}
+			</td>
+			<td colspan="2" class="titulo" style="width: 150px; text-align: right;">
+				<span style="margin-left: 20px;">
+					<f:message key="campo.checkOut"/>*:
+				</span>
+			</td>
+			<td colspan="2" class="textoMaiusculo" style="width: 150px;">
+				<span style="margin-left: 20px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</span>
+			</td>				
+		</tr>
+		<tr style="height: 20px;">
+			<td class="titulo" style="width: 90px;">
+				<f:message key="campo.hospede"/>
+			</td>
+			<td colspan="4" class="textoMaiusculo" style="width: 490px;">
+				${hospedeHospedagem.hospede.codigo} - ${hospedeHospedagem.hospede.nome}
+			</td>
+			<td colspan="2" class="titulo" style="width: 150px; text-align: right;">
+				<span style="margin-right: 17px;">
+					<f:message key="campo.reserva"/>:
+				</span>
+			</td>
+			<td colspan="2" class="textoMaiusculo" style="width: 150px;">
+				<span style="margin-left: 20px;">
+					${hospedeHospedagem.hospedagem.reserva.codigo}
+				</span>
+			</td>
+		</tr>
+		<tr style="height: 20px;">
+			<td class="titulo" style="width: 90px;">
+				<f:message key="campo.situacao.hospedagem"/>:
+			</td>
+			<td colspan="4" class="textoMaiusculo" style="width: 490px;">
+				<c:choose>
+					<c:when test="${hospedeHospedagem.ativo == true}">
+						<f:message key="andamento"/>
+					</c:when>
+					<c:otherwise>
+						<f:message key="encerrada"/>
+					</c:otherwise>
+				</c:choose>
+			</td>
+			<td colspan="2" class="titulo" style="width: 150px; text-align: right;">
+				<span style="margin-right: 37px;">
+					<f:message key="campo.data.hospedagem"/>
+				</span>
+			</td>
+			<td colspan="2" class="textoMaiusculo" style="width: 150px;">
+				<span style="margin-left: 20px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.reserva.dataReserva.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</span>			
+			</td>
+		</tr>				
+		<tr valign="bottom" style="height: 10px;">
+			<td colspan="9" style="width: 870px;">
+	    		<hr width="870" color="black" size="1" style="margin-left: 0px;">
+			</td>
+		</tr>
+		<tr valign="bottom" style="height: 20px;">
+			<td colspan="9" style="width: 870px; text-align: right;">
+				<button type="button" class="k-button" onclick="consultar('<c:url value="/clientes/hospedagem/exibirInfo/${hospedeHospedagem.id}"/>', '', '500px', '615', '730', 'exibirInfoHospedagem');">
+					<span class="k-icon k-i-pencil"></span> <f:message key="alterar"/>
+				</button>
+				<button type="button" class="k-button" onclick="consultar('<c:url value="/clientes/itemConsumo/cadastrar/${hospedeHospedagem.id}"/>', 'Selecione uma Categoria', 'auto', '310', '400', 'cadastrarItemConsumo');">
+					<span class="k-icon k-i-plus"></span> <f:message key="cadastrar"/>
+				</button>
+			</td>
+		</tr>
+	</table>

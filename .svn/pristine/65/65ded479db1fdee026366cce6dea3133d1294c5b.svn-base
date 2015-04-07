@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/displaytag.css"/>">
+
+	 	<script type="text/javascript">
+	 		$(document).ready(function () {
+				var nulo = "1";
+				$("#fabricanteList").load("<c:url value="/estoque/divListaFabricante/"/>" + nulo);
+				
+	        	$("#filtroFabricante").keyup(function() {
+	        		var $this = $( this );
+					var filtroFabricante = $this.val().replace(/[^a-z0-9]+/gi,'');
+					$this.val(filtroFabricante);
+					
+					if (filtroFabricante != ''){
+						$("#fabricanteList").load("<c:url value="/estoque/divListaFabricante/"/>" + filtroFabricante);
+					} else {
+						$("#fabricanteList").load("<c:url value="/estoque/divListaFabricante/"/>" + nulo);
+					}
+				})
+	        });
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div style="width: 630px; margin-left: 15px; margin-right: 15px; margin-top: 10px;">
+			<a href="#" class="k-button k-button-icontext k-add" onclick="exibe('<c:url value="/estoque/cadastrarFabricante"/>', 'Cadastrar Fabricante', '130px', 'auto', 'cadastrarFabricante');" style="margin-right: 15px;">
+				<span class="k-icon k-add"></span>Novo
+			</a>
+			<span class="k-textbox k-space-right" style="width: 350px;">
+                <input id="filtroFabricante" type="text" placeholder="Nome do Fabricante"/>
+                <span class="k-icon k-i-search"></span>
+            </span>
+			</br>
+			</br>
+			<div id="fabricanteList"></div>
+		</div>
+	</body>
+</html>

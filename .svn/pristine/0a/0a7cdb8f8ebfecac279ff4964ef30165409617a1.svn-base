@@ -1,0 +1,16 @@
+package financeiro.dao;
+
+import financeiro.bean.Movimentacao;
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoMovimentacao extends Dao<Movimentacao> {
+	
+	public DaoMovimentacao(Session session) {
+		super(session, Movimentacao.class);
+	}
+}

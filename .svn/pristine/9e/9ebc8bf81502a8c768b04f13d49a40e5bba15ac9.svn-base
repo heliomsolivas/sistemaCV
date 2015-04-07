@@ -1,0 +1,73 @@
+// document.ready();
+$(function() {	
+	$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+	
+	$("#numeroDocumentoPagar").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: parametro, dataInicio: null, dataFim: null});
+		} else {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataInicioPagar").change(function(){
+		var parametro = $(this).val();
+		var parametro2 = $("#dataFimPagar").val();
+		
+		if ((parametro != '') && (parametro2 == '')) {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: null});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+
+	$("#dataFimPagar").change(function() {
+		var parametro = $("#dataInicioPagar").val();
+		var parametro2 = $(this).val();
+		
+		if ((parametro == '') && (parametro2 != '')) {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: parametro2});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#contaPagarList").load(caminhoAbsoluto + "financeiro/contaPagar/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarContaPagar() {
+    validator =  $("#formContaPagar").kendoValidator({ messages: {	required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaPagar/gravar",
+			data: $("#formContaPagar").serialize(),
+			success: function(retorno) {							
+						$("#cadastrarContaPagar").data("kendoWindow").destroy();
+						$("#listaContaPagar").load(caminhoAbsoluto + "financeiro/contaPagar/lista");
+					 }
+		});
+	}
+}
+
+function alterarContaPagar() {
+    validator =  $("#formAlterarContaPagar").kendoValidator({ messages: {	required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaPagar/gravar",
+			data: $("#formAlterarContaPagar").serialize(),
+			success: function(retorno) {							
+						$("#consultarContaPagar").data("kendoWindow").destroy();
+						$("#listaContaPagar").load(caminhoAbsoluto + "financeiro/contaPagar/lista");
+					 }
+		});
+	}
+}

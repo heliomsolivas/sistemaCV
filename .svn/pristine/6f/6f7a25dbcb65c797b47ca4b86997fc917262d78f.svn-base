@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#tabelaContaCaixa").tablesorter({
+					headers: {
+						4: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : false,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : '', // or []
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_formatter : null,
+				     	filter_functions : null,
+				     	filter_hideFilters : true,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '',
+				     	filter_saveFilters : true,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value',
+			     		filter_functions : {
+							3 : {
+								"Ativa": function(e, n, f, i, $r) { return e === f; },
+								"Inativa": function(e, n, f, i, $r) { return e === f; }
+							}
+						}
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoContaCaixa"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+			});
+
+			function excluirContaCaixa(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.item"/>',
+		            'buttons': {
+		                'Sim': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/financeiro/contaCaixa/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+		    									$("#listaContaCaixa").load("<c:url value="/financeiro/contaCaixa/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.item"/>', '<f:message key="erro"/>');
+					                		}
+		    					});
+		                    }
+		                },
+		                'Não'	: {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+		</script>	
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaContaCaixa">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 180px;"><f:message key="titulo.lista.conta"/></th>
+						<th style="width: 180px;"><f:message key="titulo.lista.banco"/></th>				
+						<th style="width: 120px;"><f:message key="titulo.lista.saldo"/></th>
+						<th style="width: 90px;"><f:message key="titulo.lista.situacao"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${contaCaixaList}" var="conta">
+						<tr style="height: 35px;">
+							<td style="width: 180px; text-align:center;">${conta.agencia} - ${conta.numeroConta}</td>
+							<td style="width: 180px; text-align:center;">${conta.numeroBanco} - ${conta.banco}</td>
+							<td style="width: 120px; text-align:center;">${conta.saldoString}</td>
+							<td style="width: 90px; text-align:center;">
+								<c:choose>
+									<c:when test="${conta.ativa == true}">
+										<f:message key="ativa"/>
+									</c:when>
+									<c:otherwise>
+										<f:message key="inativa"/>
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<td style="width: 70px; text-align:center;">
+								<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/financeiro/contaCaixa/consultar/${conta.id}"/>', 'Informações da Conta Caixa', '380px', '615', '615', 'consultarContaCaixa');">
+									<span class="k-icon k-edit"></span>
+								</a>
+								<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirContaCaixa(${conta.id})">
+									<span class="k-icon k-delete"></span>
+								</a>
+							</td>
+						</tr>								
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoContaCaixa" style="margin-left: 225px;">
+			<div class="first"></div>
+			<div class="prev"></div>
+			<input type="text" class="pagedisplay"/>
+			<div class="next"></div>
+			<div class="last"></div>
+		</div>
+	</body>
+</html>

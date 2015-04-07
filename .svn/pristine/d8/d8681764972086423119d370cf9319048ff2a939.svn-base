@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+
+<html>
+	<head>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.bvalidator.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.datetimepicker.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.waitMe.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.common.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.default.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.examples-offline.css"/>"/>	
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/layoutmodelo.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/opa-icons.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/siteCliente/jquery.stepy.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/siteCliente/jquery.lightbox.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.all.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.culture.pt-BR.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.web.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.bvalidator.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.datetimepicker.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.lightbox-2.6.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.maskedinput.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.moment.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.stepy.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.waitMe.js"/>"></script>
+		
+		<script id="template" type="text/x-kendo-template">
+			<img src="../imagens/hotel/#=target.data('id')#.jpg" alt="#=target.data('title')#" />
+			<p>#=target.data('title')#</p>
+		</script>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#reservaConteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+				$("#reservaConteudo").load("<c:url value="/reserva/formulario"/>");
+			});
+		</script>
+		<style type="text/css">
+			html {
+				background: none;
+			}
+			.waitMe_container .waitMe {
+			    top: 150px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reserva">
+			<div id="reservaConteudo"></div>
+		 </div>
+	</body>
+</html>

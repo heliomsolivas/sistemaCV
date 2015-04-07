@@ -1,0 +1,50 @@
+package estoque.controller;
+
+import estoque.dao.DaoEstoque;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Blowfish;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoTipoAcomodacao;
+import administrativo.dao.DaoPerfil;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("estoque/")
+public class EstoqueController {
+	
+	private final Blowfish blowfish;
+	private final DaoPerfil daoPerfil;
+	private final DaoEstoque daoEstoque;
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoTipoAcomodacao daoTipoAcomodacao;
+	private final Erro erro;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+
+	public EstoqueController(Blowfish blowfish,DaoPerfil daoPerfil, DaoEstoque daoEstoque, DaoAcomodacao daoAcomodacao,
+			DaoTipoAcomodacao daoTipoAcomodacao, Erro erro, Localization localization, Result result, UserSession userSession) {
+		this.blowfish = blowfish;
+		this.daoPerfil = daoPerfil;
+		this.daoEstoque = daoEstoque;
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoTipoAcomodacao = daoTipoAcomodacao;
+		this.erro = erro;
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+	}
+
+	@Path("cadastrarProduto")
+	public void formProduto() {
+	}
+
+}

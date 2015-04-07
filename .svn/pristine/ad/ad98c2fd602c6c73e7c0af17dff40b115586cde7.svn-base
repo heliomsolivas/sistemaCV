@@ -1,0 +1,32 @@
+// Funções Gravar - Alterar
+function gravarHotel() {
+	validator =  $("#formHotel").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/gravar",
+			data: $("#formHotel").serialize(),
+			success: function(retorno) {
+						$("#cadastrarHotel").data("kendoWindow").destroy();
+						window.location.reload();
+					 }
+		});
+	}
+}
+
+function alterarHotel() {
+	validator =  $("#formAlterarHotel").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/gravar",
+			data: $("#formAlterarHotel").serialize(),
+			success: function(retorno) {
+						$("#consultarHotel").data("kendoWindow").destroy();
+		             	window.location.reload();
+					 }
+		});
+	}
+}

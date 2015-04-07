@@ -1,0 +1,25 @@
+package financeiro.bean;
+
+public enum TipoDocumento {
+
+	BOLETO("Boleto"),
+	DUPLICATA("Duplicata"),
+	NOTA_FISCAL("Nota Fiscal"),
+	CUPOM_FISCAL("Cupom Fiscal"),
+	RECIBO("Recibo"),
+	RPA("RPA"),
+	VALE("Vale"),
+	PEDIDO_VENDA("Pedido de Venda"),
+	HOSPEDAGEM("Hospedagem"),
+	OUTROS("Outros");
+
+	private String nome;
+
+	private TipoDocumento(String nome) {
+		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+}

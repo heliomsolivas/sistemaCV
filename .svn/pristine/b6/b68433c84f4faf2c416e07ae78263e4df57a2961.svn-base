@@ -1,0 +1,66 @@
+package hotel.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import estoque.bean.Produto;
+
+@Entity(name = "HOTEL_ITENSPADRAOFRIGOBAR")
+@Table(name = "HOTEL_ITENSPADRAOFRIGOBAR")
+public class ItensPadraoFrigobar implements Serializable {
+
+	private static final long serialVersionUID = -7234888415407164245L;
+	
+	private Long id;
+	private Produto produto;
+	private Frigobar frigobar;
+	private Integer quantidade;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_produto", nullable = false)
+	public Produto getProduto() {
+		return produto;
+	}
+	
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_frigobar", nullable = false)
+	public Frigobar getFrigobar() {
+		return frigobar;
+	}
+	
+	public void setFrigobar(Frigobar frigobar) {
+		this.frigobar = frigobar;
+	}
+
+	@Column(name = "quantidade", nullable = false)
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/displaytag.css"/>">
+		
+		<script type="text/javascript">
+	 		 $(document).ready(function () {
+	 		 	$("#reservaAberta").hide();
+	             // $('#paginatorDivAcomodacao').smartpaginator({ totalrecords: ${fn:length(itemConsumoList)}, recordsperpage: 13, length: 3, datacontainer: 'tabelaConsumo', dataelement: 'tr', initval: 0, next: 'Proximo', prev: 'Anterior', first: 'Primeiro', last: 'Último', theme: 'green',controlsalways: true  });
+				
+	        });
+	        function abrirAba() {
+			 	$("#reservaFechada").hide();
+			 	$("#reservaAberta").show();
+	    	}
+	    	
+	    	function fecharAba() {
+			 	$("#reservaAberta").hide();
+			 	$("#reservaFechada").show();
+	    	}
+		</script>
+	</head>
+	<body class="divConteudo">
+	<style scoped>
+		#divCaixa{
+			float: left;
+			background-color: #fff;
+			border: 1px solid #A9A9A9; /* #DDDDDD */
+			width: 245px;
+			height: 80px;
+			margin: 5px;
+			font-size: 11px;
+			border-radius: 2px; 
+				-moz-border-radius: 2px;
+					-webkit-border-radius: 2px;
+			box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+				-moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3); 
+					-webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+		}
+		#reservaAberta {
+			 background: #fff;
+			 border: 1px solid #C0C0C0;
+			 border-radius: 3px 3px 0px 0px;
+			 color: #555;
+			 font-family: Arial, sans-serif;
+			 font-size: 12px;
+			 width: 230px;
+			 min-height: 150px;
+			 max-height: 80%;
+			 position: fixed;
+			 bottom: 0;
+			 right: 15px;
+			 z-index: 99999;
+			 box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+				-moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+					-webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+		}
+		#reservaFechada {
+			 background: #fff;
+			 border: 1px solid #C0C0C0;
+			 border-radius: 3px 3px 0px 0px;
+			 color: #555;
+			 font-family: Arial, sans-serif;
+			 font-size: 12px;
+			 width: 230px;
+			 position: fixed;
+			 bottom: 0;
+			 right: 15px;
+			 z-index: 99999;
+			 box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+				-moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+					-webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+		}
+		#reservaAberta h3 {
+			background: #E3E3E3;
+			color: #000;
+			font-size: 12px;
+			border-bottom: 1px solid #C0C0C0;
+			padding: 5px 10px;
+			margin: 0;
+		}
+		#reservaFechada h3 {
+			background: #E3E3E3;
+			color: #000;
+			font-size: 12px;
+			border-bottom: 1px solid #C0C0C0;
+			padding: 5px 10px;
+			margin: 0;
+		}
+		#reservaAberta p {
+			padding: 0px 10px;
+			font-size: 11px;
+			font-weight: bold;
+			font-color: #000;
+		}
+		A.linkum:link {
+			text-decoration:none;
+			color: #000;
+		}
+		A.linkum:visited {
+			text-decoration:none;
+			color: #4F4F4F;
+		}
+		A.linkum:active {
+			text-decoration:none;
+			color: #000;
+		}
+		A.linkum:hover {
+			text-decoration:none;
+			color: #000;
+		}
+	</style>
+		<div style="width: 99%; height: 94%; margin: 10px;">
+			<c:forEach items="${hospedeHospedagemList}" var="hospedeHospedagem">
+				<c:choose>
+					<c:when test="${hospedeHospedagem.ativo == true}">
+						<form id="formulario" name="formulario" action="#">
+							<div id="divCaixa">
+								<a href="#" onclick="consultar('<c:url value="/hotel/consultarAcomodacao/${hospedeHospedagem.hospedagem.acomodacao.id}"/>', 'Informações Sobre a Acomodação', '650px', '820', '815', 'consultarAcomodacao');">
+									<img class="linkSemBorda" src="../imagens/porta2.png"  style="margin-top: 5px; height: 70px; float: left;"/>
+								</a>
+								<div style="float: left; width: 165px; margin-top: 5px; text-align: center;">
+									<input type="hidden" value="${hospedeHospedagem.id}" name="idHospedeHospedagem"/>
+									<input type="hidden" value="${hospedeHospedagem.hospedagem.acomodacao.id}" name="idAcomodacao"/>
+									<u> ${hospedeHospedagem.hospedagem.acomodacao.numero}</u> / <u>${hospedeHospedagem.hospedagem.acomodacao.nome}</u>
+								</div>
+								</br>
+								<div style="float: left; margin-top: 8px;">
+									<img class="linkSemBorda" src="../imagens/icones/iconeRelogio3.png" style="height: 10px;"/>
+								</div>
+								<div style="float: left; width: 153px; margin-left: 3px; margin-top: 5px;">
+									<b>In: </b>
+									<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+								</div>
+								</br>
+								<div style="float: left; margin-top: 7px;">
+									<img class="linkSemBorda" src="../imagens/icones/iconeRelogio3.png" style="height: 10px;"/>
+								</div>
+								<div style="float: left; width: 153px; margin-top: 4px; margin-left: 3px;">
+									<b>Out: </b>
+									<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+								</div>
+								</br>
+								<div style="float: left; width: 172px; margin-top: 3px; text-align: right;">
+									<div style="float: left; margin-left: 58px; margin-right: 10px;">
+										<a href="#" onclick="consultar('<c:url value="/clientes/consultarHospedagem/${hospedeHospedagem.id}"/>', 'Informações da Hospedagem', '655px', '920', '820', 'consultarHospedagem');">
+					   						<span class="icon icon-add icon-black"></span>
+					   					</a>
+					   				</div>
+				   					<div style="float: left;">
+										<a href="#" onclick="checkOut()">
+					   						<span class="icon icon-cross icon-black"></span>
+					   					</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:forEach items="${acomodacaoList}" var="acomodacao">
+				<c:choose>
+					<c:when test="${acomodacao.status.id == 1}">
+						<div id="divCaixa">
+							<a href="#" onclick="consultar('<c:url value="/hotel/consultarAcomodacao/${acomodacao.id}"/>', 'Informações Sobre a Acomodação', '650px', '820', '815', 'consultarAcomodacao');">
+								<img class="linkSemBorda" src="../imagens/porta.png"  style="margin-top: 5px; height: 70px; float: left;"/>
+							</a>
+							<div style="float: left; width: 165px; margin-top: 5px; text-align: center;">
+								<u>${acomodacao.numero}</u> / <u>${acomodacao.nome}</u>
+							</div>
+							</br>
+							<div style="float: left; width: 165px; margin-top: 15px; text-align: center; font-size: 12px;">
+								<a href="#" onclick="exibe('<c:url value="/clientes/formCheckIn/${acomodacao.id}"/>', 'Cadastrar Hospedagem', 'auto', 'auto', 'cadastrarHospedagem');">
+									<span style="float: left; margin-left: 40px;">
+										<b>Check In</b>
+									</span>
+									<div style="float: left; margin-top: 2px; margin-left: 5px;">
+										<span class="icon icon-redo icon-black"></span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</c:when>
+					<c:when test="${acomodacao.status.id == 3}">
+						<div id="divCaixa">
+							<a href="#" onclick="consultar('<c:url value="/hotel/consultarAcomodacao/${acomodacao.id}"/>', 'Informações Sobre a Acomodação', '650px', '820', '815', 'consultarAcomodacao');">
+								<img class="linkSemBorda" src="../imagens/porta3.png"  style="margin-top: 5px; height: 70px; float: left;"/>
+							</a>
+							<div style="float: left; width: 165px; margin-top: 5px; text-align: center;">
+								<u>${acomodacao.numero}</u> / <u>${acomodacao.nome}</u>
+							</div>
+							</br>
+							<div style="float: left; width: 155px; margin-top: 15px; text-align: center;">
+								<b>Manutenção</b>
+							</div>
+						</div>
+					</c:when>
+					<c:when test="${acomodacao.status.id == 4}">
+						<div id="divCaixa">
+							<a href="#" onclick="consultar('<c:url value="/hotel/consultarAcomodacao/${acomodacao.id}"/>', 'Informações Sobre a Acomodação', '650px', '820', '815', 'consultarAcomodacao');">
+								<img class="linkSemBorda" src="../imagens/porta3.png"  style="margin-top: 5px; height: 70px; float: left;"/>
+							</a>
+							<div style="float: left; width: 165px; margin-top: 5px; text-align: center;">
+								<u>${acomodacao.numero}</u> / <u>${acomodacao.nome}</u>
+							</div>
+							</br>
+							<div style="float: left; width: 155px; margin-left: 5px; margin-top: 15px; text-align: center;">
+								<b>Limpeza</b>
+							</div>
+						</div>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+		</div>
+		<div id="reservaAberta">
+			<a href="#" onclick="fecharAba();">
+				<h3>
+					<span class="icon icon-book icon-black"></span> Reservas
+					<c:forEach items="${reservaList}" var="reserva" varStatus="contador">
+						<c:choose>
+							<c:when test="${reserva.situacao == 'Aguardando Retorno'}">
+						 		<span class="icon icon-alert icon-red"></span>
+							</c:when>
+						</c:choose>
+					</c:forEach>
+				</h3>
+			</a>
+			<div style="width: 100%; max-height: 570px; overflow-x: auto;">
+				<c:forEach items="${reservaList}" var="reserva" varStatus="contador">
+					<c:choose>
+						<c:when test="${reserva != null}">
+							<p>
+								<a href="#" class="linkum" onclick="consultar('<c:url value="/reserva/consultarReserva/${reserva.id}"/>', 'Informações da Reserva', '500px', '615', '700', 'consultarReserva');">
+									${contador.count} - <f:formatDate value="${reserva.dataReserva.time}" pattern="dd/MM/yyyy HH:mm:ss"/> / <i> ${reserva.situacao} </i> 
+								</a>
+							</p>
+						</c:when>
+					</c:choose>
+				</c:forEach>
+			</div>
+		</div>
+		<div id="reservaFechada">
+			<a href="#" onclick="abrirAba();">
+				<h3>
+					<span class="icon icon-book icon-black"></span> Reservas
+					<c:forEach items="${reservaList}" var="reserva" varStatus="contador">
+						<c:choose>
+							<c:when test="${reserva.situacao == 'Aguardando Retorno'}">
+								<span class="icon icon-alert icon-red"></span>
+							</c:when>
+						</c:choose>
+					</c:forEach>
+				</h3>
+			</a>
+		</div>
+	</body>
+</html>

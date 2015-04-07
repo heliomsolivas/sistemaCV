@@ -1,0 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<div id="menu" class="divMenu">
+	<div class="dock-container">
+		<a class="dock-item" href="<c:url value="/sistema"/>"><img src="<c:url value="/imagens/icones/menu/iconePrincipal.png"/>" alt="Principal" /><span>Principal</span></a>
+		<a class="dock-item" href="#" onclick="botaoAlterarSenha();"><img src="<c:url value="/imagens/icones/menu/iconeAlterarSenha.png"/>" alt="Alterar Senha" /><span>Alterar Senha</span></a>
+		<a class="dock-item" href="<c:url value="/sistema/logout"/>"><img src="<c:url value="/imagens/icones/menu/iconeSair.png"/>" alt="Sair" /><span>Sair</span></a>
+	</div>
+</div>

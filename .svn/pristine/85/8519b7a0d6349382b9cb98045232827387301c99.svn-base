@@ -1,0 +1,102 @@
+package administrativo.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity(name = "ADMINISTRATIVO_USUARIO")
+@Table(name = "ADMINISTRATIVO_USUARIO")
+public class Usuario implements Serializable {
+
+	private static final long serialVersionUID = -1715186957108683968L;
+
+	private Long id;
+	private String nome;
+	private String email;
+	private String username;
+	private String password;
+	private Boolean ativo;
+	private Perfil perfil;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "email", nullable = false)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "username", nullable = false)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Column(name = "password", nullable = false)
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Column(name = "ativo", nullable = false)
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_perfil", nullable = false)
+	public Perfil getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
+	}
+	
+	@Transient
+	public Boolean getAdministrador() {
+		if (this.perfil.getNome().equals("Administrativo"))
+			return true;
+		else
+			return false;
+	}
+
+}

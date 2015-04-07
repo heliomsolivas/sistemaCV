@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#itensFrigobar").load("<c:url value="/hotel/acomodacao/frigobar/itens/${acomodacao.tipoFrigobar.id}"/>");
+				
+				$("#tabelaAcomodacaoFrigobar").tablesorter({
+					headers: {
+						2: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : true,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : true, // or []
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_formatter : null,
+				     	filter_functions : null,
+				     	filter_hideFilters : true,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '',
+				     	filter_saveFilters : true,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value'
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoAcomodacaoFrigobar"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+				
+				$("#selectFrigobar").change(function(){
+	 				var idFrigobar = $(this).val();
+	 				
+	 				if (idFrigobar != '') {
+	 					$("#itensFrigobar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	 					$("#itensFrigobar").load("<c:url value="/hotel/acomodacao/frigobar/itens/"/>" + idFrigobar);
+	 				} else {
+	 					$("#itensFrigobar").load("<c:url value="/hotel/acomodacao/frigobar/itens/"/>" + idFrigobar);
+	 				}
+	 			});
+			});
+			
+			function alterarFrigobar() {
+			 	$.ajax({
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					type: "POST",
+					url: "<c:url value="/hotel/acomodacao/frigobar/gravar"/>",
+					data: $("#formAcomodacaoFrigobar").serialize(),
+					success: function(retorno) {
+								$("#cadastrarAcomodacaoFrigobar").data("kendoWindow").destroy();
+							 }
+				});
+			}
+			
+			function selecionarFrigobar(idFrigobar) {
+			 	var idAcomodacao = $("#idAcomodacao").val();
+				$.ajax({
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					type: "POST",
+					url: "<c:url value="/hotel/acomodacao/frigobar/gravar"/>",
+					data: {idFrigobar: idFrigobar, idAcomodacao: idAcomodacao},
+					success: function(retorno) {
+								$("#cadastrarAcomodacaoFrigobar").data("kendoWindow").destroy();
+							 }
+				});
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formAcomodacaoFrigobar" name="formAcomodacaoFrigobar" action="#">
+			<input id="idAcomodacao" type="hidden" name="idAcomodacao" value="${acomodacao.id}">
+			<c:choose>
+				<c:when test="${acomodacao.tipoFrigobar != null}">
+					<table border="0" cellspacing="0" cellpadding="0" style="width: 500px;">
+						<tr valign="bottom" style="height: 20px;">
+			   				<td rowspan="18" style="width: 15px;"></td>
+			   				<td colspan="3" style="width: 470px;">
+			   					<f:message key="campo.nome.padrao"/>
+			   				</td>
+			   				<td rowspan="18" style="width: 15px;"></td>
+						</tr>
+			   			<tr style="height: 10px;">
+			   				<td colspan="3" style="width: 470px;">
+			   					<select id="selectFrigobar" name="idFrigobar" style="width: 470px;">
+									<option value="${acomodacao.tipoFrigobar.id}">${acomodacao.tipoFrigobar.nome}</option>
+									<c:forEach items="${frigobarList}" var="item">
+									<option value="${item.id}">${item.nome}</option>
+									</c:forEach>
+									<option value=""><f:message key="nenhum"/></option>
+								</select>
+			   				</td>
+			   			</tr>
+					</table>
+					<div id="itensFrigobar"></div>
+				</c:when>
+				<c:otherwise>
+					<div class="divLista" style="width: 470px; height: 415px;">
+						<table class="tabela" id="tabelaAcomodacaoFrigobar">
+							<thead>
+								<tr style="height: 30px;">
+									<th style="width: 90px;"><f:message key="campo.codigo.frigobar"/></th>
+									<th style="width: 350px;"><f:message key="campo.nome.frigobar"/></th>
+									<th style="width: 30px;"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${frigobarList}" var="frigobar">
+									<tr style="height: 35px;">
+										<td style="width: 90px; text-align: center;">${frigobar.codigo}</td>
+										<td style="width: 350px; text-align: center;">${frigobar.nome}</td>
+										<td style="width: 30px; text-align: center;">
+											<a href="#" title="Selecionar Frigobar" onclick="selecionarFrigobar(${frigobar.id});">
+												<span class="icon icon-check icon-darkgray"></span>
+											</a>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+					<div id="paginacaoAcomodacaoFrigobar" style="margin-left: 150px;">
+						<div class="first"></div>
+						<div class="prev"></div>
+						<input type="text" class="pagedisplay"/>
+						<div class="next"></div>
+						<div class="last"></div>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</form>
+	</body>
+</html>

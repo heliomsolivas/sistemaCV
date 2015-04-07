@@ -1,0 +1,456 @@
+package financeiro.controller;
+
+import financeiro.bean.Categoria;
+import financeiro.bean.ContaBancaria;
+import financeiro.bean.ContaPagar;
+import financeiro.bean.ContaReceber;
+import financeiro.bean.Especie;
+import financeiro.bean.Movimentacao;
+import financeiro.bean.TipoMovimentacao;
+import financeiro.dao.DaoCategoria;
+import financeiro.dao.DaoContaBancaria;
+import financeiro.dao.DaoContaPagar;
+import financeiro.dao.DaoContaReceber;
+import financeiro.dao.DaoEspecie;
+import financeiro.dao.DaoMovimentacao;
+import financeiro.dao.DaoTipoMovimentacao;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoStatus;
+import hotel.dao.DaoTipoAcomodacao;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("financeiro/")
+public class FinanceiroController {
+	
+	private final DaoHotel daoHotel;
+	private final DaoContaBancaria daoContaBancaria;
+	private final DaoContaPagar daoContaPagar;
+	private final DaoContaReceber daoContaReceber;
+	private final DaoMovimentacao daoMovimentacao;
+	private final DaoTipoMovimentacao daoTipoMovimentacao;
+	private final DaoCategoria daoCategoria;
+	private final DaoEspecie daoEspecie;
+	private final DaoStatus daoStatus;
+	private final DaoTipoAcomodacao daoTipoAcomodacao;
+	private final Erro erro;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+
+	public FinanceiroController(DaoHotel daoHotel, DaoContaBancaria daoContaBancaria, DaoContaPagar daoContaPagar, DaoContaReceber daoContaReceber, 
+			DaoMovimentacao daoMovimentacao, DaoTipoMovimentacao daoTipoMovimentacao, DaoCategoria daoCategoria, DaoEspecie daoEspecie, DaoStatus daoStatus, 
+			DaoTipoAcomodacao daoTipoAcomodacao, Erro erro, Localization localization, Result result, UserSession userSession) {
+		this.daoHotel = daoHotel;
+		this.daoContaBancaria = daoContaBancaria;
+		this.daoContaPagar = daoContaPagar;
+		this.daoContaReceber = daoContaReceber;
+		this.daoMovimentacao = daoMovimentacao;
+		this.daoTipoMovimentacao = daoTipoMovimentacao;
+		this.daoCategoria = daoCategoria;
+		this.daoEspecie = daoEspecie;
+		this.daoTipoAcomodacao = daoTipoAcomodacao;
+		this.daoStatus = daoStatus;
+		this.erro = erro;
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+	}
+	
+	@Path("cadastrarContaBancaria")
+	public void formContaBancaria() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Path("listarContaBancaria")
+	public void listarContaBancaria() {
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+	}
+	
+	@Path("consultarContaBancaria/{id}")
+	public void consultarContaBancaria(Long id) {
+		result.include("contaBancaria", daoContaBancaria.buscar(id));
+	}
+	
+	@Path("cadastrarContaPagar")
+	public void formContaPagar() {
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.categoriaContaPagar());
+		result.include("especieList", daoEspecie.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listarContaPagar")
+	public void listarContaPagar() {
+		result.include("contaPagarList", daoContaPagar.listarTudo("id", "ASC"));
+	}
+	
+	@Path("consultarContaPagar/{id}")
+	public void consultarContaPagar(Long id) {
+		result.include("contaPagar", daoContaPagar.buscar(id));
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.categoriaContaPagar());
+		result.include("especieList", daoEspecie.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarContaReceber")
+	public void formContaReceber() {
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.categoriaContaReceber());
+		result.include("especieList", daoEspecie.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listarContaReceber")
+	public void listarContaReceber() {
+		result.include("contaReceberList", daoContaReceber.listarTudo("id", "ASC"));
+	}
+	
+	@Path("consultarContaReceber/{id}")
+	public void consultarContaReceber(Long id) {
+		result.include("contaReceber", daoContaReceber.buscar(id));
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.categoriaContaReceber());
+		result.include("especieList", daoEspecie.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarMovimentacao")
+	public void formMovimentacao() {
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.listarTudo());
+		result.include("tipoMovimentacaoList", daoTipoMovimentacao.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listarMovimentacao")
+	public void listarMovimentacao() {
+		result.include("movimentacaoList", daoMovimentacao.listarTudo("id", "ASC"));
+	}
+	
+	@Path("consultarMovimentacao/{id}")
+	public void consultarMovimentacao(Long id) {
+		result.include("movimentacao", daoMovimentacao.buscar(id));
+		result.include("contaBancariaList", daoContaBancaria.listarTudo("id", "ASC"));
+		result.include("categoriaList", daoCategoria.listarTudo());
+		result.include("tipoMovimentacaoList", daoTipoMovimentacao.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarTipoMovimentacao")
+	public void formTipoMovimentacao() {
+		
+	}
+	
+	@Path("cadastrarCategoria")
+	public void formCategoria() {
+	}
+	
+	@Path("cadastrarEspecie")
+	public void formEspecie() {
+	}
+	
+	@Post("gravarContaBancaria")
+	public void gravarContaBancaria(ContaBancaria contaBancaria) {
+		try {
+			daoContaBancaria.adicionar(contaBancaria);
+			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarContaBancaria")
+	public void alterarContaBancaria(ContaBancaria contaBancaria) {
+		try {
+			ContaBancaria contaBancaria2 = daoContaBancaria.buscar(contaBancaria.getId());
+			
+			contaBancaria2.setAgencia(contaBancaria.getAgencia());
+			contaBancaria2.setAtiva(contaBancaria.getAtiva());
+			contaBancaria2.setBanco(contaBancaria.getBanco());
+			contaBancaria2.setDataAbertura(contaBancaria.getDataAbertura());
+			contaBancaria2.setDataEncerramento(contaBancaria.getDataEncerramento());
+			contaBancaria2.setNumeroBanco(contaBancaria.getNumeroBanco());
+			contaBancaria2.setNumeroConta(contaBancaria.getNumeroConta());
+			contaBancaria2.setSaldo(contaBancaria.getSaldo());
+			contaBancaria2.setSaldoMaximo(contaBancaria.getSaldoMaximo());
+			contaBancaria2.setSaldoMinimo(contaBancaria.getSaldoMinimo());
+			
+			daoContaBancaria.atualizar(contaBancaria2);
+
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerContaBancaria/{id}")
+	public void removerContaBancaria (Long id) {
+		try {
+			ContaBancaria contaBancaria = daoContaBancaria.buscar(id);
+			
+			daoContaBancaria.remover(contaBancaria);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarContaPagar")
+	public void gravarContaPagar (ContaPagar contaPagar) {
+		try {
+			String observacao = contaPagar.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");
+			
+			contaPagar.setObservacao(observacao);
+			
+			daoContaPagar.adicionar(contaPagar);
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarContaPagar")
+	public void alterarContaPagar(ContaPagar contaPagar) {
+		try {
+			String observacao = contaPagar.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");
+			
+			ContaPagar contaPagar2 = daoContaPagar.buscar(contaPagar.getId());
+			Categoria categoria = daoCategoria.buscar(contaPagar.getCategoria().getId());
+			ContaBancaria contaBancaria = daoContaBancaria.buscar(contaPagar.getContaBancaria().getId());
+			Especie especie = daoEspecie.buscar(contaPagar.getEspecie().getId());
+			
+			contaPagar2.setCancelado(contaPagar.getCancelado());
+			contaPagar2.setCategoria(categoria);
+			contaPagar2.setContaBancaria(contaBancaria);
+			contaPagar2.setDataPagamento(contaPagar.getDataPagamento());
+			contaPagar2.setDataVencimento(contaPagar.getDataVencimento());
+			contaPagar2.setDesconto(contaPagar.getDesconto());
+			contaPagar2.setEspecie(especie);
+			contaPagar2.setJuros(contaPagar.getJuros());
+			contaPagar2.setMulta(contaPagar.getMulta());
+			contaPagar2.setNumeroDocumento(contaPagar.getNumeroDocumento());
+			contaPagar2.setObservacao(observacao);
+			contaPagar2.setValor(contaPagar.getValor());
+			contaPagar2.setValorTotal(contaPagar.getValorTotal());
+			
+			daoContaPagar.atualizar(contaPagar2);
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerContaPagar/{id}")
+	public void removerContaPagar (Long id) {
+		try {
+			ContaPagar contaPagar = daoContaPagar.buscar(id);
+			
+			daoContaPagar.remover(contaPagar);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarContaReceber")
+	public void gravarContaReceber (ContaReceber contaReceber) {
+		try {
+			String observacao = contaReceber.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");
+			
+			contaReceber.setObservacao(observacao);
+			
+			daoContaReceber.adicionar(contaReceber);			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarContaReceber")
+	public void alterarContaReceber(ContaReceber contaReceber) {
+		try {
+			String observacao = contaReceber.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");
+			
+			ContaReceber contaReceber2 = daoContaReceber.buscar(contaReceber.getId());
+			Categoria categoria = daoCategoria.buscar(contaReceber.getCategoria().getId());
+			ContaBancaria contaBancaria = daoContaBancaria.buscar(contaReceber.getContaBancaria().getId());
+			Especie especie = daoEspecie.buscar(contaReceber.getEspecie().getId());
+			
+			contaReceber2.setCancelado(contaReceber.getCancelado());
+			contaReceber2.setCategoria(categoria);
+			contaReceber2.setContaBancaria(contaBancaria);
+			contaReceber2.setDataPagamento(contaReceber.getDataPagamento());
+			contaReceber2.setDataVencimento(contaReceber.getDataVencimento());
+			contaReceber2.setDesconto(contaReceber.getDesconto());
+			contaReceber2.setEspecie(especie);
+			contaReceber2.setJuros(contaReceber.getJuros());
+			contaReceber2.setMulta(contaReceber.getMulta());
+			contaReceber2.setNumeroDocumento(contaReceber.getNumeroDocumento());
+			contaReceber2.setObservacao(observacao);
+			contaReceber2.setValor(contaReceber.getValor());
+			contaReceber2.setValorTotal(contaReceber.getValorTotal());
+			
+			daoContaReceber.atualizar(contaReceber2);
+
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerContaReceber/{id}")
+	public void removerContaReceber (Long id) {
+		try {
+			ContaReceber contaReceber = daoContaReceber.buscar(id);
+			
+			daoContaReceber.remover(contaReceber);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarMovimentacao")
+	public void gravarMovimentacao (Movimentacao movimentacao) {
+		try {
+			String observacao = movimentacao.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");
+			
+			movimentacao.setObservacao(observacao);
+			
+			daoMovimentacao.adicionar(movimentacao);			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarMovimentacao")
+	public void alterarMovimentacao(Movimentacao movimentacao) {
+		try {			
+			String observacao = movimentacao.getObservacao();
+			observacao = observacao.replaceAll("\\<.*?\\>", "");
+			observacao = observacao.replaceAll("\n", "<br/>");			
+			
+			Movimentacao movimentacao2 = daoMovimentacao.buscar(movimentacao.getId());
+			Categoria categoria = daoCategoria.buscar(movimentacao.getCategoria().getId());
+			ContaBancaria contaBancaria = daoContaBancaria.buscar(movimentacao.getContaBancaria().getId());
+			TipoMovimentacao tipo = daoTipoMovimentacao.buscar(movimentacao.getTipo().getId());
+			
+			movimentacao2.setCategoria(categoria);
+			movimentacao2.setContaBancaria(contaBancaria);
+			movimentacao2.setData(movimentacao.getData());
+			movimentacao2.setNumeroDocumento(movimentacao.getNumeroDocumento());
+			movimentacao2.setObservacao(observacao);
+			movimentacao2.setTipo(tipo);
+			movimentacao2.setValor(movimentacao.getValor());
+			
+			daoMovimentacao.atualizar(movimentacao2);
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerMovimentacao/{id}")
+	public void removerMovimentacao (Long id) {
+		try {
+			Movimentacao movimentacao = daoMovimentacao.buscar(id);
+			
+			daoMovimentacao.remover(movimentacao);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarTipoMovimentacao")
+	public void gravarTipoMovimentacao (TipoMovimentacao tipoMovimentacao) {
+		try {
+			String descricao = tipoMovimentacao.getDescricao();
+			descricao = descricao.replaceAll("\\<.*?\\>", "");
+			descricao = descricao.replaceAll("\n", "<br/>");
+			
+			tipoMovimentacao.setDescricao(descricao);
+			
+			daoTipoMovimentacao.adicionar(tipoMovimentacao);			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarCategoria")
+	public void gravarCategoria(Categoria categoria) {
+		try {
+			String descricao = categoria.getDescricao();
+			descricao = descricao.replaceAll("\\<.*?\\>", "");
+			descricao = descricao.replaceAll("\n", "<br/>");
+			
+			categoria.setDescricao(descricao);
+			
+			daoCategoria.adicionar(categoria);			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarEspecie")
+	public void gravarEspecie(Especie especie) {
+		try {
+			String descricao = especie.getDescricao();
+			descricao = descricao.replaceAll("\\<.*?\\>", "");
+			descricao = descricao.replaceAll("\n", "<br/>");
+			
+			especie.setDescricao(descricao);
+			
+			daoEspecie.adicionar(especie);			
+			result.include("mensagem", "financeiro.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+}

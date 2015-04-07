@@ -1,0 +1,35 @@
+package reserva.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import reserva.bean.Reserva;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoReserva  extends Dao<Reserva>{
+	
+	public DaoReserva(Session session) {
+		super(session, Reserva.class);
+	}
+	
+	public Collection<Reserva> listarAprovadas() {
+		Collection<Reserva> reservaList = new ArrayList<Reserva>();
+
+		String consulta = "FROM RESERVA WHERE situacao = 'Aprovada' AND fk_hospedeHospedagem IS NULL ORDER BY id";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Reserva reserva = (Reserva) query.list().get(x);
+			reservaList.add(reserva);
+		}
+
+		return reservaList;
+	}
+}

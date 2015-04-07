@@ -1,0 +1,71 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.Hospedagem;
+
+@Component
+public class DaoHospedagem extends Dao<Hospedagem>{
+		
+	public DaoHospedagem(Session session) {
+		super(session, Hospedagem.class);
+	}
+	
+	public Collection<Hospedagem> buscaPorAcomodacao(Long idAcomodacao) {
+		Collection<Hospedagem> hospedagemList = new ArrayList<Hospedagem>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM CLIENTES_HOSPEDAGEM WHERE fk_acomodacao = :idAcomodacao";
+		parameters.put("idAcomodacao", idAcomodacao);
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Hospedagem item = (Hospedagem) query.list().get(x);
+			hospedagemList.add(item);
+		}
+		
+		return hospedagemList;
+	}
+	
+	public Hospedagem buscaPorReserva(Long idReserva) {
+		Hospedagem hospedagem = null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM CLIENTES_HOSPEDAGEM WHERE fk_reserva = :idReserva";
+		parameters.put("idReserva", idReserva);
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		if (query.list().size() != 0)
+			hospedagem = (Hospedagem) query.list().get(0);
+		
+		query.setCacheable(true);
+		
+		return hospedagem;
+	}
+}

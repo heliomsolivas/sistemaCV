@@ -1,0 +1,67 @@
+function verificaEmail(campoEmail, idCampoMensagemEmail) {
+    var er = new RegExp(/^[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]{2,}\.[A-Za-z0-9]{2,}(\.[A-Za-z0-9])?/);
+	campoEmail.value = campoEmail.value.toLowerCase();
+
+	if (campoEmail.value != "")
+		if(!er.test(campoEmail.value)) {
+			$("#" + idCampoMensagemEmail).empty().append("Verifique o Email Digitado");
+			campoEmail.focus();
+		} else
+			$("#" + idCampoMensagemEmail).empty();
+}
+
+//VERIRICAR ESSAS FUNCOES
+function Trim(str){return str.replace(/^\s+|\s+$/g,"");}
+
+//Limpa Espa�oes
+function limpaEspacos(campo) {
+	campo.value = campo.value.replace(/^\s+|\s+$/g,"");
+}
+
+//Somente Numeros
+function campoNumerico(event){
+	var browser = navigator.appName;
+	var keynum;
+
+	if (browser == "Netscape"){
+		keynum = event.charCode;
+	}else{
+		keynum = event.keyCode;
+	}
+
+	if ((keynum >= 48) && (keynum <= 57) || (keynum == 0)){
+		return true;
+	}else{
+		return false;
+	}
+}
+//Campo em Maiusculo
+function campoMaiusculo(campo) {
+	campo.value = campo.value.toUpperCase();
+}
+//Campo em Minusculo
+function campoMinusculo(campo) {
+	campo.value = campo.value.toLowerCase();
+}
+//Transformar Float em Moeda
+function converteDoubleEmReais(num) {
+	x = 0;
+	if(num < 0) {
+		num = Math.abs(num);
+		x = 1;
+	}
+
+   	if (isNaN(num)) num = "0";
+	cents = Math.floor((num*100+0.5)%100);
+
+	num = Math.floor((num*100+0.5)/100).toString();
+
+	if(cents < 10) cents = "0" + cents;
+    for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
+		num = num.substring(0,num.length-(4*i+3))+ '.' +num.substring(num.length-(4*i+3));
+
+	ret = num + ',' + cents;
+	if (x == 1) ret = ' - ' + ret;
+
+	return "R$ " + ret;
+}

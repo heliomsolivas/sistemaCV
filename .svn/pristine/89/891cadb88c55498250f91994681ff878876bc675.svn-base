@@ -1,0 +1,51 @@
+package financeiro.dao;
+
+import financeiro.bean.Categoria;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoCategoria extends Dao<Categoria> {
+	
+	public DaoCategoria(Session session) {
+		super(session, Categoria.class);
+	}
+	
+	public Collection<Categoria> categoriaContaPagar() {
+		Collection<Categoria> categoriaList = new ArrayList<Categoria>();
+
+		String consulta = "FROM FINANCEIRO_CATEGORIA WHERE exibeContasPagar = 1 ORDER BY id ASC ";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Categoria categoria = (Categoria) query.list().get(x);
+			categoriaList.add(categoria);
+		}
+
+		return categoriaList;
+	}
+	
+	public Collection<Categoria> categoriaContaReceber() {
+		Collection<Categoria> categoriaList = new ArrayList<Categoria>();
+
+		String consulta = "FROM FINANCEIRO_CATEGORIA WHERE exibeContasReceber = 1 ORDER BY id ASC ";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Categoria categoria = (Categoria) query.list().get(x);
+			categoriaList.add(categoria);
+		}
+
+		return categoriaList;
+	}
+	
+}

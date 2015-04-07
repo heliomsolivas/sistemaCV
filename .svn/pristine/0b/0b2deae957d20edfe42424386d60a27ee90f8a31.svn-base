@@ -1,0 +1,156 @@
+// FUNÇÕES //
+function infoAcomodacao(url, title, id) {
+	var w = $("<div id='" + id + "'></div>").appendTo("#container");
+	
+	$('#' + id).waitMe({effect :'ios',text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	
+	w.kendoWindow({
+		modal: true,
+		height: "390px",
+		position: {
+			top: 180,
+			left: 500,
+		},
+		resizable: false,
+		visible: false,
+		content: url,
+		title: title,
+		actions: ["Close"],
+		close: function() {
+			w.data("kendoWindow").destroy();
+		}
+	});
+	w.data("kendoWindow").open();
+}
+
+function maisInfoAcomodacao () {
+	var w = $("<div id='" + this.id + "'></div>").appendTo("#container");
+	
+	$('#' + id).waitMe({effect :'ios',text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	
+	w.kendoWindow({
+	  	modal: true,
+	  	height: "390px",
+	  	width: "400px",
+        position: {
+    		top: 200,
+    		left: 500,
+	  	},
+        resizable: false,
+        visible: false,
+    //  content: url,
+        actions: ["Close"],
+        close: function() {
+			w.data("kendoWindow").destroy();
+        }
+    });
+    w.data("kendoWindow").open();
+}
+
+function exibe(url, title, width, height, id) {
+	if (document.getElementById(id) == null) {
+		var w = $("<div id='" + id + "'></div>").appendTo("#container");
+		
+		$('#' + id).waitMe({effect :'ios',text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		
+		w.kendoWindow({
+			minWidth: 300,
+			minHeight: 0,
+			maxHeight: 520,
+			pinned: true,
+			width: width,
+			height: height,
+			resizable: false,
+			visible: false,
+			content: url,
+			title: title,
+			actions: ["Minimize", "Close"],
+			close: function() {
+				w.data("kendoWindow").destroy();
+			}
+		});
+		w.data("kendoWindow").center();
+		w.data("kendoWindow").open();
+	} else {
+		$("#" + id).data("kendoWindow").toFront();
+		$("#" + id).data("kendoWindow").restore();
+	}
+}
+
+function consultar(url, title, width, height, id) {
+	if (document.getElementById(id) == null) {
+		var w = $("<div id='" + id + "'></div>").appendTo("#container");
+		
+		$('#' + id).waitMe({effect :'ios',text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		
+		w.kendoWindow({
+			modal: true,
+			width: width,
+			height: height,
+			resizable: false,
+			visible: false,
+			content: url,
+			title: title,
+			actions: ["Close"],
+			close: function() {
+				w.data("kendoWindow").destroy();
+			}
+		});
+		w.data("kendoWindow").center();
+		w.data("kendoWindow").open();
+	} else {
+		$("#" + id).data("kendoWindow").toFront();
+		$("#" + id).data("kendoWindow").restore();
+	}
+}
+
+function soNumeros(d) {
+    return d.replace(/\D/g, "")
+}
+function mascara(el, masc) {
+    el.value = masc(el.value)
+}
+
+//por hora eh o que funciona
+function mascaraMutuario(o, f) {
+    v_obj = o
+    v_fun = f
+    setTimeout('execmascara()', 1)
+}
+
+function execmascara() {
+    v_obj.value = v_fun(v_obj.value)
+}
+
+function cpfCnpj(v) {
+    //Remove tudo o que não é dígito
+    v = v.replace(/\D/g, "")
+
+    if (v.length <= 11) { //CPF
+
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        //de novo (para o segundo bloco de números)
+        v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+        //Coloca um hífen entre o terceiro e o quarto dígitos
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+
+    } else { //CNPJ
+
+        //coloca ponto entre o segundo e o terceiro dígitos
+        v = v.replace(/^(\d{2})(\d)/, "$1.$2")
+
+        //coloca ponto entre o quinto e o sexto dígitos
+        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+
+        //coloca uma barra entre o oitavo e o nono dígitos
+        v = v.replace(/\.(\d{3})(\d)/, ".$1/$2")
+
+        //coloca um hífen depois do bloco de quatro dígitos
+        v = v.replace(/(\d{4})(\d)/, "$1-$2")
+    }
+    return v
+}

@@ -1,0 +1,16 @@
+package estoque.dao;
+
+import estoque.bean.Estoque;
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoEstoque extends Dao<Estoque>{
+
+	public DaoEstoque(Session session) {
+		super(session, Estoque.class);
+	}
+}

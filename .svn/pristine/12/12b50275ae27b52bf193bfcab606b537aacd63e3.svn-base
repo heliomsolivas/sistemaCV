@@ -1,0 +1,54 @@
+package estoque.bean;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity(name = "ESTOQUE_FABRICANTE")
+@Table(name = "ESTOQUE_FABRICANTE")
+public class Fabricante implements Serializable {
+
+	private static final long serialVersionUID = -5123335380692481939L;
+
+	private Long id;
+	private String nome;
+	private Collection<Produto> produtoList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Produto> getProdutoList() {
+		return produtoList;
+	}
+
+	public void setProdutoList(Collection<Produto> produtoList) {
+		this.produtoList = produtoList;
+	}
+
+}

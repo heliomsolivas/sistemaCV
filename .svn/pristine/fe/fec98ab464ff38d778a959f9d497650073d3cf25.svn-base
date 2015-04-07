@@ -1,0 +1,58 @@
+package administrativo.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import administrativo.bean.Funcao;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoFuncao extends Dao<Funcao> {
+
+	public DaoFuncao(Session session) {
+		super(session, Funcao.class);
+	}
+
+	public Collection<Funcao> listar() {
+		Collection<Funcao> lista = new ArrayList<Funcao>();
+
+		String consulta = "FROM ADMINISTRATIVO_FUNCAO ORDER BY pacote, classe, nome";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Funcao funcao = (Funcao) query.list().get(x);
+			lista.add(funcao);
+		}
+
+		query.setCacheable(true);
+
+		return lista;
+	}
+
+	public Collection<Funcao> listarPorPerfil(Long idPerfil) {
+		Collection<Funcao> lista = new ArrayList<Funcao>();
+
+		String consulta = "FROM ADMINISTRATIVO_FUNCAO WHERE id IN";
+		consulta += " (SELECT funcao FROM ADMINISTRATIVO_PERMISSAO WHERE perfil.id = :idPerfil)";
+		consulta += " ORDER BY id";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idPerfil", idPerfil);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Funcao funcao = (Funcao) query.list().get(x);
+			lista.add(funcao);
+		}
+
+		query.setCacheable(true);
+
+		return lista;
+	}
+
+}

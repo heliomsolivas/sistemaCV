@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="../css/tablesorter.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.all.js"/>"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaLancamento").tablesorter({
+					headers: {4: {sorter: false} }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoLancamento"),
+					positionFixed: false, 
+					size: 9
+				})
+				.tablesorterFilter({
+					size: 9,
+					filterColumns: ${fn:length(lancamentoList)},
+					filterCaseSensitive: true
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaLancamento">
+				<thead>
+					<tr style="height: 25px;">
+						<th style="width: 180px;"><f:message key="titulo.lista.documento.lancamento"/></th>						
+						<th style="width: 170px;"><f:message key="titulo.lista.historico.lancamento"/></th>
+						<th style="width: 100px;"><f:message key="titulo.lista.data.lancamento"/></th>
+						<th style="width: 120px;"><f:message key="titulo.lista.valor.lancamento"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${!empty lancamentoList}">
+							<c:forEach items="${lancamentoList}" var="lancamento">
+								<tr style="height: 35px;">
+									<td style="width: 180px; text-align:center;">${lancamento.numeroDocumento}</td>
+									<td style="width: 170px; text-align:center;">${lancamento.historico.nome}</td>
+									<td style="width: 100px; text-align:center;"><f:formatDate value="${lancamento.data.time}" pattern="dd/MM/yyyy"/></td>
+									<td style="width: 120px; text-align:center;">${lancamento.valorString}</td>
+									<td style="width: 70px; text-align:center;">
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/contabil/lancamento/consultar/${lancamento.id}"/>', 'Informações da Lançamento', '230px', '615', '450', 'consultarLancamento');">
+											<span class="k-icon k-edit"></span>
+										</a>
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="excluir('<c:url value="/contabil/lancamento/remover/${lancamento.id}"/>', '105px', '400', '400', 'removerLancamento');">
+											<span class="k-icon k-delete"></span>
+										</a>
+									</td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr class="nenhumItem">
+								<td colspan="5"><f:message key="mensagem.nenhum.item.encontrado"/></td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoLancamento" class="pager" style="margin-left: 180px;">
+			<div class="first"></div>
+			<div class="prev"></div>
+			<input type="text" class="pagedisplay"/>
+			<div class="next"></div>
+			<div class="last"></div>
+		</div>
+	</body>
+</html>

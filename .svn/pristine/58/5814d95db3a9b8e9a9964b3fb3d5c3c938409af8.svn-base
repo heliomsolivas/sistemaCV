@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {
+	$("#contaContabilList").load(caminhoAbsoluto + "contabil/conta/pesquisar", {codigoReduzido: null, parametro: null});
+	
+	$("#codigoReduzido").keyup(function() {
+		var parametro = $(this).val();
+		
+		if (parametro != ''){
+			$("#contaContabilList").load(caminhoAbsoluto + "contabil/conta/pesquisar", {codigoReduzido: parametro, parametro: null});
+		} else {
+			$("#contaContabilList").load(caminhoAbsoluto + "contabil/conta/pesquisar", {codigoReduzido: null, parametro: null});
+		}
+	});
+	
+	$("#nomeNumeroConta").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){
+			$("#contaContabilList").load(caminhoAbsoluto + "contabil/conta/pesquisar", {codigoReduzido: null, parametro: parametro});
+		} else {
+			$("#contaContabilList").load(caminhoAbsoluto + "contabil/conta/pesquisar", {codigoReduzido: null, parametro: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarContaContabil() {
+    validator =  $("#formContaContabil").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/conta/gravar",
+			data: $("#formContaContabil").serialize(),
+			success: function(retorno) {
+						$("#cadastrarContaContabil").data("kendoWindow").destroy();
+						$("#listaContaContabil").load(caminhoAbsoluto + "contabil/conta/lista");
+					 }
+		});
+	}
+}
+
+function alterarContaContabil() {
+    validator =  $("#formAlterarContaContabil").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/conta/gravar",
+			data: $("#formAlterarContaContabil").serialize(),
+			success: function(retorno) {
+						$("#consultarContaContabil").data("kendoWindow").destroy();
+						$("#listaContaContabil").load(caminhoAbsoluto + "contabil/conta/lista");
+					 }
+		});
+	}
+}

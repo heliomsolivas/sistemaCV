@@ -1,0 +1,52 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.Consumo;
+
+@Component
+public class DaoConsumo extends Dao<Consumo>{
+
+	public DaoConsumo(Session session) {
+		super(session, Consumo.class);
+	}
+	
+	public Collection<Consumo> buscaItemConsumo (Long idHospedagem) {
+		Collection<Consumo> itemList = new ArrayList<Consumo>();
+
+		String consulta = "FROM CLIENTES_CONSUMO WHERE fk_hospedagem = :idHospedagem";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idHospedagem", idHospedagem);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Consumo item = (Consumo) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+	
+	public Collection<Consumo> buscaCategoriaProduto (Long idHospedagem) {
+		Collection<Consumo> itemList = new ArrayList<Consumo>();
+
+		String consulta = "FROM CLIENTES_CONSUMO WHERE fk_hospedagem = :idHospedagem AND item.categoria = 'Produto'";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idHospedagem", idHospedagem);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Consumo item = (Consumo) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+}

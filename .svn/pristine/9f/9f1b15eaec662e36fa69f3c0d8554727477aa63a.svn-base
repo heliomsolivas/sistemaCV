@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#valorUnitarioProduto").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', allowZero: true, affixesStay: true});				
+				$("#quantidadeProduto").kendoNumericTextBox({ format : "#" });
+				
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+				
+   				$("#formProduto").bValidator(options);
+   				
+   				$("#formProduto").submit(function() {
+   					if($("#formProduto").data("bValidator").isValid()){
+   						$("#cadastrarProduto").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   					 	$.ajax({
+   							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+   							type: "POST",
+   							url: "<c:url value="/estoque/produto/gravar"/>",
+   							data: $("#formProduto").serialize(),
+   							success: function (retorno) {
+   										$("#cadastrarProduto").data("kendoWindow").destroy();
+   										$("#listaProduto").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   										$("#listaProduto").load("<c:url value="/estoque/produto/lista"/>");
+   				           			}
+   						});
+   					}
+   					return false;
+   				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+	   <form id="formProduto" name="formProduto" action="#">
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="6" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.produto"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.categoria"/>
+	   				</td>
+	   				<td rowspan="6" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="produto.nome" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="produto.categoria" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.fabricante"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.valor.unitario"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.quantidade"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<select data-bvalidator="required" name="produto.fabricante.id" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${fabricanteList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valorUnitarioProduto" type="text" class="k-textbox" data-bvalidator="required" name="produto.valorUnitario" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="quantidadeProduto" type="text" data-bvalidator="required" name="produto.quantidade" style="width: 180px; display: inline;"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 30px;"></tr>
+   				<tr style="height: 20px;">
+	   				<td colspan="3" style="width: 570px; text-align: center;">
+						<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	   					<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+	   				</td>
+	   			</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

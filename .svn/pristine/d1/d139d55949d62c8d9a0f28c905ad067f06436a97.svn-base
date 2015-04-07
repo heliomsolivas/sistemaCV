@@ -1,0 +1,17 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.TipoAcomodacao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoTipoAcomodacao extends Dao<TipoAcomodacao>{
+	
+	public DaoTipoAcomodacao (Session session) {
+		super(session, TipoAcomodacao.class);
+	}
+
+}

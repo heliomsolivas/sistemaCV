@@ -1,0 +1,79 @@
+package generic.controller;
+
+import generic.annotation.LogonRequired;
+import generic.component.UserSession;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import reserva.dao.DaoReserva;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+import clientes.dao.DaoHospedeHospedagem;
+
+@LogonRequired
+@Resource
+@Path("sistema/")
+public class SistemaController {
+
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+	private final DaoHotel daoHotel;
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoReserva daoReserva;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+
+	public SistemaController(Localization localization, Result result, UserSession userSession, DaoHotel daoHotel,
+			DaoAcomodacao daoAcomodacao, DaoReserva daoReserva, DaoHospedeHospedagem daoHospedeHospedagem) {
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+		this.daoHotel = daoHotel;
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoReserva = daoReserva;
+		this.daoHospedeHospedagem = daoHospedeHospedagem;
+	}
+	
+	@Path("")
+	public void index() {
+		try {
+			Calendar dataAtual = new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt","BR"));
+			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, this.localization.getLocale());
+
+			Integer hora = dataAtual.get(Calendar.HOUR_OF_DAY);
+			String saudacao = (hora >= 0 && hora <= 12) ? "saudacao.manha" : (hora >= 12) && (hora < 18) ? "saudacao.tarde"	: (hora >= 18) && (hora < 24) ? "saudacao.noite" : "saudacao.manha";
+			
+			result.include("hotel", daoHotel.busca());
+			result.include("data", this.localization.getMessage("data", dateFormat.format(dataAtual.getTime())));
+			result.include("saudacao", this.localization.getMessage(saudacao, this.userSession.getUsuario().getNome()));
+		} catch (Exception e) {
+			result.include("mensagem", "logon.sessao.expirada");
+			result.redirectTo(SistemaController.class).acessoRestrito();
+		}
+	}
+	
+	@Path("divAcomodacoes")
+	public void divAcomodacoes() {
+		try {
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.listarTudo("id", "ASC"));
+			result.include("acomodacaoList", daoAcomodacao.listarTudo("id", "ASC"));
+			result.include("reservaList", daoReserva.listarTudo("dataReserva", "DESC"));
+			result.include("hotel", daoHotel.busca());
+		} catch (Exception e) {
+			result.include("mensagem", "logon.sessao.expirada");
+			result.redirectTo(SistemaController.class).acessoRestrito();
+		}
+	}
+
+	@Path("acessoRestrito")
+	public void acessoRestrito() {
+	}
+}

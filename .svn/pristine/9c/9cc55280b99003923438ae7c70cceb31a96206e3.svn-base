@@ -1,0 +1,78 @@
+package hotel.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "HOTEL_TIPOPENSAO")
+@Table(name = "HOTEL_TIPOPENSAO")
+public class TipoPensao implements Serializable {
+
+	private static final long serialVersionUID = 5914334397703905455L;
+	
+	private Long id;
+	private Hotel hotel;
+	private String nome;
+	private Double valor;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+	
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	@Column(name = "valor", nullable = false)
+	public Double getValor() {
+		return valor;
+	}
+	
+	@Convert(Double.class)
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+	
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00").format(this.id);
+	}
+	
+	@Transient
+	public String getValorString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valor);
+	}
+}

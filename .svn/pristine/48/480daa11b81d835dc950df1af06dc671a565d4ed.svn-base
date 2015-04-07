@@ -1,0 +1,102 @@
+// document.ready();
+$(function() {	 
+	$("#acomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/pesquisar", {numeroAcomodacao: null, nomeAcomodacao: null});
+	
+	$("#numeroAcomodacao").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#acomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/pesquisar", {numeroAcomodacao: parametro, nomeAcomodacao: null});
+		} else {
+			$("#acomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/pesquisar", {numeroAcomodacao: null, nomeAcomodacao: null});
+		}
+	});
+	
+	$("#nomeAcomodacao").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){						
+			$("#acomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/pesquisar", {numeroAcomodacao: null, nomeAcomodacao: parametro});
+		} else {
+			$("#acomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/pesquisar", {numeroAcomodacao: null, nomeAcomodacao: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarAcomodacao() {
+	validator =  $("#formAcomodacao").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/acomodacao/gravar",
+			data: $("#formAcomodacao").serialize(),
+			success: function(retorno) {
+						$("#conteudo").load(caminhoAbsoluto + "sistema/acomodacao/pesquisar");
+						$("#cadastrarAcomodacao").data("kendoWindow").destroy();						
+						$("#listaAcomodacao").load(caminhoAbsoluto + "hotel/acomodacao/lista");
+					 }
+		});
+	}
+}
+
+function alterarAcomodacao() {
+	validator =  $("#formAlterarAcomodacao").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/acomodacao/gravar",
+			data: $("#formAlterarAcomodacao").serialize(),
+			success: function(retorno) {
+						$("#consultarAcomodacao").data("kendoWindow").destroy();
+						$("#conteudo").load(caminhoAbsoluto + "sistema/acomodacao/pesquisar");
+						$("#listaAcomodacao").load(caminhoAbsoluto + "hotel/acomodacao/lista");
+					 }
+		});
+	}
+}
+
+//Outras Funções
+function infoAcomodacao(url, title, id) {
+	var w = $("<div id='" + id + "'></div>").appendTo("#container");
+	w.kendoWindow({
+		modal: true,
+		height: "390px",
+		position: {
+			top: 180,
+			left: 500,
+		},
+		resizable: false,
+		visible: false,
+		content: url,
+		title: title,
+		actions: ["Close"],
+		close: function() {
+			w.data("kendoWindow").destroy();
+		}
+	});
+	w.data("kendoWindow").open();
+}
+
+function maisInfoAcomodacao () {
+	var w = $("<div id='" + this.id + "'></div>").appendTo("#container");
+	w.kendoWindow({
+	  	modal: true,
+	  	height: "390px",
+	  	width: "400px",
+        position: {
+    		top: 200,
+    		left: 500,
+	  	},
+        resizable: false,
+        visible: false,
+    //  content: url,
+        actions: ["Close"],
+        close: function() {
+			w.data("kendoWindow").destroy();
+        }
+    });
+    w.data("kendoWindow").open();
+}

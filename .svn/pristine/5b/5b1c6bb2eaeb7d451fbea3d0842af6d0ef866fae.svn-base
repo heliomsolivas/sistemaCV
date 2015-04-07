@@ -1,0 +1,61 @@
+package generic.controller;
+
+import generic.component.Blowfish;
+import generic.component.UserSession;
+import administrativo.bean.Usuario;
+import administrativo.dao.DaoUsuario;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.core.Localization;
+import br.com.caelum.vraptor.validator.Validations;
+
+@Resource
+public class LogonController {
+
+	private final Blowfish blowfish;
+	private final DaoUsuario daoUsuario;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+	private final Validator validator;
+
+	public LogonController(Blowfish blowfish, DaoUsuario daoUsuario, Localization localization, Result result, UserSession userSession, Validator validator) {
+		this.blowfish = blowfish;
+		this.daoUsuario = daoUsuario;
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+		this.validator = validator;
+	}
+
+	@Post
+	@Path("sistema/logon")
+	public void logon(final String username, final String password) {
+		final Usuario usuario = this.daoUsuario.buscar(username);
+
+		validator.checking(
+			new Validations(localization.getBundle()) {{
+				if (that(usuario != null, i18n("errors"), "logon.usuario.invalido"))
+		        	that(blowfish.decryptString(usuario.getPassword()).equals(password), i18n("errors"), "logon.senha.incorreta");
+			}}
+		);
+		validator.onErrorUsePageOf(IndexController.class).index();
+
+		userSession.logon(usuario);
+		result.redirectTo(SistemaController.class).index();
+	}
+
+	@Get
+	@Path("sistema/logout")
+	public void logout() {
+		userSession.logout();
+
+		result.include("mensagem", "logout.agradecimento");
+		result.redirectTo(IndexController.class).index();
+	}
+
+}

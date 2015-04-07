@@ -1,0 +1,514 @@
+package clientes.controller;
+
+import estoque.bean.Produto;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.bean.Acomodacao;
+import hotel.bean.ItensFrigobar;
+import hotel.bean.ItensPadraoFrigobar;
+import hotel.bean.Status;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoItensFrigobar;
+import hotel.dao.DaoItensPadraoFrigobar;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import reserva.bean.Reserva;
+import reserva.bean.Situacao;
+import reserva.dao.DaoReserva;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+import clientes.bean.Consumo;
+import clientes.bean.Hospedagem;
+import clientes.bean.Hospede;
+import clientes.bean.HospedeHospedagem;
+import clientes.bean.ItemConsumo;
+import clientes.dao.DaoConsumo;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospede;
+import clientes.dao.DaoHospedeHospedagem;
+import clientes.dao.DaoItemConsumo;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("clientes/")
+public class ClientesController {
+	
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoConsumo daoConsumo;	
+	private final DaoHotel daoHotel;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoHospede daoHospede;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+	private final DaoItemConsumo daoItemConsumo;
+	private final DaoItensFrigobar daoItensFrigobar;
+	private final DaoItensPadraoFrigobar daoItensPadraoFrigobar;	
+	private final DaoProduto daoProduto;
+	private final DaoReserva daoReserva;	
+	private final UserSession userSession;
+	private final Erro erro;
+	private final Result result;
+	
+	public ClientesController(DaoAcomodacao daoAcomodacao, DaoConsumo daoConsumo, DaoHotel daoHotel, DaoHospedagem daoHospedagem, DaoHospede daoHospede, 
+			DaoHospedeHospedagem daoHospedeHospedagem, DaoItemConsumo daoItemConsumo, DaoItensFrigobar daoItensFrigobar, DaoItensPadraoFrigobar daoItensPadraoFrigobar, 
+			DaoProduto daoProduto, DaoReserva daoReserva, UserSession userSession, Erro erro, Result result) {
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoConsumo = daoConsumo;
+		this.daoHotel = daoHotel;
+		this.daoHospedagem = daoHospedagem;
+		this.daoHospede = daoHospede;
+		this.daoHospedeHospedagem = daoHospedeHospedagem;
+		this.daoItemConsumo = daoItemConsumo;
+		this.daoItensFrigobar = daoItensFrigobar;
+		this.daoItensPadraoFrigobar = daoItensPadraoFrigobar;
+		this.daoProduto = daoProduto;
+		this.daoReserva = daoReserva;
+		this.userSession = userSession;
+		this.erro = erro;
+		this.result = result;
+	}
+	
+	@Path("hospede/cadastrar")
+	public void formHospede() {
+	}
+	
+	@Path({"hospedagem/cadastrar", "hospedagem/cadastrar/{id}"})
+	public void formHospedagem(Long id) {		
+		if(id != null)
+			result.include("acomodacao", daoAcomodacao.buscar(id));
+		
+		result.include("hotel", daoHotel.busca());
+		result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+		result.include("reservaList", daoReserva.listarAprovadas());
+	}
+	
+	@Path("hospede/consultar/{id}")
+	public void consultarHospede(Long id) {
+		result.include("hospede", daoHospede.buscar(id));
+	}
+	
+	@Path("hospedagem/consultar/{id}")
+	public void consultarHospedagem(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("hospede/lista")
+	public void listaHospede() {
+	}
+	
+	@Path("hospedagem/lista")
+	public void listaHospedagem() {
+	}
+	
+	@Path("hospedagem/divConsultar/{id}")
+	public void divConsultarHospedagem(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("consumo/divLista/{id}")
+	public void divListaConsumo(Long id) {
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		Consumo consumo = daoConsumo.buscaItemConsumo(hospedeHospedagem.getHospedagem().getId());
+		
+		result.include("itemList", daoItemConsumo.listaItemConsumo(consumo.getId()));
+	}
+	
+	@Path("resumoLancamento/divLista/{id}")
+	public void divListaResumoLancamento(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Post("acomodacao/pesquisar")
+	public void divListaAcomodacao(Calendar dataCheckIn, Calendar dataCheckOut, Long idAcomodacao){
+		if ((dataCheckIn != null) && (dataCheckOut != null)) {
+			if (idAcomodacao != null) {
+				result.include("acomodacaoList", daoAcomodacao.pesquisarAcomodacaoHospedagem(dataCheckIn, dataCheckOut, idAcomodacao));
+			} else
+				result.include("acomodacaoList", daoAcomodacao.pesquisarAcomodacaoHospedagem(dataCheckIn, dataCheckOut, null));
+		}
+	}
+	
+	@Post("hospede/pesquisar")
+	public void divListaHospede(Long codigo, String nomeHospede) {
+		if (codigo != null)
+			result.include("hospedeList", daoHospede.pesquisarHospede(codigo, null));
+		else if (nomeHospede != null)
+			result.include("hospedeList", daoHospede.pesquisarHospede(null, nomeHospede));
+		else
+			result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Post("hospedeHospedagem/pesquisar")
+	public void divListaHospedeHospedagem(Long codigo, String nomeHospede) {
+		if (codigo != null)
+			result.include("hospedeList", daoHospede.pesquisarHospede(codigo, null));
+		else if (nomeHospede != null)
+			result.include("hospedeList", daoHospede.pesquisarHospede(null, nomeHospede));
+		else
+			result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Post("hospedagem/pesquisar")
+	public void divListaHospedagem(Long codigo, String parametro) {
+		if (codigo != null)
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.pesquisarHospedagem(codigo, null));
+		else if (parametro != null)
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.pesquisarHospedagem(null, parametro));
+		else
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.listarTudo("id", "ASC"));
+	}
+	
+	@Post("hospede/gravar")
+	public void gravar(Hospede hospede) {
+		try {
+			String observacoes = "";			
+			if(hospede.getObservacoes() != null) {
+				observacoes = hospede.getObservacoes();
+				observacoes = observacoes.replaceAll("\\<.*?\\>", "");
+				observacoes = observacoes.replaceAll("\n", "<br/>");	
+			}
+			
+			if(hospede.getId() == null) {
+				hospede.setDataCadastro(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR")));
+				hospede.setHotel(daoHotel.busca());
+			}			
+			daoHospede.atualizar(hospede);		
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Path("item/consumo/cadastrar/{id}")
+	public void cadastrarItemConsumo(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("item/diaria/cadastrar/{id}")
+	public void cadastrarItemDiaria(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("item/diversos/cadastrar/{id}")
+	public void cadastrarItemDiversos(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("itemProduto/cadastrar/{id}")
+	public void cadastrarItemProduto(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	
+	@Path("conferenciaConsumo/consultar/{id}")
+	public void conferenciaConsumo(Long id) {
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		
+		result.include("acomodacao", daoAcomodacao.buscar(hospedeHospedagem.getHospedagem().getAcomodacao().getId()));
+		result.include("hospedeHospedagem", hospedeHospedagem);
+	}
+	
+	@Path("hospedagem/exibirInfo/{id}")
+	public void exibirInfoHospedagem(Long id) {
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		result.include("hospedeHospedagem", hospedeHospedagem);
+		result.include("acomodacaoList", daoAcomodacao.listarAtivasReserva(hospedeHospedagem.getHospedagem().getDataCheckIn(), hospedeHospedagem.getHospedagem().getDataCheckOut()));
+	}
+	
+	@Post("hospedagem/gravar")
+	public void gravar(HospedeHospedagem hospedeHospedagem, Consumo consumo) {
+		try {
+			String observacao = "";
+			
+			if(hospedeHospedagem.getHospedagem().getObservacao() != null){
+				observacao = hospedeHospedagem.getHospedagem().getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			Reserva reserva = null;
+			Acomodacao acomodacao = daoAcomodacao.buscar(hospedeHospedagem.getHospedagem().getAcomodacao().getId());
+			Calendar data = new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR"));
+			
+			acomodacao.setStatus(Status.OCUPADA);
+			hospedeHospedagem.getHospedagem().setValorDiaria(acomodacao.getValorDiaria());
+			hospedeHospedagem.getHospedagem().setValorTotalConsumo(00.0);
+			hospedeHospedagem.getHospedagem().setValorTotalDiaria(00.0);
+			hospedeHospedagem.getHospedagem().setValorTotalDiversos(00.0);
+			hospedeHospedagem.getHospedagem().setObservacao(observacao);
+			hospedeHospedagem.getHospedagem().setDataCheckIn(data);
+			
+			if (hospedeHospedagem.getHospedagem().getDataCheckOut() != null) {
+				Integer numeroDiarias = hospedeHospedagem.getHospedagem().getDataCheckOut().get(Calendar.DAY_OF_MONTH) - data.get(Calendar.DAY_OF_MONTH);
+				
+				hospedeHospedagem.getHospedagem().setNumeroDiarias(numeroDiarias);
+				hospedeHospedagem.getHospedagem().setValorTotal(acomodacao.getValorDiaria() * numeroDiarias);
+				hospedeHospedagem.getHospedagem().setValorTotalDiaria(acomodacao.getValorDiaria() * numeroDiarias);
+			}
+			
+			if(hospedeHospedagem.getHospedagem().getReserva().getId() != null){
+				reserva = daoReserva.buscar(hospedeHospedagem.getHospedagem().getReserva().getId());
+				
+				hospedeHospedagem.getHospedagem().setReserva(reserva);
+			} else
+				hospedeHospedagem.getHospedagem().setReserva(null);
+			
+			daoHospedagem.adicionar(hospedeHospedagem.getHospedagem());
+			
+			consumo.setHospedagem(hospedeHospedagem.getHospedagem());
+			consumo.setUsuario(this.userSession.getUsuario());
+			
+			daoConsumo.adicionar(consumo);
+
+			hospedeHospedagem.setAtivo(true);
+			
+			daoHospedeHospedagem.adicionar(hospedeHospedagem);
+			
+			if(reserva != null){
+				reserva.setHospedeHospedagem(hospedeHospedagem);
+				
+				daoReserva.atualizar(reserva);
+			}
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("frigobar/consumo/gravar")
+	public void gravarFrigobarConsumo (HospedeHospedagem hospedeHospedagem, List<ItensFrigobar> itemList, ItemConsumo itemConsumo) {
+		try {
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			
+			for (ItensFrigobar item : itemList){
+				
+				if(item.getProduto().getId() != null) {
+					
+					ItensFrigobar itemPadrao = daoItensFrigobar.buscar(item.getId());
+					Produto produto = daoProduto.buscar(item.getProduto().getId());
+					
+					if(itemPadrao.getQuantidade() > item.getQuantidade()){
+						
+						Consumo consumo = daoConsumo.buscaItemConsumo(hospedeHospedagem.getHospedagem().getId());
+
+						itemConsumo.setConsumo(consumo);
+						itemConsumo.setProduto(produto);
+						itemConsumo.setData(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt","BR")));
+						itemConsumo.setCategoria("Produto");
+						itemConsumo.setLocalConsumo("Acomodacao");
+						itemConsumo.setQuantidade(itemPadrao.getQuantidade() - item.getQuantidade());
+						itemConsumo.setValorUnitario(produto.getValorUnitario());
+						itemConsumo.setValorTotal(produto.getValorUnitario() * (itemPadrao.getQuantidade() - item.getQuantidade()));					
+						
+						daoItemConsumo.adicionar(itemConsumo);
+						
+						hospedagem.setValorTotalConsumo(hospedagem.getValorTotalConsumo() + itemConsumo.getValorTotal());
+						hospedagem.setValorTotal(hospedagem.getValorTotal() + itemConsumo.getValorTotal());
+						
+						daoHospedagem.atualizar(hospedagem);
+					}
+					
+					daoItensFrigobar.atualizar(item);
+				}
+			}
+		} catch (Exception e) {
+			result.include("mensagem", "hotel.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("itemConsumo/gravar")
+	public void gravar(ItemConsumo item, Long idHospedagem) {
+		try {
+			item.setData(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt","BR")));
+			Hospedagem hospedagem2 = daoHospedagem.buscar(idHospedagem);
+			
+			Double valorTotalItem = item.getValorTotal();
+			Double valorTotal = valorTotalItem +  hospedagem2.getValorTotal();
+			
+			if (item.getCategoria().equals("Produto")) {
+				hospedagem2.setValorTotalConsumo(hospedagem2.getValorTotalConsumo() + valorTotalItem);
+				
+				if (item.getLocalConsumo() != null) {
+					ItensPadraoFrigobar itemAcomodacao = daoItensPadraoFrigobar.buscaItemAcomodacaoProduto(hospedagem2.getAcomodacao().getId(), item.getProduto().getId());
+					Produto produto = daoProduto.buscar(item.getProduto().getId());
+					
+					if (item.getLocalConsumo().equals("Acomodacao") &&	itemAcomodacao.getQuantidade() >= item.getQuantidade()) {
+						itemAcomodacao.setQuantidade(itemAcomodacao.getQuantidade() - item.getQuantidade());
+						
+						daoItensPadraoFrigobar.atualizar(itemAcomodacao);
+					} else if (item.getLocalConsumo().equals("Recepcao") &&	produto.getQuantidade() >= item.getQuantidade()) {
+						produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
+						
+						daoProduto.atualizar(produto);
+					}
+				}
+			}
+			
+			if (item.getCategoria().equals("Diaria")) {
+				Integer quantidade = item.getQuantidade();
+				
+				hospedagem2.setValorTotalDiaria(hospedagem2.getValorDiaria() + valorTotalItem);
+				hospedagem2.setNumeroDiarias(hospedagem2.getNumeroDiarias() * quantidade);
+			}
+			
+			if (item.getCategoria().equals("Diversos"))
+				hospedagem2.setValorTotalDiversos(hospedagem2.getValorTotalDiversos() + valorTotalItem);
+			
+			hospedagem2.setValorTotal(valorTotal);
+			
+			daoHospedagem.atualizar(hospedagem2);
+			
+			Consumo consumo = daoConsumo.buscaItemConsumo(idHospedagem);
+			
+			item.setConsumo(consumo);
+			daoItemConsumo.adicionar(item);
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("hospedagem/alterar")
+	public void alterar(HospedeHospedagem hospedeHospedagem) {
+		try {
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			HospedeHospedagem hospedeHospedagem2 = daoHospedeHospedagem.buscar(hospedeHospedagem.getId());
+			Acomodacao acomodacao2 = daoAcomodacao.buscar(hospedagem.getAcomodacao().getId());
+			Acomodacao acomodacao = daoAcomodacao.buscar(hospedeHospedagem.getHospedagem().getAcomodacao().getId());
+			
+			String observacao = "";
+			
+			if(hospedeHospedagem.getHospedagem().getObservacao() != null){
+				observacao = hospedeHospedagem.getHospedagem().getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			if (hospedeHospedagem.getAtivo() != hospedeHospedagem2.getAtivo()) {
+				if ((hospedeHospedagem.getAtivo() == true) && (acomodacao.getStatus().getNome().equals("Ocupado"))) {
+					hospedeHospedagem2.setAtivo(false);
+				} else if ((hospedeHospedagem.getAtivo() == true) && (acomodacao.getStatus().getNome().equals("Livre"))) {
+					hospedeHospedagem2.setAtivo(true);
+					acomodacao2.setStatus(Status.LIVRE);
+					acomodacao.setStatus(Status.OCUPADA);
+				} else if (hospedeHospedagem.getAtivo() == false) {
+					hospedeHospedagem2.setAtivo(false);
+					acomodacao.setStatus(Status.LIVRE);
+				}
+			} else {
+				if (hospedeHospedagem.getAtivo() == true) {
+					acomodacao2.setStatus(Status.LIVRE);
+					acomodacao.setStatus(Status.OCUPADA);
+				}
+			}
+			
+			hospedagem.setAcomodacao(acomodacao);
+			hospedagem.setDataCheckIn(hospedeHospedagem.getHospedagem().getDataCheckIn());
+			hospedagem.setDataCheckOut(hospedeHospedagem.getHospedagem().getDataCheckOut());
+			hospedagem.setCheckOutEstendidoGratuito(hospedeHospedagem.getHospedagem().getCheckOutEstendidoGratuito());
+			hospedagem.setObservacao(observacao);
+			
+			daoHospedagem.atualizar(hospedagem);
+			
+			hospedeHospedagem2.setHospedagem(hospedagem);
+			
+			daoHospedeHospedagem.atualizar(hospedeHospedagem2);
+			
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("hospedagem/remover/{id}")
+	public void remover(HospedeHospedagem hospedeHospedagem, Long id) {
+		try {
+			hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+			if (hospedeHospedagem.getAtivo() == false) {
+				Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+				
+				if(hospedagem.getReserva() != null){
+					Reserva reserva = daoReserva.buscar(hospedagem.getReserva().getId());
+					
+					daoReserva.remover(reserva);
+				}
+				
+				daoHospedeHospedagem.remover(hospedeHospedagem);
+				daoHospedagem.remover(hospedagem);
+			}
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("hospede/remover/{id}")
+	public void remover(Hospede hospede, Long id) {
+		try {
+			hospede = daoHospede.buscar(id);
+			
+			daoHospede.remover(hospede);
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("hospedagem/checkOut")
+	public void checkOut (Long idAcomodacao, Long idHospedeHospedagem, Reserva reserva) {
+		try {
+			Acomodacao acomodacao = daoAcomodacao.buscar(idAcomodacao);
+			HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(idHospedeHospedagem);
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			
+			acomodacao.setStatus(Status.LIVRE);
+			hospedagem.setDataCheckOut(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR")));
+			hospedeHospedagem.setAtivo(false);
+			
+			if (hospedagem.getReserva() != null){
+				reserva = daoReserva.buscar(hospedagem.getReserva().getId());
+				reserva.setSituacao(Situacao.ENCERRADA);
+				
+				daoReserva.atualizar(reserva);
+			}
+			
+			daoAcomodacao.atualizar(acomodacao);
+			daoHospedeHospedagem.atualizar(hospedeHospedagem);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("hospede/atualizaDados/{id}")
+	public void atualizaDados(Hospede hospede, Long id) {
+		hospede = daoHospede.buscar(id);		
+		result.use(Results.http()).body(hospede.getCodigo() + "],[" + hospede.getNome() + "],[" + hospede.getDataNascimento().getTime() + "],[" + hospede.getCpf());
+	}
+}

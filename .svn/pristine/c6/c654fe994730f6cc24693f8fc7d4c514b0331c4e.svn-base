@@ -1,0 +1,123 @@
+package compras.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+import estoque.bean.Produto;
+
+@Entity(name = "COMPRAS_ITEMORDEMCOMPRA")
+@Table(name = "COMPRAS_ITEMORDEMCOMPRA")
+public class ItemOrdemCompra implements Serializable {
+
+	private static final long serialVersionUID = -7490984665066482184L;
+
+	private Long id;
+	private OrdemCompra ordemCompra;
+	private Produto produto;
+	private String categoria;
+	private Integer quantidade;
+	private Double valorUnitario;
+	private Double valorTotal;
+	private Calendar data;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_ordemCompra", nullable = true)
+	public OrdemCompra getOrdemCompra() {
+		return ordemCompra;
+	}
+
+	public void setOrdemCompra(OrdemCompra ordemCompra) {
+		this.ordemCompra = ordemCompra;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_produto", nullable = true)
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+	
+	@Column(name = "categoria", nullable = true)
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	@Column(name = "quantidade", nullable = true)
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+	
+	@Column(name = "valorUnitario", nullable = true)
+	public Double getValorUnitario() {
+		return valorUnitario;
+	}
+
+	@Convert(Double.class)
+	public void setValorUnitario(Double valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	@Column(name = "valorTotal", nullable = true)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	@Convert(Double.class)
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+	
+	@Column(name = "data", nullable = true)
+	public Calendar getData() {
+		return data;
+	}
+
+	public void setData(Calendar data) {
+		this.data = data;
+	}
+	
+	@Transient
+	public String getValorUnitarioString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorUnitario);
+	}
+	
+	@Transient
+	public String getValorTotalString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotal);
+	}
+}

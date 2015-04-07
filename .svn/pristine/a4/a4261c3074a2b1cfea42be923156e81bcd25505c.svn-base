@@ -1,0 +1,44 @@
+package compras.controller;
+
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoStatus;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospedeHospedagem;
+
+import compras.dao.DaoItemOrdemCompra;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("compras/")
+public class ComprasController {
+	
+	private final DaoProduto daoProduto;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+	private final DaoItemOrdemCompra daoItemOrdemCompra;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoAcomodacao daoAcomodacao;
+	private final UserSession userSession;
+	private final Erro erro;
+	private final Result result;	
+	
+	public ComprasController(DaoProduto daoProduto,DaoHospedeHospedagem daoHospedeHospedagem,
+		DaoItemOrdemCompra daoItemOrdemCompra, DaoStatus daoStatus, DaoHospedagem daoHospedagem,DaoAcomodacao daoAcomodacao,
+		UserSession userSession, Erro erro, Result result) {
+		this.daoProduto = daoProduto;
+		this.daoHospedeHospedagem = daoHospedeHospedagem;
+		this.daoItemOrdemCompra = daoItemOrdemCompra;
+		this.daoHospedagem = daoHospedagem;
+		this.daoAcomodacao = daoAcomodacao;
+		this.userSession = userSession;
+		this.erro = erro;
+		this.result = result;
+	}
+}

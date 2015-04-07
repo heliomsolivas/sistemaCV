@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#acomodacaoReserva").change(
+					function(){
+						if ($("#acomodacaoReserva").val() != "") {
+							var id = $("#acomodacaoReserva").val();
+							$.ajax({
+								contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+								type: "GET",
+								url: "<c:url value="/reserva/atualizaDados/"/>" + id,
+								success: function(retorno){
+											if (retorno != "") {
+												retorno = retorno.split("],[");
+												$("#exibirNomeAcomodacaoReserva").val(retorno[0]);
+												$("#numeroAcomodacaoReserva").val(retorno[1]);
+												$("#nPessoasReserva").val(retorno[2]);
+												$("#nCamasReserva").val(retorno[3]);
+												$("#campoValorDiariaReserva").val(retorno[4]);
+												$("#precoReserva").val(retorno[5]);
+											} else
+												$("#numero").empty().append("Acomodação não Encontrada");
+										}
+								});
+						}
+					}
+				);
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divFormInput" style="width: 590px;">
+           	<table border="0" cellpadding="0" cellspacing="0" style="width: 575px;">
+           		<tr style="height: 30px;">
+       				<td class="selectAcomodacao" style="width: 220px; font-size: 14px; border-radius: 4px 0px 0px 0px;">
+       					<f:message key="campo.selecione.acomodacao"/>
+       				</td>
+       				<td class="selectAcomodacao" style="width: 90px; font-size: 14px;">
+       					<f:message key="campo.numero"/>
+       				</td>
+       				<td class="selectAcomodacao" style="width: 80px; font-size: 14px;">
+       					<f:message key="campo.pessoas"/>
+       				</td>
+       				<td class="selectAcomodacao" style="width: 80px; font-size: 14px;">
+       					<f:message key="campo.camas"/>
+       				</td>
+       				<td class="selectAcomodacao" style="width: 105px; font-size: 14px; border-radius: 0px 4px 0px 0px;">
+       					<f:message key="campo.preco"/>
+       				</td>
+       			</tr>
+       			<c:choose>
+       				<c:when test="${empty acomodacaoList}">
+						<tr style="text-align: center;">
+            				<td style="width: 220px; height: 40px; background-color: #fff; text-align: center;">
+            					<input type="text" class="k-textbox inputAcomodacao" value="Não disponível" style="width: 210px; font-size: 14px;" disabled>
+           					</td>
+            				<td style="width: 90px; height: 40px; background-color: #fff; text-align: center;">
+            					<input type="text" class="k-textbox inputAcomodacao" style="width: 80px; font-size: 14px;" disabled>
+           					</td>
+           					<td style="width: 80px; height: 40px; background-color: #fff; text-align: center;">
+            					<input type="text" class="k-textbox inputAcomodacao" style="width: 70px; font-size: 14px;" disabled>
+           					</td>
+           					<td style="width: 80px; height: 40px; background-color: #fff; text-align: center;">
+								<input type="text" class="k-textbox inputAcomodacao" style="width: 70px; font-size: 14px;" disabled>
+           					</td>
+           					<td style="width: 105px; height: 40px; background-color: #fff; text-align: center;">
+            					<input type="text" class="k-textbox inputAcomodacao" style="width: 95px; font-size: 14px;" disabled>
+           					</td>
+            			</tr>
+					</c:when>
+					<c:otherwise>
+						<tr style="height: 25px; text-align: center;">
+		       				<td style="width: 220px; height: 40px; background-color: #fff; text-align: center;">
+		  						<select id="acomodacaoReserva" data-bvalidator="required" name="reserva.acomodacao.id" style="width: 210px; font-size: 14px; letter-spacing: 1px;">
+									<option value=""><f:message key="selecione"/></option>
+									<c:forEach items="${acomodacaoList}" var="item">
+									<option value="${item.id}">${item.nome}</option>
+									</c:forEach>
+								</select>
+		   					</td>
+		       				<td style="width: 90px; height: 40px; background-color: #fff; text-align: center;">
+		       					<input id="numeroAcomodacaoReserva" type="text" class="k-textbox inputAcomodacao" style="width: 80px; font-size: 14px;" disabled>
+		   					</td>
+		   					<td style="width: 80px; height: 40px; background-color: #fff; text-align: center;">
+		       					<input id="nPessoasReserva" type="text" class="k-textbox inputAcomodacao" style="width: 70px; font-size: 14px;" disabled>
+		   					</td>
+		   					<td style="width: 80px; height: 40px; background-color: #fff; text-align: center;">
+								<input id="nCamasReserva" type="text" class="k-textbox inputAcomodacao" style="width: 70px; font-size: 14px;" disabled>
+		   					</td>
+		   					<td style="width: 105px; height: 40px; background-color: #fff; text-align: center;">
+		       					<input id="precoReserva" type="text" class="k-textbox inputAcomodacao" style="width: 95px; font-size: 14px;" disabled>
+		   					</td>
+		       			</tr>
+		      			<tr style="height: 10px;"></tr>
+		      			<tr style="height: 20px;">
+		     				<td colspan="4">
+		      					<a href="#" onclick="maisInfoAcomodacao2();">
+		      						<f:message key="campo.info"/>
+		      					</a>
+		      				</td>
+		     			</tr>
+		     			<tr valign="top" style="height: 30px;">
+		   					<td id="imagens" class="dairy-photos" style="margin-left: 20px;">
+		  						<a href="../imagens/hotel/quarto.jpg" data-lightbox="roadtrip" data-id="quarto2" title="Quarto" style="float: left; margin-right: 5px;">
+		              				<img src="../imagens/hotel/quarto.jpg" style="width: 40px; height: 30px;"/>
+		                  		</a>
+		                   		<a href="../imagens/hotel/banheiro.jpg" data-lightbox="roadtrip" data-id="banheiro2" title="Banheiro" style="float: left;">
+		                    		<img src="../imagens/hotel/banheiro.jpg" style="width: 40px; height: 30px;"/>
+		                     	</a>
+							</td>
+							<td colspan="3">
+				            	<span style="margin-top: 5px; font-weight: bold;">
+				            		<f:message key="campo.permitir.consumo"/>
+				            	</span>
+				            	<span style="margin-left: 20px;">
+		  							<f:message key="sim"/>
+		  							<input type="radio" name="reserva.permitirConsumo" value="true" checked/>
+		  						</span>
+		  						<span>
+		  							<f:message key="nao"/>
+		  							<input type="radio" name="reserva.permitirConsumo" value="false"/>
+		  						</span>
+							</td>
+		  				</tr>
+					</c:otherwise>
+				</c:choose>
+      		</table>
+  		</div>
+	</body>
+</html>

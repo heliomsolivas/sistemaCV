@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+	 		$(document).ready(function () {
+	 			$("#dataInicioReceber").datetimepicker({lang:'pt', timepicker: false, format:'d/m/Y'});
+	 			$("#dataFimReceber").datetimepicker({lang:'pt', timepicker: false, format:'d/m/Y'});
+
+	 			$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: null, dataFim: null});
+	 			
+	 			$("#dataInicioReceber").change(function(){
+	 				var parametro = $(this).val();
+	 				var parametro2 = $("#dataFimReceber").val();
+
+	 				$("#contaReceberList").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	 				
+	 				if ((parametro != '') && (parametro2 == '')) {	 					
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: parametro, dataFim: null});
+	 				} else if ((parametro != '') && (parametro2 != '')) {
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: parametro, dataFim: parametro2});
+	 				} else {
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: null, dataFim: null});
+	 				}
+	 			});
+	 			
+	 			$("#dataFimReceber").change(function() {
+	 				var parametro = $("#dataInicioReceber").val();
+	 				var parametro2 = $(this).val();
+	 				
+	 				$("#contaReceberList").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	 				
+	 				if ((parametro == '') && (parametro2 != '')) {
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: null, dataFim: parametro2});
+	 				} else if ((parametro != '') && (parametro2 != '')) {
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: parametro, dataFim: parametro2});
+	 				} else {
+	 					$("#contaReceberList").load("<c:url value="/financeiro/contaReceber/pesquisar"/>", {dataInicio: null, dataFim: null});
+	 				}
+	 			});
+	        });
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div id="pesquisaInputs" class="pesquisaInputs">
+            <f:message key="campo.inicio"/> 
+            <div class="k-textbox k-space-right" style="width: 140px; margin-right: 25px;">
+            	<input id="dataInicioReceber" type="text" class="k-textbox"/>
+                <span class="k-icon k-i-calendar"></span>
+            </div>
+            <f:message key="campo.fim"/>
+            <div class="k-textbox k-space-right" style="width: 140px;">
+            	<input id="dataFimReceber" type="text" class="k-textbox"/>
+                <span class="k-icon k-i-calendar"></span>
+            </div>			
+		</div>
+		<div id="contaReceberList"></div>
+	</body>
+</html>

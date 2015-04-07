@@ -1,0 +1,64 @@
+package contabil.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.dao.DaoHotel;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import contabil.bean.ContaContabil;
+import contabil.dao.DaoContaContabil;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("contabil/")
+public class ContabilController {
+    
+    private final DaoHotel daoHotel;
+    private final DaoContaContabil daoContaContabil;
+    private final Erro erro;
+    private final Result result;
+    
+    public ContabilController(DaoHotel daoHotel, DaoContaContabil daoContaContabil, Erro erro, Result result) {
+    	this.daoHotel = daoHotel;
+    	this.daoContaContabil = daoContaContabil;
+		this.erro = erro;
+		this.result = result;
+    }
+    
+    @Path("conta/cadastrar")
+    public void formContaContabil() {
+    }
+    
+    @Path("conta/consultar/{id}")
+    public void consultarContaContabil(Long id) {
+    	result.include("contaContabil", daoContaContabil.buscar(id));
+    }
+    
+    @Path("conta/lista")
+    public void listaContaContabil() {
+    }
+    
+    @Post("conta/pesquisar")
+	public void divListaContaContabil(Integer codigoReduzido, String parametro) {
+		if (codigoReduzido != null)
+			result.include("contaContabilList", daoContaContabil.pesquisarConta(codigoReduzido, null));
+		else if (parametro != null)
+			result.include("contaContabilList", daoContaContabil.pesquisarConta(null, parametro));
+		else
+			result.include("contaContabilList", daoContaContabil.listarTudo("id", "ASC"));
+    }
+    
+    @Post("conta/gravar")
+    public void gravar(ContaContabil contaContabil){
+    	try {
+        	daoContaContabil.atualizar(contaContabil);
+		} catch (Exception e) {
+			result.include("mensagem", "contabil.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+}

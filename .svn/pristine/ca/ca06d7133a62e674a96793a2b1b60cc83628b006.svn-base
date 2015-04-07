@@ -1,0 +1,101 @@
+.tabela {
+	widht: 100%;
+	height: auto;
+	border-collapse: collapse;
+}
+.tabela th {
+	background-color: #DCDCDC;
+	font-weight: normal;
+	color: #000;
+	height: 25px;
+	border: 1px solid #FFFFFF;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+			-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+.tabela td {
+	color: #000000;
+	border: 1px solid #FFFFFF;
+	border: 1px solid #FFFFFF;
+	box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 255);
+		-moz-box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 255); 
+			-webkit-box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 255);	
+}
+.tabela tr:nth-child(even) { /*Definido cor das linhas pares*/
+	background-color: #F5F5F5;
+}
+.tabela tr:nth-child(odd) { /*Definindo cor das Linhas impáres*/
+	background-color: #F5F5F5;
+}
+th.header {
+	background-image: url(tablesorter/bg.png);
+	background-repeat: no-repeat; 
+	background-position: right;
+	cursor: pointer;	
+}
+th.headerSortDown {
+	background-image: url(tablesorter/desc.png);
+	background-repeat: no-repeat;
+	background-position: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+th.headerSortUp {
+	background-image: url(tablesorter/asc.png);
+	background-repeat: no-repeat;
+	background-position: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+.pager {
+	margin-top: 15px;
+}
+.nenhumItem {
+	font-family: cursive; 
+	color: #000;
+	height: 315px;
+	letter-spacing: 1px;
+	text-align: center;
+}
+.nenhumItem > td {
+	background-color: #F5F5F5;
+	border: 0px;
+}
+.first {
+	background: url("tablesorter/paginacao-primeiro.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	width: 16px;
+}
+.prev {
+	background: url("tablesorter/paginacao-anterior.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	margin-left: 5px;
+	width: 16px;
+}
+.next {
+	background: url("tablesorter/paginacao-proximo.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	width: 16px;
+}
+.last {
+	background: url("tablesorter/paginacao-ultimo.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	margin-left: 5px;
+	width: 16px;
+}
+.pagedisplay {
+	background: none;
+	border: 0px;
+	float: left;
+	height: 16px;
+	text-align: center;
+	width: 180px;
+}

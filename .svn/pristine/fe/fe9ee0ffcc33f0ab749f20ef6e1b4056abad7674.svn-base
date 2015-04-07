@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript" src="<c:url value="/js/reserva/reserva.js"/>"></script>
+		
+		<style type="text/css">
+			.titulo {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body class="divConteudo">
+    	<form id="formAlterarReserva" name="formAlterarReserva" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+    			<tr valign="bottom" style="height: 15px;">
+    				<td rowspan="2" style="width: 15px;"></td>
+	   				<td colspan="4" style="width: 570px;">
+						<h4 style="margin-left: 5px; margin-top: 5px;">
+							<span class="icon icon-user icon-black"></span> <f:message key="titulo.informacoes.responsavel"/>
+							<span style="font-size: 11px; font-weight: normal; margin-left: 290px;">
+								<b>*</b> <i><f:message key="previsao"/></i>
+							</span>
+						</h4>
+						<hr width="570" color="black" size="1" style="margin-top: -10px;">
+	   				</td>
+	   				<td rowspan="2" style="width: 15px;"></td>
+	   			</tr>
+	   		</table>
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px; font-size: 11px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="4" style="width: 30px;"></td>
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.codigo.responsavel"/>:
+	   				</td>
+	   				<td style="width: 220px;">
+	   					<input type="hidden" value="${reserva.responsavel.id}" name="reserva.responsavel.id">
+	   					${reserva.responsavel.codigo}
+	   				</td>
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.cpf.responsavel"/>:
+	   				</td>
+	   				<td style="width: 190px;">
+	   					${reserva.responsavel.cpf}
+	   				</td>
+	   				<td rowspan="10" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.nome.responsavel.consultar"/>:
+	   				</td>
+	   				<td style="width: 220px;">
+	   					${reserva.responsavel.nome}
+	   				</td>
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.email.responsavel"/>:
+	   				</td>
+	   				<td style="width: 190px;">
+	   					${reserva.responsavel.email}
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.rg.responsavel"/>:
+	   				</td>
+	   				<td style="width: 220px;">
+	   					${reserva.responsavel.rg}
+	   				</td>
+	   				<td class="titulo" style="width: 80px;">
+	   					<f:message key="campo.telefone.responsavel"/>:
+	   				</td>
+	   				<td style="width: 190px;">
+	   					${reserva.responsavel.telefone}
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+	   		</table>
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+    			<tr valign="bottom" style="height: 15px;">
+    				<td rowspan="2" style="width: 15px;"></td>
+	   				<td colspan="4" style="width: 570px;">
+						<h4 style="margin-left: 5px; margin-top: 5px;">
+							<span class="icon icon-book icon-black"></span> <f:message key="titulo.informacoes.reserva"/>
+						</h4>
+						<hr width="570" color="black" size="1" style="margin-top: -10px;">
+	   				</td>
+	   				<td rowspan="2" style="width: 15px;"></td>
+	   			</tr>
+	   		</table>
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;  font-size: 11px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="15" style="width: 30px;"></td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.codigo.reserva"/>:
+	   				</td>
+	   				<td style="width: 200px;">
+	   					<input type="hidden" value="${reserva.id}" name="reserva.id">
+	   					<input type="hidden" value="${reserva.hotel.id}" name="reserva.hotel.id">
+	   					<input type="hidden" value="${reserva.permitirConsumo}" name="reserva.permitirConsumo">
+	   					<input type="hidden" value="${reserva.checkOutEstendidoGratuito}" name="reserva.checkOutEstendidoGratuito">
+	   					${reserva.codigo}
+	   				</td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.numero.pessoas"/>:
+	   				</td>
+	   				<td style="width: 170px;">
+	   					<input type="hidden" value="${reserva.numeroPessoas}" name="reserva.numeroPessoas">
+	   					${reserva.numeroPessoas}
+	   				</td>
+	   				<td rowspan="10" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.data.reserva"/>:
+	   				</td>
+	   				<td style="width: 200px;">
+	   					<input type="hidden" value="<f:formatDate value="${reserva.dataReserva.time}" pattern="dd/MM/yyyy HH:mm"/>" name="reserva.dataReserva">
+	   					<f:formatDate value="${reserva.dataReserva.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+	   				</td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.numero.dias"/>:
+	   				</td>
+	   				<td style="width: 170px;">
+	   					<input type="hidden" value="${reserva.numeroDiarias}" name="reserva.numeroDiarias">
+	   					${reserva.numeroDiarias}
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.checkIn.reserva"/>:
+	   				</td>
+	   				<td style="width: 200px;">
+	   					<input type="hidden" value="<f:formatDate value="${reserva.dataPrevisaoCheckIn.time}" pattern="dd/MM/yyyy HH:mm"/>" name="reserva.dataPrevisaoCheckIn">
+	   					<f:formatDate value="${reserva.dataPrevisaoCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+	   				</td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.diaria.reserva"/>:
+	   				</td>
+	   				<td style="width: 170px;">
+	   					<input type="hidden" value="${reserva.valorDiaria}" name="reserva.valorDiaria">
+	   					${reserva.valorDiariaString}
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.checkOut.reserva"/>*:
+	   				</td>
+	   				<td style="width: 200px;">
+	   					<input type="hidden" value="<f:formatDate value="${reserva.dataPrevisaoCheckOut.time}" pattern="dd/MM/yyyy HH:mm"/>" name="reserva.dataPrevisaoCheckOut">
+	   					<f:formatDate value="${reserva.dataPrevisaoCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+	   				</td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.reembolsar.reserva"/>:
+	   				</td>
+	   				<td style="width: 170px;">
+	   					<input type="hidden" value="${reserva.reembolsoCancelamento}" name="reserva.reembolsoCancelamento">
+	   					<c:choose>
+							<c:when test="${reserva.reembolsoCancelamento == true}">
+								<f:message key="sim"/>
+							</c:when>
+							<c:otherwise>
+								<f:message key="nao"/>
+							</c:otherwise>
+						</c:choose>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.acomodacao.reserva"/>:
+	   				</td>
+	   				<td style="width: 200px;">
+	   					<input type="hidden" value="${reserva.acomodacao.id}" name="reserva.acomodacao.id">
+	   					${reserva.acomodacao.numero} / ${reserva.acomodacao.nome}
+	   				</td>
+	   				<td class="titulo" style="width: 100px;">
+	   					<f:message key="campo.total.reserva"/>:
+	   				</td>
+	   				<td style="width: 170px;">
+	   					<input type="hidden" value="${reserva.valorTotal}" name="reserva.valorTotal">
+	   					${reserva.valorTotalString}
+	   				</td>
+	   			</tr>
+				<c:choose>
+					<c:when test="${reserva.situacao == 'APROVADA'}">
+						<tr style="height: 20px;"></tr>
+						<tr valign="bottom" style="height: 15px;">
+			   				<td colspan="4" style="width: 570px;">
+								<h4 style="margin-left: 5px; margin-top: 5px;">
+									<span class="icon icon-tag icon-black"></span> <f:message key="titulo.informacoes.hospedagem"/>
+								</h4>
+								<hr width="570" color="black" size="1" style="margin-top: -10px;">
+			   				</td>
+			   			</tr>
+						<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.hospedagem.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					<input type="hidden" value="${reserva.hospedeHospedagem.id}" name="reserva.hospedeHospedagem.id">
+			   					${reserva.hospedeHospedagem.hospedagem.codigo}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.situacao.hospedagem"/>:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<c:choose>
+									<c:when test="${reserva.hospedeHospedagem.ativo == true}">
+										<f:message key="andamento"/>
+									</c:when>
+									<c:when test="${reserva.hospedeHospedagem.ativo == false}">
+										<f:message key="encerrada"/>
+									</c:when>
+									<c:otherwise>
+										<i><f:message key="nenhuma"/></i>
+									</c:otherwise>
+								</c:choose>			   					
+			   				</td>
+			   			</tr>
+			   			<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.acomodacao.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					${reserva.hospedeHospedagem.hospedagem.acomodacao.numero} - ${reserva.hospedeHospedagem.hospedagem.acomodacao.nome}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.checkIn.reserva"/>:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<f:formatDate value="${reserva.hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+			   				</td>
+			   			</tr>
+			   			<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.hospede.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					${reserva.hospedeHospedagem.hospede.nome}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.checkOut.reserva"/>*:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<f:formatDate value="${reserva.hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;"></tr>
+						<tr valign="bottom" style="height: 20px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<f:message key="campo.situacao.reserva"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<select id="situacaoReserva" name="reserva.situacao" style="width: 200px; font-size: 11px; background: none;">
+			   						<option value="">${reserva.situacao.nome}</option>
+									<c:forEach items="${situacaoList}" var="item">
+										<option value="${item}">${item.nome}</option>
+									</c:forEach>
+								</select>
+			   				</td>
+			   			</tr>
+					</c:when>
+					<c:when test="${reserva.situacao == 'ENCERRADA'}">
+						<tr style="height: 20px;"></tr>
+						<tr valign="bottom" style="height: 15px;">
+			   				<td colspan="4" style="width: 570px;">
+								<h4 style="margin-left: 5px; margin-top: 5px;">
+									<span class="icon icon-tag icon-black"></span> Informações da Hospedagem
+								</h4>
+								<hr width="570" color="black" size="1" style="margin-top: -10px;">
+			   				</td>
+			   			</tr>
+						<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.hospedagem.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					<input type="hidden" value="${reserva.hospedeHospedagem.id}" name="reserva.hospedeHospedagem.id">
+			   					${reserva.hospedeHospedagem.hospedagem.codigo}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.situacao.reserva"/>:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<c:choose>
+									<c:when test="${reserva.hospedeHospedagem.ativo == true}">
+										<f:message key="andamento"/>
+									</c:when>
+									<c:when test="${reserva.hospedeHospedagem.ativo == false}">
+										<f:message key="encerrada"/>
+									</c:when>
+									<c:otherwise>
+										<i><f:message key="nenhuma"/></i>
+									</c:otherwise>
+								</c:choose>			   					
+			   				</td>
+			   			</tr>
+			   			<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.acomodacao.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					${reserva.hospedeHospedagem.hospedagem.acomodacao.numero} - ${reserva.hospedeHospedagem.hospedagem.acomodacao.nome}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.checkIn.reserva"/>:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<f:formatDate value="${reserva.hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+			   				</td>
+			   			</tr>
+			   			<tr valign="bottom" style="height: 25px;">
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.hospede.reserva"/>:
+			   				</td>
+			   				<td style="width: 200px;">
+			   					${reserva.hospedeHospedagem.hospede.nome}
+			   				</td>
+			   				<td class="titulo" style="width: 100px;">
+			   					<f:message key="campo.checkOut.reserva"/>*:
+			   				</td>
+			   				<td style="width: 170px;">
+			   					<f:formatDate value="${reserva.hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;"></tr>
+						<tr valign="bottom" style="height: 20px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<f:message key="campo.situacao.reserva"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<input id="situacaoReserva" type="text" class="k-textbox" value="${reserva.situacao.nome}" name="reserva.situacao" style="width: 200px;" disabled>
+			   				</td>
+			   			</tr>
+					</c:when>
+					<c:otherwise>
+						<tr style="height: 10px;"></tr>
+						<tr valign="bottom" style="height: 20px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<f:message key="campo.situacao.reserva"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<select id="situacaoReserva" name="reserva.situacao" style="width: 200px; font-size: 11px; background: none;">
+			   						<option value="">${reserva.situacao.nome}</option>
+									<c:forEach items="${situacaoList}" var="item">
+										<option value="${item}">${item.nome}</option>
+									</c:forEach>
+								</select>
+			   				</td>
+			   			</tr>
+			   			<tr valign="bottom" style="height: 25px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<f:message key="observacoes"/>
+			   				</td>
+			   			</tr>
+			   			<tr style="height: 10px;">
+			   				<td colspan="4" style="width: 570px;">
+			   					<textarea class="k-textbox" name="reserva.observacao" style="width: 560px; height: 100px; background: none;">${reserva.observacao}</textarea>
+			   				</td>
+			   			</tr>
+					</c:otherwise>
+				</c:choose>
+				<tr style="height: 30px;"></tr>
+	   			<tr style="height: 20px;">
+	   				<td colspan="4" style="width: 570px; text-align: center;">
+	   					<button type="button" class="k-button" onclick="alterarReserva()"><span class='k-icon k-update'></span><f:message key="alterar"/></button>
+	   				</td>
+	   			</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="../css/tablesorter.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.all.js"/>"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaAcomodacaoFrigobar").tablesorter({
+					headers: {2: {sorter: false} }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoAcomodacaoFrigobar"),
+					positionFixed: false, 
+					size: 8
+				})
+				.tablesorterFilter({
+					size: 8,
+					filterColumns: ${fn:length(frigobarList)},
+					filterCaseSensitive: true
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista" style="width: 470px; height: 310px;">
+			<table class="tabela" id="tabelaAcomodacaoFrigobar">
+				<thead>
+					<tr style="height: 25px;">
+						<th style="width: 90px;"><f:message key="campo.codigo.frigobar"/></th>
+						<th style="width: 350px;"><f:message key="campo.nome.frigobar"/></th>
+						<th style="width: 30px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+				<c:choose>
+					<c:when test="${!empty frigobarList}">
+						<c:forEach items="${frigobarList}" var="frigobar">
+						<tr style="height: 35px;">
+							<td style="width: 90px; text-align: center;">${frigobar.codigo}</td>
+							<td style="width: 350px; text-align: center;">${frigobar.nome}</td>
+							<td style="width: 30px; text-align: center;">
+								<a href="#" title="Selecionar Frigobar" onclick="selecionarFrigobar(${frigobar.id});">
+									<span class="icon icon-check icon-darkgray"></span>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<tr class="nenhumItem" style="height: 280px;">
+							<td colspan="3"><f:message key="mensagem.nenhum.item.encontrado"/></td>
+						</tr>
+					</c:otherwise>
+				</c:choose>						
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoAcomodacaoFrigobar" class="pager" style="margin-left: 100px;">
+			<div class="first"></div>
+			<div class="prev"></div>
+			<input type="text" class="pagedisplay"/>
+			<div class="next"></div>
+			<div class="last"></div>
+		</div>
+	</body>
+</html>

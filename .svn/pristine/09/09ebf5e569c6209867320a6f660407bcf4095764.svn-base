@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#botaoGravar").click(function() {
+					var camposPreenchidos = true;
+					var formulario = document.formularioSenha;
+				
+					if (formulario["senhaAtual"].value == "") {
+						formulario["senhaAtual"].className = 'campoObrigatorio'; camposPreenchidos = false;
+					} else {
+						formulario["senhaAtual"].className = '';
+					}
+					if (formulario["senhaNova"].value == "") {
+						formulario["senhaNova"].className = 'campoObrigatorio'; camposPreenchidos = false;
+					} else {
+						formulario["senhaNova"].className = '';
+					}
+					if (formulario["confirmarSenhaNova"].value == "") {
+						formulario["confirmarSenhaNova"].className = 'campoObrigatorio'; camposPreenchidos = false;
+					} else {
+						formulario["confirmarSenhaNova"].className = '';
+					}
+					if (camposPreenchidos) {
+						if (formulario["senhaNova"].value != formulario["confirmarSenhaNova"].value) {
+							formulario["senhaNova"].className = 'campoObrigatorio';
+							formulario["confirmarSenhaNova"].className = 'campoObrigatorio';
+							$("#mensagem").empty().append("<f:message key="usuario_senhas_diferentes"/>");
+						} else {
+							formulario["botaoGravar"].disabled = true;
+							$("#mensagem").empty().append("Aguarde...");
+							$.ajax({
+								contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+								type: "POST",
+								url: "<c:url value="/usuario/alterarSenha"/>",
+								data: $("#formularioSenha").serialize(),
+								dataType: "text",
+								success: function(retorno) {
+											$("#alterarSenha").data("kendoWindow").destroy();
+										 }
+							});
+						}
+					} else {
+						$("#mensagem").empty().append("Campos Obrigatórios");
+					}
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formularioSenha" name="formularioSenha" action="#">
+			<table border="0" cellspacing="0" cellpadding="0" style="width: 300px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="8" style="width: 15px;"></td>
+	   				<td colspan="3" style="width: 270px;">
+	   					Senha Atual
+	   				</td>
+	   				<td rowspan="8" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 270px;">
+	   					<input type="password" class="k-textbox" name="senhaAtual" style="width: 270px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 270px;">
+	   					Nova Senha
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 270px;">
+	   					<input type="password" class="k-textbox" name="senhaNova" style="width: 270px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 270px;">
+	   					Confirmar Nova Senha
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 270px;">
+	   					<input type="password"  class="k-textbox" name="confirmarSenhaNova" style="width: 270px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 40px;">
+					<td colspan="3" id="mensagem" class="textoDestaqueNormal" style="text-align: center;"></td>
+				</tr>
+	   			<tr style="height: 20px;">
+	   				<td colspan="3" style="text-align: center;">
+	   					<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span><f:message key="limpar"/></button>
+	            		<button id="botaoGravar" type="button" class="k-button"><span class='k-icon k-update'></span><f:message key="gravar"/></button>
+	   				</td>
+	   			</tr>
+   			</table>
+		</form>
+	</body>
+</html>

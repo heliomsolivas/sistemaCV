@@ -1,0 +1,167 @@
+package financeiro.bean;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity(name = "FINANCEIRO_CHEQUE")
+@Table(name = "FINANCEIRO_CHEQUE")
+public class Cheque implements Serializable {
+
+	private static final long serialVersionUID = -8406249956165011692L;
+
+	private Long id;
+	private String numero;
+	private String codigoBanco;
+	private String agencia;
+	private String conta;
+	private String CpfCnpj;
+	private String nomeTitular;
+	private String observacao;
+	private Boolean chequedeTerceiros;
+	private Double valor;
+	private Calendar emissao;
+	private Calendar apresentacao;
+	private SituacaoCheque situacao;
+	private Collection<ContaReceberCheque> contaRecebidaList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "numero", nullable = false)
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	@Column(name = "codigoBanco", nullable = false)
+	public String getCodigoBanco() {
+		return codigoBanco;
+	}
+
+	public void setCodigoBanco(String codigoBanco) {
+		this.codigoBanco = codigoBanco;
+	}
+
+	@Column(name = "agencia", nullable = false)
+	public String getAgencia() {
+		return agencia;
+	}
+
+	public void setAgencia(String agencia) {
+		this.agencia = agencia;
+	}
+
+	@Column(name = "conta", nullable = false)
+	public String getConta() {
+		return conta;
+	}
+
+	public void setConta(String conta) {
+		this.conta = conta;
+	}
+
+	@Column(name = "cpfCnpj", nullable = false)
+	public String getCpfCnpj() {
+		return CpfCnpj;
+	}
+
+	public void setCpfCnpj(String cpfCnpj) {
+		CpfCnpj = cpfCnpj;
+	}
+
+	@Column(name = "nomeTitular", nullable = false)
+	public String getNomeTitular() {
+		return nomeTitular;
+	}
+
+	public void setNomeTitular(String nomeTitular) {
+		this.nomeTitular = nomeTitular;
+	}
+
+	@Column(name = "observacao", nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	@Column(name = "chequedeTerceiros", nullable = false)
+	public Boolean getChequedeTerceiros() {
+		return chequedeTerceiros;
+	}
+
+	public void setChequedeTerceiros(Boolean chequedeTerceiros) {
+		this.chequedeTerceiros = chequedeTerceiros;
+	}
+
+	@Column(name = "valor", nullable = false)
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+
+	@Column(name = "emissao", nullable = false)
+	public Calendar getEmissao() {
+		return emissao;
+	}
+
+	public void setEmissao(Calendar emissao) {
+		this.emissao = emissao;
+	}
+
+	@Column(name = "apresentacao", nullable = true)
+	public Calendar getApresentacao() {
+		return apresentacao;
+	}
+
+	public void setApresentacao(Calendar apresentacao) {
+		this.apresentacao = apresentacao;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public SituacaoCheque getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(SituacaoCheque situacao) {
+		this.situacao = situacao;
+	}
+
+	@OneToMany(mappedBy = "cheque", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ContaReceberCheque> getContaRecebidaList() {
+		return contaRecebidaList;
+	}
+
+	public void setContaRecebidaList(Collection<ContaReceberCheque> contaRecebidaList) {
+		this.contaRecebidaList = contaRecebidaList;
+	}
+
+}

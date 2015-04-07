@@ -1,0 +1,17 @@
+package clientes.bean;
+
+public enum Categoria {
+	DIARIA("Diária"),
+	DIVERSO("Diverso"),
+	PRODUTO("Produto");
+	
+	private String nome;
+
+	private Categoria(String nome) {
+		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+}

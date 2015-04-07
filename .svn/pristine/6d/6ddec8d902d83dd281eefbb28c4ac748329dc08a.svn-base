@@ -1,0 +1,27 @@
+package clientes.bean;
+
+import hotel.bean.Acomodacao;
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collection;
+
+import agenda.bean.Reserva;
+
+public class Hospedagem implements Serializable {
+
+	private Long id;
+	private Hotel hotel;
+	private Acomodacao acomodacao;
+	private Collection<HospedeHospedagem> hospedeHospedagemList;
+	private Calendar dataCheckIn;
+	private Calendar dataCheckOut;
+	private Double valorDiaria;
+	private Double valorTotalConsumo;
+	private Double valorTotal;
+	private Boolean checkOutEstendidoGratuito;
+	private String observacao;
+	private Reserva reserva;
+
+}

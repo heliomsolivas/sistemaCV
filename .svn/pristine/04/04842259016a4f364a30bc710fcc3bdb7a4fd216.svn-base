@@ -1,0 +1,491 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formReserva").bValidator(options);
+				
+				$("#rgReserva").mask("99.999.999-9");
+				$("#cpfReserva").mask("999.999.999-99");
+				$("#-cnpjReserva").mask("99.999.999/9999-99");
+				$("#-telefoneReserva").mask("(99) 99999-9999");
+				$("#telefoneReserva").mask("(99) 99999-9999");
+				
+				$("#checkInReserva").datetimepicker({lang:'pt', format:'d/m/Y H:i', mask: false});
+				$("#checkOutReserva").datetimepicker({lang:'pt', format:'d/m/Y H:i', mask: false});
+				
+				$("#pessoaJuridica").hide();
+	    		$("#pessoaJuridica :input").attr("disabled", true);
+	    		
+		        $("input[name='pessoa']").click(function(){
+		            if($(this).attr("value")=="fisica"){
+		                $("#pessoaJuridica").hide();
+		                $("#pessoaFisica").show();
+						
+		                $("#pessoaJuridica :input").attr("disabled", true);
+		                $("#pessoaFisica :input").removeAttr("disabled");
+		            }
+		            
+		            if($(this).attr("value")=="juridica"){
+		                $("#pessoaFisica").hide();
+		                $("#pessoaJuridica").show();
+						
+		                $("#pessoaFisica :input").attr("disabled", true);
+		                $("#pessoaJuridica :input").removeAttr("disabled");
+		            }
+		        });
+		        
+				$("#formReserva").stepy({
+			  		duration  : 300,
+				  	transition: 'slide',
+				  	backLabel: '<span class="k-icon k-i-seek-w"></span> Anterior',
+				    nextLabel: 'Próximo <span class="k-icon k-i-seek-e"></span>',
+				    next: function(index) {
+					    	if(index == '2'){
+					    		var isValid = true;
+								var checkIn = $("#checkInReserva").val();
+								var checkOut = $("#checkOutReserva").val();
+								
+								if(!checkIn && checkIn.length <= 0){
+									isValid = false;
+									$("#formReserva").data("bValidators").first.showMsg($("#checkInReserva"), '<f:message key="campo.obrigatorio"/>');
+									return false;
+								}
+								
+								if (!checkOut && checkOut.length <= 0){
+									isValid = false;
+									$("#formReserva").data("bValidators").first.showMsg($("#checkOutReserva"), '<f:message key="campo.obrigatorio"/>');
+									return false;
+								}
+								
+								if(isValid) {
+									$("#formReserva").data("bValidators").first.removeMsg($("#checkInReserva"));
+									$("#formReserva").data("bValidators").first.removeMsg($("#checkOutReserva"));
+									
+									var r = $("#idReservaAcomodacao").val();
+									var a = $("#idAcomodacaoHospedagem").val();
+									
+									if(($("#acomodacaoReserva").val() == null) || ($("#exibirCheckInReserva").val() != $("#checkInReserva").val()) ||
+										($("#exibirCheckOutReserva").val() != $("#checkOutReserva").val())){
+										
+										$("#acomodacaoReservaList").load("<c:url value="/reserva/acomodacao/pesquisar"/>", {dataCheckIn: checkIn, dataCheckOut: checkOut});
+										
+										$("#dataCheckInReserva").val($("#checkInReserva").val());
+										$("#exibirCheckInReserva").val($("#checkInReserva").val());
+							          	$("#exibirCheckOutReserva").val($("#checkOutReserva").val());
+									}
+								}
+					    	}
+							
+					    	if(index == '3'){
+					    		var isValid = true;
+					    		var idAcomodacao = $("#acomodacaoReserva").val();					    		
+								
+								if(!idAcomodacao && idAcomodacao.length <= 0){
+									isValid = false;
+									$("#formReserva").data("bValidators").first.showMsg($("#acomodacaoReserva"), '<f:message key="campo.obrigatorio"/>');							
+									return false;
+								}
+								
+								if(isValid) {
+									$("#formReserva").data("bValidators").first.removeMsg($("#acomodacaoReserva"));
+									
+									if(($("#acomodacaoReserva").val() != $("#idAcomodacaoReserva").val()) ||
+										($("#idTipoPensao").val() != $("#selectIdTipoPensao").val())) {
+										
+										var checkIn = moment($("#checkInReserva").val(), "DD/MM/YYYY hh:mm");
+									 	var checkOut = moment($("#checkOutReserva").val(), "DD/MM/YYYY hh:mm");
+								        
+								        var numeroDiarias = checkOut.diff(checkIn, 'days');
+								        var valorTotal;
+										
+								        if($("#selectIdTipoPensao").val() != "")
+											valorTotal = (($("#campoValorDiariaReserva").val() * numeroDiarias) + parseFloat($("#campoValorTipoPensao").val()));
+								        else
+									        valorTotal = $("#campoValorDiariaReserva").val() * numeroDiarias;
+										
+								        $("#idAcomodacaoReserva").val($("#acomodacaoReserva").val());
+										$("#exibirNumeroAcomodacaoReserva").val($("#numeroAcomodacaoReserva").val() + " " + " -");
+										$("#campoNumeroDiariasReserva").val(numeroDiarias);
+										$("#valorDiariaReserva").val($("#precoReserva").val());
+								        $("#campoValorTotalReserva").val(valorTotal);								        
+							        	$("#exibirValorTotalReserva").val("R$ " + valorTotal);
+							        	$("#idTipoPensao").val($("#selectIdTipoPensao").val());
+									}
+								}
+					    	}
+					    	
+					    	if(index == '4'){
+					    		var isValid = true;
+					    		
+					    		if ($("input[name='pessoa']:checked").val() == 'fisica'){
+									
+					    			$("input[name='pessoa']").attr('disabled', true);
+					    			
+					    			var nome = $("#nomeResponsavelReserva").val();
+						    		var sexo = $("#sexoReserva").val();
+						    		var telefone = $("#telefoneReserva").val();
+						    		var email = $("#emailReserva").val();
+						    		var rg = $("#rgReserva").val();
+						    		var cpf = $("#cpfReserva").val();
+									
+						    		if(!nome && nome.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#nomeResponsavelReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!sexo && sexo.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#sexoReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!telefone && telefone.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#telefoneReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!email && email.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#emailReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!rg && rg.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#rgReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!cpf && cpf.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#cpfReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(isValid){
+										$("#formReserva").data("bValidators").first.removeMsg($("#nomeResponsavelReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#sexoReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#rgReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#cpfReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#telefoneReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#emailReserva"));
+										
+										$("#exibirResponsavelReserva").val($("#nomeResponsavelReserva").val());
+									}
+					    		}
+								
+					    		if ($("input[name='pessoa']:checked").val() == 'juridica'){
+						    		
+					    			$("input[name='pessoa']").attr('disabled', true);
+					    			
+					    			var nome = $("#-nomeResponsavelReserva").val();
+						    		var sexo = $("#-sexoReserva").val();
+						    		var telefone = $("#-telefoneReserva").val();
+						    		var email = $("#-emailReserva").val();
+						    		var cnpj = $("#-cnpjReserva").val();									
+									
+						    		if(!nome && nome.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#-nomeResponsavelReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!sexo && sexo.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#-sexoReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!telefone && telefone.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#-telefoneReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!email && email.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#-emailReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(!cnpj && cnpj.length <= 0){
+										isValid = false;
+										$("#formReserva").data("bValidators").first.showMsg($("#-cnpjReserva"), '<f:message key="campo.obrigatorio"/>');
+										return false;
+									}
+									
+									if(isValid){
+										$("#formReserva").data("bValidators").first.removeMsg($("#nomeResponsavelReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#sexoReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#cnpjReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#telefoneReserva"));
+										$("#formReserva").data("bValidators").first.removeMsg($("#emailReserva"));
+										
+										$("#exibirResponsavelReserva").val($("#-nomeResponsavelReserva").val());
+									}
+						    	}
+						    }
+				    	}
+				});
+				
+				$("#formReserva").submit(function() {
+					if($("#formReserva").data("bValidator").isValid()){
+						$("#cadastrarReserva").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+						$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+						$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/reserva/gravar"/>",
+							data: $("#formReserva").serialize(),
+							success: function(retorno) {
+										$("#cadastrarReserva").data("kendoWindow").destroy();
+										$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>");
+										$("#listaReserva").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#listaReserva").load("<c:url value="/reserva/sistema/lista"/>");
+									 }
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formReserva" name="formReserva" action="#">
+	  		<fieldset title="1">
+		    	<legend>
+					<f:message key="titulo.periodo"/>
+				</legend>
+				<div style="float: left; width: 560px; height: 130px; padding-top: 30px; padding-left: 10px;">
+					<span style="float: left; font-size: 14px; margin-right: 10px; margin-top: 3px;">
+						<f:message key="campo.checkIn"/>
+					</span>
+					<div class="k-textbox k-space-right" style="float: left; width: 180px; height: 30px;">
+	            		<input id="checkInReserva" type="text" name="reserva.dataPrevisaoCheckIn" style="font-size: 14px;"/>
+	                	<span class="k-icon k-i-calendar"></span>
+	            	</div>
+	            	<span style="float: left; font-size: 14px; margin-left: 30px; margin-right: 10px; margin-top: 3px;">
+						<f:message key="campo.checkOut"/>
+					</span>
+					<div class="k-textbox k-space-right" style="float: left; width: 180px; height: 30px;">
+		            	<input id="checkOutReserva" type="text" name="reserva.dataPrevisaoCheckOut" style="font-size: 14px;"/>
+		                <span class="k-icon k-i-calendar"></span>
+		            </div>
+		            <span style="width: 100%; text-align: center; float: left; font-size: 14px; margin-top: 50px;">
+		            	<f:message key="campo.checkOut.estendido.gratuito"/>
+		            	<span style="margin: 15px;">
+							<f:message key="sim"/>
+							<input type="radio" name="reserva.checkOutEstendidoGratuito" value="true"/>
+						</span>
+						<span>
+							<f:message key="nao"/>
+							<input type="radio" name="reserva.checkOutEstendidoGratuito" value="false" checked/>
+						</span>
+		            </span>
+				</div>
+		  	</fieldset>
+		  	
+		  	<fieldset title="2">
+		    	<legend><f:message key="titulo.acomodacao"/></legend>
+		    	<div style="float: left; width: 560px; height: 160px;">
+		    		<input type="hidden" id="idAcomodacaoReserva">
+		    		<input type="hidden" id="campoValorDiariaReserva">
+		    		<input type="hidden" id="campoValorTipoPensao">
+		    		<input type="hidden" id="idTipoPensao" name="reserva.tipoPensao.id">
+					<div id="acomodacaoReservaList"></div>
+				</div>
+		  	</fieldset>
+		  	
+	  		<fieldset title="3">
+		    	<legend><f:message key="titulo.hospede"/></legend>
+	    		<div style="float: left; width: 575px; height: 160px;">
+					<table border="0" cellpadding="0" cellspacing="0" style="width: 580px; font-size: 12px;">
+						<tr style="height: 0px;">
+            				<td colspan="4" style="width: 580px; text-align: center;">
+            					<span style="margin-right: 20px;">
+            						<input type="radio" value="fisica" name="pessoa" checked> <f:message key="campo.pessoa.fisica"/>
+            					</span>
+            					
+            					<input type="radio" value="juridica" name="pessoa"> <f:message key="campo.pessoa.juridica"/>
+            				</td>
+           				</tr>
+           				<tr style="height: 10px;"></tr>
+           			</table>
+           			<div id="pessoaFisica">
+           				<table border="0" cellpadding="0" cellspacing="0" style="width: 580px; font-size: 12px;">
+		            		<tr valign="bottom" style="height: 0px;">
+	            				<td colspan="2" style="width: 320px;">
+	            					<f:message key="campo.nome.responsavel"/>
+	            				</td>
+	            				<td style="width: 150px;">
+	            					<f:message key="campo.rg.responsavel"/>
+	            				</td>
+	            				<td style="width: 110px;">
+	            					<f:message key="campo.sexo.responsavel"/>
+	            				</td>
+	           				</tr>
+	           				<tr style="height: 10px;">
+	           					<td colspan="2" style="width: 320px;">
+	            					<input id="nomeResponsavelReserva" type="text" class="k-textbox" name="reserva.responsavel.nome" style="width: 300px;"/>
+	            				</td>
+	            				<td style="width: 150px;">
+	            					<input id="rgReserva" type="text" class="k-textbox" name="reserva.responsavel.rg" style="width: 130px;"/>
+	            				</td>
+	           					<td style="width: 110px;">
+	           						<select id="sexoReserva" name="reserva.responsavel.sexo" style="width: 110px;">
+										<option value=""><f:message key="selecione"/></option>
+										<option value="Masculino"><f:message key="masculino"/></option>
+										<option value="Feminino"><f:message key="feminino"/></option>
+									</select>
+	           					</td>
+	           				</tr>
+	           				<tr valign="bottom" style="height: 25px;">
+	            				<td style="width: 160px;">
+	            					<f:message key="campo.cpf.responsavel"/>
+	            				</td>
+	            				<td style="width: 160px;">
+	            					<f:message key="campo.telefone.responsavel"/>
+	            				</td>
+	            				<td colspan="2" style="width: 260px;">
+	            					<f:message key="campo.email.responsavel"/>
+	            				</td>
+	           				</tr>
+	           				<tr style="height: 10px;">
+	           					<td style="width: 160px;">
+	            					<input id="cpfReserva" type="text" class="k-textbox" name="reserva.responsavel.cpfCnpj" style="width: 140px;"/>
+	            				</td>
+	            				<td style="width: 160px;">
+	            					<input id="telefoneReserva" type="text" class="k-textbox" name="reserva.responsavel.telefone" style="width: 140px;"/>
+	            				</td>
+	            				<td colspan="2" style="width: 260px;">
+	            					<input id="emailReserva" type="text" class="k-textbox" name="reserva.responsavel.email" style="width: 260px;"/>
+	            				</td>
+	           				</tr>
+	           			</table>
+           			</div>
+           			<div id="pessoaJuridica">
+           				<table border="0" cellpadding="0" cellspacing="0" style="width: 580px; font-size: 12px;">
+		            		<tr valign="bottom" style="height: 0px;">
+	            				<td colspan="2" style="width: 390px;">
+	            					<f:message key="campo.nome.responsavel"/>
+	            				</td>
+	            				<td style="width: 190px;">
+	            					<f:message key="campo.sexo.responsavel"/>
+	            				</td>
+	           				</tr>
+	           				<tr style="height: 10px;">
+	           					<td colspan="2" style="width: 390px;">
+	            					<input id="-nomeResponsavelReserva" type="text" class="k-textbox" name="reserva.responsavel.nome" style="width: 370px;"/>
+	            				</td>
+	           					<td style="width: 190px;">
+	           						<select id="-sexoReserva" name="reserva.responsavel.sexo" style="width: 190px;">
+										<option value=""><f:message key="selecione"/></option>
+										<option value="Masculino"><f:message key="masculino"/></option>
+										<option value="Feminino"><f:message key="feminino"/></option>
+									</select>
+	           					</td>
+	           				</tr>
+	           				<tr valign="bottom" style="height: 25px;">			
+	            				<td style="width: 195px;">
+	            					<f:message key="campo.cnpj.responsavel"/>
+	            				</td>
+	            				<td style="width: 195px;">
+	            					<f:message key="campo.telefone.responsavel"/>
+	            				</td>
+	            				<td style="width: 190px;">
+	            					<f:message key="campo.email.responsavel"/>
+	            				</td>
+	           				</tr>
+	           				<tr style="height: 10px;">
+	           					<td style="width: 195px;">
+	            					<input id="-cnpjReserva" type="text" class="k-textbox" name="reserva.responsavel.cpfCnpj" style="width: 175px;"/>
+	            				</td>
+	            				<td style="width: 195px;">
+	            					<input id="-telefoneReserva" type="text" class="k-textbox" name="reserva.responsavel.telefone" style="width: 175px;"/>
+	            				</td>
+	            				<td style="width: 190px;">
+	            					<input id="-emailReserva" type="text" class="k-textbox" name="reserva.responsavel.email" style="width: 190px;"/>
+	            				</td>
+	           				</tr>	           				
+	           			</table>
+           			</div>
+				</div>
+		  	</fieldset>
+		  	
+	  		<fieldset title="4">
+		    	<legend><f:message key="titulo.confirmar"/></legend>
+		    	<div style="float: left; width: 575px; height: 160px;">
+		    		<table border="0" cellpadding="0" cellspacing="0" style="width: 575px;">
+	            		<tr style="height: 0px;">
+	            			<td style="width: 70px; font-weight: bold;">
+            					<f:message key="campo.checkIn"/>:
+            				</td>
+            				<td style="width: 180px;">
+            					<input id="exibirCheckInReserva" type="text" style="width: 180px; border: 0px; background: none;" disabled/>
+            				</td>
+            				<td style="width: 70px; font-weight: bold;">
+            					<f:message key="campo.checkOut"/>:
+            				</td>
+            				<td style="width: 70px;">       						
+           						<input id="exibirCheckOutReserva" type="text" style="width: 175px; border: 0px; background: none;" disabled/>
+           					</td>
+			   			</tr>
+           				<tr valign="bottom" style="height: 25px;">
+           					<td style="width: 70px; font-weight: bold;">
+            					<f:message key="campo.responsavel"/>:
+            				</td>
+           					<td style="width: 180px;">
+           						<input id="exibirResponsavelReserva" type="text" style="float: left; width: 180px; border: 0px; background: none;" disabled>
+           					</td>
+           					<td style="width: 70px; font-weight: bold;">
+            					<f:message key="campo.acomodacao"/>
+            				</td>
+           					<td style="width: 70px;">
+           						<input id="exibirNumeroAcomodacaoReserva" type="text" style="width: 45px; border: 0px; background: none;" disabled>
+           						<input id="exibirNomeAcomodacaoReserva" type="text" style="width: 130px; border: 0px; background: none;" disabled>
+           					</td>
+           				</tr>
+           				<tr valign="bottom" style="height: 25px;">
+           					<td style="width: 70px; font-weight: bold;">
+            					<f:message key="campo.valor.total"/>:
+            				</td>
+           					<td style="width: 180px;">
+           						<!-- Campos Obrigatórios -->
+		 						<input type="hidden" id="campoNumeroDiariasReserva" data-bvalidator="required" name="reserva.numeroDiarias">
+		 						<input type="hidden" id="valorDiariaReserva" data-bvalidator="required" name="reserva.valorDiaria">
+		 						<input type="hidden" id="campoValorTotalReserva" data-bvalidator="required" name="reserva.valorTotal">
+		 						<input type="hidden" data-bvalidator="required" name="reserva.hotel.id" value="${hotel.id}">
+		 						<!-- FIM -->
+           						<input type="text" id="exibirValorTotalReserva" style="width: 180px; border: 0px; background: none;" disabled>
+           					</td>
+           				</tr>
+           				<tr style="height: 25px;">
+           					<td valign="bottom" colspan="4" style="width: 575px;">
+            					<f:message key="campo.observacoes"/>
+            				</td>
+           				</tr>
+           				<tr style="height: 10px;">
+           					<td colspan="4" style="width: 575px;">
+            					<textarea class="k-textbox" name="reserva.observacao" style="width: 575px; height: 50px;"></textarea>
+            				</td>
+           				</tr>
+      				</table>
+		    	</div>
+		  	</fieldset>
+		  	
+		  	<input type="submit" class="button-finish" value="Finalizar!">
+		  	
+		</form>
+	</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="aplicativo"/></title>
+		
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<link rel="shortcut icon" href="<c:url value="/imagens/logo.ico"/>">
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery-ui.min.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.alerts.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.bvalidator.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.confirm.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.daterangerpicker.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.datetimepicker.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.filter.formatter.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.lightbox.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.smartpaginator.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.stepy.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.tablesorter.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.waitMe.css"/>"/>	
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.common.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.default.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.examples-offline.css"/>"/>	
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/layoutmodelo.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/opa-icons.css"/>"/>
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.all.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.culture.pt-BR.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.web.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.alerts.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.bvalidator.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.confirm.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.daterangerpicker.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.datetimepicker.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.hotel.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.lightbox-2.6.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.maskedinput.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.maskMoney.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.moment.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.smartpaginator.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.stepy.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.pager.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.widgets.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.widget-scroller.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.widgets-filter-formatter.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.ui-latest.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.waitMe.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.bootbox.js"/>"></script>
+		
+		<script type="text/javascript">
+			var caminhoAbsoluto = "<c:url value="/"/>";
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			 	kendo.culture("pt-BR");
+ 				$("#menu").kendoMenu();
+ 				$("#container").hide();
+ 				
+ 				$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+ 				$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>", {parametro: null});
+				
+	        	$("#pesquisarAcomodacao").keyup(function(){
+	        		var parametro = $(this).val();
+					
+	        		$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+	        		
+					if (parametro != ''){
+						$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>", {parametro: parametro});
+					} else {
+						$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>", {parametro: null});
+					}
+				});
+			});
+		    
+		/*	var tempo = window.setInterval(atualizar, 1000000);
+			function atualizar() {
+				$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>", {parametro: null});
+			} */
+			
+			function sair() {
+				$.confirm({
+		            'title': '<f:message key="sair"/>',
+		            'message': '<f:message key="mensagem.sair.sistema"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	window.location = "<c:url value="/sistema/logout"/>";
+	                    	}
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+		</script>
+		<style type="text/css">
+			.k-window-title {
+			   font-weight: bold;
+			   font-size: 13px;
+			   color: #2e2e2e;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<div id="header" class="k-block k-shadow">
+				<div id="divLogo" style="float: left; margin-left: 5px;">
+					<a href="<c:url value="/sistema"/>">
+						<img class="linkSemBorda" alt="<f:message key="ledware"/>" src="<c:url value="/imagens/logoLedware.png"/>" style="height: 70px;"/>
+					</a>
+				</div>
+				<div id="divBanner" style="float: left;"></div>
+				<!--  div cabecalho  -->
+				<div id="divUser" style="float: right;">
+					<img id="imgUser" class="linkSemBorda" src="<c:url value="/imagens/icones/iconeUser.png"/>"/>
+				</div>
+				<div id="divSaudacao" style="float: right; margin-top: 35px; margin-right: 15px;">
+					${saudacao}
+				</div>
+			</div>
+			<div id="mainnav" class="k-block k-shadow">
+				<!--  menu de navegacao superior -->
+				<div id="teste">
+					<ul id="menu">
+						<li style="float: right; width: auto; border: 0px; padding-right: 10px;">
+							<span class="k-icon k-i-custom"></span> <f:message key="menu.configuracoes"/>
+							<ul>
+						<c:choose>
+							<c:when test="${userSession.usuario.administrador}">
+								<li>
+									<a href="#" onclick="exibe('<c:url value="/usuario/cadastrar"/>','<f:message key="cadastrar.usuario"/>', '485', '360', 'cadastrarUsuario');"><span class="icon icon-user icon-darkgray"></span> <f:message key="sub.menu.novo.usuario"/></a>
+								</li>
+								<li>
+									<a href="#" onclick="exibe('<c:url value="/usuario/lista"/>','<f:message key="lista.usuario"/>', '745', '470', 'listaUsuario');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.lista.usuario"/></a>
+								</li>
+								<li>
+									<a href="#" onclick="exibe('<c:url value="/perfil/novo"/>','<f:message key="cadastrar.perfil"/>', '630', '480', 'cadastrarPerfil');"><span class="icon icon-profile icon-darkgray"></span> <f:message key="sub.menu.novo.perfil"/></a>
+								</li>
+								<li>
+									<a href="#" onclick="exibe('<c:url value="/perfil/lista"/>','<f:message key="lista.perfil"/>', '745', '470', 'listaPerfil');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.lista.perfil"/></a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li disabled="disabled">
+									<a href="#" onclick=""><span class="icon icon-user icon-darkgray"></span> <f:message key="sub.menu.novo.usuario"/></a>
+								</li>
+								<li disabled="disabled">
+									<a href="#" onclick=""><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.lista.usuario"/></a>
+								</li>
+								<li disabled="disabled">
+									<a href="#" onclick=""><span class="icon icon-profile icon-darkgray"></span> <f:message key="sub.menu.novo.perfil"/></a>
+								</li>
+								<li disabled="disabled">
+									<a href="#" onclick=""><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.lista.perfil"/></a>
+								</li>
+							</c:otherwise>
+							</c:choose>
+								<li>
+									<a href="#" onclick="exibe('<c:url value="/usuario/formAlterarSenha"/>', '<f:message key="alterar.senha"/>', '315', '210', 'alterarSenha');"><span class="icon icon-key icon-darkgray"></span> <f:message key="sub.menu.alterar.senha"/></a>
+								</li>
+								<li>
+									<a id="sair" onclick="sair();"><span class="icon icon-cancel icon-darkgray"></span> <f:message key="sub.menu.sair"/></a>
+								</li>
+							</ul>
+						</li>
+						<c:choose>
+							<c:when test="${hotel != null}">
+								<li disabled="disabled" style="float: right; width: auto;">
+									<span class="k-icon k-i-calendar"></span> <f:message key="sub.menu.agenda"/>
+									<!-- <a href="#" onclick="consultar('<c:url value="/reserva/agenda/consultar"/>', '<f:message key="consultar.agenda"/>', '630px', '805', '825');"><span class="k-icon k-i-calendar"></span> <f:message key="sub.menu.agenda"/></a> -->
+								</li>
+								<li style="float: right; width: auto; border: 0px">
+									<div class="k-textbox k-space-right" style="width: 250px; margin-right: 10px; margin-top: 2px;">
+						                <input id="pesquisarAcomodacao" type="text" placeholder="<f:message key="menu.pesquisar.acomodacao"/>" style="text-align: center;"/>
+						                <span class="k-icon k-i-search"></span>
+						            </div>
+								</li>
+								<li style="width: auto;">
+									<f:message key="menu.hotel"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.acomodacao"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/acomodacao/cadastrar"/>', '<f:message key="cadastrar.acomodacao"/>', '625', '520', 'cadastrarAcomodacao');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/acomodacao/lista"/>', '<f:message key="lista.acomodacao"/>', '745', '470', 'listaAcomodacao');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.tipo.acomodacao"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/tipo/acomodacao/cadastrar"/>', '<f:message key="cadastrar.tipo.acomodacao"/>', '415', '200', 'cadastrarTipoAcomodacao');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/tipo/acomodacao/lista"/>', '<f:message key="lista.tipo.acomodacao"/>', '745', '470', 'listaTipoAcomodacao');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.padrao.frigobar"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/frigobar/cadastrar"/>', '<f:message key="cadastrar.frigobar"/>', '515', '430', 'cadastrarFrigobar');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/frigobar/lista"/>', '<f:message key="lista.frigobar"/>', '745', '470', 'listaFrigobar');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.hospede"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/clientes/hospede/cadastrar"/>', '<f:message key="cadastrar.hospede"/>', '625', '520', 'cadastrarHospede');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/clientes/hospede/lista"/>', '<f:message key="lista.hospede"/>', '745', '470', 'listaHospede');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<c:choose>
+											<c:when test="${userSession.usuario.administrador}">
+												<li>
+													<span class="k-icon k-i-minimize"></span> <f:message key="menu.tipo.pensao"/>
+													<ul>
+														<li>
+															<a href="#" onclick="exibe('<c:url value="/hotel/tipo/pensao/cadastrar"/>', '<f:message key="informacoes.tipo.pensao"/>', '615', '120', 'cadastrarTipoPensao');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+														</li>
+														<li>
+															<a href="#" onclick="exibe('<c:url value="/hotel/tipo/pensao/lista"/>', '<f:message key="lista.tipo.pensao"/>', '745', '470', 'listaTipoPensao');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+														</li>
+													</ul>
+												</li>
+												<li>
+													<a href="#" onclick="consultar('<c:url value="/hotel/consultar"/>', '<f:message key="informacoes.hotel"/>', '625', '520', 'consultarHotel');"><span class="k-icon k-i-search"></span> <f:message key="sub.menu.consultar.hotel"/></a>
+												</li>
+											</c:when>
+											<c:otherwise>
+												<li disabled="disabled">
+													<span class="k-icon k-i-minimize"></span> <f:message key="menu.tipo.pensao"/>
+												</li>
+												<li disabled="disabled">
+													<a id="consultarHotel" href="#"><span class="k-icon k-i-search"></span> <f:message key="sub.menu.consultar.hotel"/></a>
+												</li>												
+											</c:otherwise>
+										</c:choose>
+									</ul>
+								</li>
+								<li style="width: auto;">
+									<f:message key="menu.hospedagem"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.hospedagem"/>
+										 	<ul>
+												<li>
+													<a href="#" onclick="consultar('<c:url value="/clientes/hospedagem/modalReserva"/>', '<f:message key="informar.reserva"/>', '615', '180', 'modalReserva');"> <span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/clientes/hospedagem/lista"/>', '<f:message key="lista.hospedagem"/>', '745', '470', 'listaHospedagem');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.reserva"/>
+										 	<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/reserva/sistema/cadastrar"/>', '<f:message key="cadastrar.reserva"/>', '660', '320', 'cadastrarReserva');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/reserva/sistema/lista"/>', '<f:message key="lista.reserva"/>', '745', '470', 'listaReserva');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li style="width: auto;">
+									<f:message key="menu.estoque"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.fabricante"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/fabricante/cadastrar"/>', '<f:message key="cadastrar.fabricante"/>', '615', '110', 'cadastrarFabricante');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/fabricante/lista"/>', '<f:message key="lista.fabricante"/>', '745', '470', 'listaFabricante');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.fornecedor"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/fornecedor/cadastrar"/>', '<f:message key="cadastrar.fornecedor"/>', '615', '330', 'cadastrarFornecedor');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/fornecedor/lista"/>', '<f:message key="lista.fornecedor"/>', '745', '470', 'listaFornecedor');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.produto"/>
+										 	<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/produto/cadastrar"/>', '<f:message key="cadastrar.produto"/>', '615', '180', 'cadastrarProduto');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/estoque/produto/lista"/>', '<f:message key="lista.produto"/>', '745', '470', 'listaProduto');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li style="width: auto;" disabled="disabled">
+								 	<f:message key="menu.compra"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<a href="#" onclick="exibe('<c:url value="/compras/cadastrar"/>', '<f:message key="cadastrar.compra"/>', 'auto', 'auto', 'cadastrarCompra');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+										</li>
+										<li>
+											<a href="#" onclick="exibe('<c:url value="/compras/lista"/>', '<f:message key="lista.compra"/>', '745', '470', 'listaCompra');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+										</li>
+									</ul>
+								</li>
+								<li style="width: auto;">
+									<f:message key="menu.financeiro"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.cheque"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/cheque/cadastrar"/>', '<f:message key="cadastrar.cheque"/>', '615', '415', 'cadastrarCheque');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/cheque/lista"/>', '<f:message key="lista.cheque"/>', '745', '470', 'listaCheque');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.conta.caixa"/>
+											 <ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaCaixa/cadastrar"/>', '<f:message key="cadastrar.conta.caixa"/>', '615', '380px', 'cadastrarContaCaixa');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaCaixa/lista"/>', '<f:message key="lista.conta.caixa"/>', '745', '470', 'listaContaCaixa');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.conta.pagar"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaPagar/cadastrar"/>', '<f:message key="cadastrar.conta.pagar"/>', '615', '470', 'cadastrarContaPagar');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaPagar/lista"/>', '<f:message key="lista.conta.pagar"/>', '745', '470', 'listaContaPagar');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.conta.receber"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaReceber/cadastrar"/>', '<f:message key="cadastrar.conta.receber"/>', '615', '470', 'cadastrarContaReceber');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/contaReceber/lista"/>', '<f:message key="lista.conta.receber"/>', '745', '470', 'listaContaReceber');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.movimentacao"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/movimentacao/cadastrar"/>', '<f:message key="cadastrar.movimentacao"/>', '615', '320', 'cadastrarMovimentacao');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/financeiro/movimentacao/lista"/>', '<f:message key="lista.movimentacao"/>', '745', '470', 'listaMovimentacao');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li style="width: auto;">
+								 	<f:message key="menu.contabil"/> <span class="k-icon k-si-arrow-s"></span>
+									<ul>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.conta.contabil"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/conta/cadastrar"/>', '<f:message key="cadastrar.conta.contabil"/>', '615', '260', 'cadastrarContaContabil');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/conta/lista"/>', '<f:message key="lista.conta.contabil"/>', '745', '470', 'listaContaContabil');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.historico"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/historico/cadastrar"/>', '<f:message key="cadastrar.historico"/>', '415', '210', 'cadastrarHistorico');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/historico/lista"/>', '<f:message key="lista.historico"/>', '745', '470', 'listaHistorico');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="k-icon k-i-minimize"></span> <f:message key="menu.lancamento"/>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/lancamento/cadastrar"/>', '<f:message key="cadastrar.lancamento"/>', '615', '230', 'cadastrarLancamento');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar"/></a>
+												</li>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/contabil/lancamento/lista"/>', '<f:message key="lista.lancamento"/>', '745', '470', 'listaLancamento');"><span class="k-icon k-i-insert-n"></span> <f:message key="sub.menu.listar"/></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<c:choose>
+									<c:when test="${userSession.usuario.administrador}">
+										<li style="float: right; width: auto;" disabled="disabled">
+											<span class="k-icon k-i-calendar"></span> <f:message key="menu.agenda"/>
+										</li>
+										<li style="width: auto;">
+											<f:message key="menu.hotel"/> <span class="k-icon k-si-arrow-s"></span>
+											<ul>
+												<li>
+													<a href="#" onclick="exibe('<c:url value="/hotel/cadastrar"/>', '<f:message key="cadastrar.hotel"/>', '625', '520', 'cadastrarHotel');"><span class="k-icon k-i-plus"></span> <f:message key="sub.menu.cadastrar.hotel"/></a>
+												</li>
+											</ul>
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li style="float: right; width: auto;" disabled="disabled">
+											<span class="k-icon k-i-calendar"></span> <f:message key="menu.agenda"/>
+										</li>
+										<li style="width: auto;" disabled="disabled">
+											<f:message key="menu.hotel"/> <span class="k-icon k-si-arrow-s"></span>
+										</li>
+									</c:otherwise>
+								</c:choose>
+								<li style="width: auto;" disabled="disabled">
+									<f:message key="menu.hospedagem"/> <span class="k-icon k-si-arrow-s"></span>
+								</li>
+								<li style="width: auto;" disabled="disabled">
+									<f:message key="menu.estoque"/> <span class="k-icon k-si-arrow-s"></span>
+								</li>
+								<li style="width: auto;" disabled="disabled">
+									<f:message key="menu.compra"/> <span class="k-icon k-si-arrow-s"></span>
+								</li>
+								<li style="width: auto;" disabled="disabled">
+									<f:message key="menu.financeiro"/> <span class="k-icon k-si-arrow-s"></span>
+								</li>
+								<li style="width: auto;" disabled="disabled">
+									<f:message key="menu.contabil"/> <span class="k-icon k-si-arrow-s"></span>
+								</li>
+							</c:otherwise>
+						</c:choose>
+					</ul>
+				</div>
+			</div>
+			<div id="conteudo" class="k-block k-shadow">
+				<!--  div das acomodações da pagina -->
+			</div>
+			<div id="container" class="k-block k-shadow">
+				<!--  div das janelas da pagina -->
+			</div>
+		</div>
+	</body>
+</html>

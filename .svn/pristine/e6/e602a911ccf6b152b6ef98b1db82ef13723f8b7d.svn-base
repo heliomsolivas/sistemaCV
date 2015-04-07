@@ -1,0 +1,73 @@
+// document.ready();
+$(function() {
+	$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+	
+	$("#numeroDocumentoMovimentacao").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: parametro, dataInicio: null, dataFim: null});
+		} else {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataInicioMovimentacao").change(function(){
+		var parametro = $(this).val();
+		var parametro2 = $("#dataFimMovimentacao").val();
+		
+		if ((parametro != '') && (parametro2 == '')) {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: null});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataFimMovimentacao").change(function() {
+		var parametro = $("#dataInicioMovimentacao").val();
+		var parametro2 = $(this).val();
+		
+		if ((parametro == '') && (parametro2 != '')) {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: parametro2});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#movimentacaoList").load(caminhoAbsoluto + "financeiro/movimentacao/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarMovimentacao() {
+    validator =  $("#formMovimentacao").kendoValidator({ messages: { required: "Campo Obrigatório"} }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/movimentacao/gravar",
+			data: $("#formMovimentacao").serialize(),
+			success: function(retorno) {
+						$("#cadastrarMovimentacao").data("kendoWindow").destroy();
+						$("#listaMovimentacao").load(caminhoAbsoluto + "financeiro/movimentacao/lista");
+					 }
+		});	 
+	}
+}
+
+function alterarMovimentacao() {
+    validator =  $("#formAlterarMovimentacao").kendoValidator({ messages: { required: "Campo Obrigatório"} }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/movimentacao/gravar",
+			data: $("#formAlterarMovimentacao").serialize(),
+			success: function(retorno) {						
+						$("#consultarMovimentacao").data("kendoWindow").destroy();
+						$("#listaMovimentacao").load(caminhoAbsoluto + "financeiro/movimentacao/lista");
+					 }
+		});	 
+	}
+}

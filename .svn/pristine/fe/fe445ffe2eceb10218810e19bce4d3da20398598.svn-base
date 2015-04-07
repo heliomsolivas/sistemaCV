@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#divItemAcomodacao").load("<c:url value="/hotel/item/acomodacao/pesquisar"/>", {id: ${acomodacao.id}});
+
+				$("#-valorDiariaAcomodacao").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', allowZero: true, affixesStay: true});
+				$("#-nHospedesAcomodacao").kendoNumericTextBox({ format : "#" });
+				$("#-nCamasAcomodacao").kendoNumericTextBox({ format : "#" });
+				$("#-tipoAcomodacao").change(function() {
+					if ($("#-tipoAcomodacao1").val() != "") {
+						var id = $("#-tipoAcomodacao1").val();
+						$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "GET", 
+							url: "<c:url value="/hotel/tipo/acomodacao/atualizaDados/"/>" + id,
+							success: function(retorno){
+										if (retorno != "") {
+											retorno = retorno.split("],[");
+											$("#-descricaoTipoAcomodacao").val(retorno[0]);
+										} else {
+											$("#-descricaoTipoAcomodacao").empty().append("<f:message key="mensagem.tipo.acomodacao"/>");
+										}
+									 }
+						});
+					}
+				});
+
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formAlterarAcomodacao").bValidator(options);
+				
+				$("#formAlterarAcomodacao").submit(function() {
+					if($("#formAlterarAcomodacao").data("bValidator").isValid()){
+						$("#consultarAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/hotel/acomodacao/gravar"/>",
+							data: $("#formAlterarAcomodacao").serialize(),
+							success: function (retorno) {
+										$("#consultarAcomodacao").data("kendoWindow").destroy();
+										$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>");
+										$("#listaAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});									
+										$("#listaAcomodacao").load("<c:url value="/hotel/acomodacao/lista"/>");
+				           			}
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<style type="text/css">
+		input[type="radio"] {
+			margin-right: 5px;
+		}
+	</style>
+	<body class="divConteudo">
+    	<form id="formAlterarAcomodacao" name="formAlterarAcomodacao" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="float: left; width: 190px; font-size: 12px;">
+    			<tr valign="bottom" style="height: 15px;">
+					<td rowspan="19" style="width: 15px;"></td>
+				</tr>
+    			<tr style="height: 20px;">
+	   				<td colspan="3" rowspan="2" class="dairy-photos" style="width: 180px;">
+						<a href="../imagens/hotel/quarto1.jpg" data-lightbox="roadtrip" data-id="quarto1" title="Quarto" style="float: left; margin-bottom: 50px;">
+        					<img src="../imagens/hotel/quarto1.jpg" style="width: 80px; height: 70px;"/>
+                    	</a>
+                        <a href="../imagens/hotel/banheiro1.jpg" data-lightbox="roadtrip" data-id="banheiro1" title="Banheiro" style="float: left; margin-left: 50px; margin-bottom: 50px;">
+                        	<img src="../imagens/hotel/banheiro1.jpg" style="width: 80px; height: 70px;"/>
+                        </a>
+					</td>
+            	</tr>
+            	<tr style="height: 10px;"></tr>
+            	<tr style="height: 25px;">
+	   				<td colspan="3" rowspan="2" class="dairy-photos" style="width: 180px;">
+						<a href="../imagens/hotel/cama1.jpg" data-lightbox="roadtrip" data-id="cama1" title="Cama" style="float: left; margin-bottom: 50px">
+        					<img src="../imagens/hotel/cama1.jpg" style="width: 80px; height: 70px;"/>
+                    	</a>
+                        <a href="#" data-lightbox="" data-id="" title="" style="float: left; margin-left: 50px;  margin-bottom: 50px;">
+                        	<img src="../imagens/hotel/noImage.jpg" style="width: 80px; height: 70px; "/>
+                        </a>
+					</td>
+            	</tr>
+            	<tr style="height: 25px;"></tr>
+            	<tr style="height: 25px;">
+            		<td colspan="2" style="text-align: center;">
+            			<f:message key="sub.titulo.especificacoes"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td colspan="2">
+            			<label style="margin-left: 120px; margin-right: 3px;">
+            				<f:message key="sim"/>
+            			</label>
+            			<label>
+            				<f:message key="nao"/>
+            			</label>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.ar.condicionado"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.arCondicionado == true}">checked</c:if> value="true" name="acomodacao.arCondicionado"/>
+        				<input type="radio"<c:if test="${acomodacao.arCondicionado == false}">checked</c:if> value="false" name="acomodacao.arCondicionado"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.cama.box"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.camaBox == true}">checked</c:if> value="true" name="acomodacao.camaBox"/>
+            			<input type="radio" <c:if test="${acomodacao.camaBox == false}">checked</c:if> value="false" name="acomodacao.camaBox"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.secador.cabelo"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.secadorCabelo == true}">checked</c:if> value="true" name="acomodacao.secadorCabelo"/>
+            			<input type="radio" <c:if test="${acomodacao.secadorCabelo == false}">checked</c:if> value="false" name="acomodacao.secadorCabelo"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.cofre"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.cofre == true}">checked</c:if> value="true" name="acomodacao.cofre"/>
+            			<input type="radio" <c:if test="${acomodacao.cofre == false}">checked</c:if> value="false" name="acomodacao.cofre"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.dvd"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.dvd == true}">checked</c:if> value="true" name="acomodacao.dvd"/>
+            			<input type="radio" <c:if test="${acomodacao.dvd == false}">checked</c:if> value="false" name="acomodacao.dvd"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.fogao"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.fogao == true}">checked</c:if> value="true" name="acomodacao.fogao"/>
+            			<input type="radio" <c:if test="${acomodacao.fogao == false}">checked</c:if> value="false" name="acomodacao.fogao"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.microondas"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.microondas == true}">checked</c:if> value="true" name="acomodacao.microondas"/>
+            			<input type="radio" <c:if test="${acomodacao.microondas == false}">checked</c:if> value="false" name="acomodacao.microondas"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.frigobar"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.frigobar == true}">checked</c:if> value="true" name="acomodacao.frigobar"/>
+            			<input type="radio" <c:if test="${acomodacao.frigobar == false}">checked</c:if> value="false" name="acomodacao.frigobar"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.tv.lcd"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.tvLCD == true}">checked</c:if> value="true" name="acomodacao.tvLCD"/>
+            			<input type="radio" <c:if test="${acomodacao.tvLCD == false}">checked</c:if> value="false" name="acomodacao.tvLCD"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.tv.tubo"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.tvTubo == true}">checked</c:if> value="true" name="acomodacao.tvTubo"/>
+            			<input type="radio" <c:if test="${acomodacao.tvTubo == false}">checked</c:if> value="false" name="acomodacao.tvTubo"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.utensilios.cozinha"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.utensiliosCozinha == true}">checked</c:if> value="true" name="acomodacao.utensiliosCozinha"/>
+            			<input type="radio" <c:if test="${acomodacao.utensiliosCozinha == false}">checked</c:if> value="false" name="acomodacao.utensiliosCozinha"/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.ventilador"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" <c:if test="${acomodacao.ventilador == true}">checked</c:if> value="true" name="acomodacao.ventilador"/>
+            			<input type="radio" <c:if test="${acomodacao.ventilador == false}">checked</c:if> value="false" name="acomodacao.ventilador"/>
+            		</td>
+            	</tr>
+	   		</table>
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px; float: left;">
+	   			<tr valign="bottom" style="height: 20px;">
+					<td rowspan="15" style="width: 20px;"></td>
+					<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.acomodacao"/>
+	   				</td>
+	   				<td colspan="2" style="width: 175px;">
+	   					<f:message key="campo.numero.acomodacao"/>
+	   				</td>
+	   				<td rowspan="15" style="width: 10px;"></td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="hidden" value="${acomodacao.id}" name="acomodacao.id"/>
+	   					<input type="hidden" value="${acomodacao.hotel.id}" name="acomodacao.hotel.id"/>
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${acomodacao.nome}" name="acomodacao.nome" style="width: 370px;"/>
+	   				</td>
+	   				<td colspan="2" style="width: 175px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${acomodacao.numero}" name="acomodacao.numero" style="width: 175px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.tipo.acomodacao"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.situacao.acomodacao"/>
+	   				</td>
+	   				<td style="width: 97px;">
+	   					<f:message key="campo.numero.camas"/>
+	   				</td>
+	   				<td style="width: 77px;">
+	   					<f:message key="campo.numero.hospedes"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<select id="-tipoAcomodacao" data-bvalidator="required" name="acomodacao.tipo.id" style="width: 175px;">
+	   						<option value="${acomodacao.tipo.id}">${acomodacao.tipo.nome}</option>
+							<c:forEach items="${tipoAcomodacaoList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<c:choose>
+	   						<c:when test="${acomodacao.status.nome == 'Ocupada'}">
+	   							<input type="hidden" name="acomodacao.status" value="${acomodacao.status}">
+	   							<select style="width: 175px;" disabled>
+			   						<option value="">${acomodacao.status.nome}</option>
+								</select>
+							</c:when>
+	   						<c:otherwise>
+	   							<select data-bvalidator="required" name="acomodacao.status" style="width: 175px;">
+			   						<option value="${acomodacao.status}">${acomodacao.status.nome}</option>
+									<c:forEach items="${statusList}" var="item">
+									<option value="${item}">${item.nome}</option>
+									</c:forEach>
+								</select>
+	   						</c:otherwise>
+	   					</c:choose>
+	   				</td>
+	   				<td style="width: 97px;">
+	   					<input id="-nCamasAcomodacao" type="text" data-bvalidator="required" value="${acomodacao.numeroCamas}" name="acomodacao.numeroCamas" style="width: 77px;" step="1"/>
+	   				</td>
+	   				<td style="width: 77px;">
+	   					<input id="-nHospedesAcomodacao" type="text" data-bvalidator="required" value="${acomodacao.maximoHospedes}" name="acomodacao.maximoHospedes" style="width: 77px;" step="1"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<f:message key="campo.observacoes"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<textarea class="k-textbox" name="acomodacao.observacoes" style="width: 570px; height: 60px;">${acomodacao.observacoes}</textarea>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+            		<td colspan="4">
+            			<label style="width: 120px; margin-left: 450px;">
+            				<f:message key="campo.valor.diaria"/>
+            			</label>
+            		</td>
+            	</tr>
+            	<tr style="height: 10px;">
+            		<td colspan="4">
+            			<span style="width: 120px; margin-left: 450px;">
+            				<input id="-valorDiariaAcomodacao" type="text" class="k-textbox" data-bvalidator="required" value="${acomodacao.valorDiariaString}" name="acomodacao.valorDiaria" style="width: 120px;"/>
+            			</span>
+            		</td>
+            	</tr>
+           		<tr style="height: 10px;"></tr>
+	   			<tr valign="bottom" style="height: 10px;">
+	   				<td colspan="2">
+						<h4 style="margin: 0px; padding: 3px;"><f:message key="consultar.frigobar"/></h4>
+					</td>
+					<td colspan="2" style="text-align: right;">
+						<c:if test="${acomodacao.tipoFrigobar.id != null}">
+							<input type="hidden" value="${acomodacao.tipoFrigobar.id}" name="acomodacao.tipoFrigobar.id"/>
+						</c:if>						
+						<button type="button" class="k-button" onclick="consultar('<c:url value="/hotel/item/acomodacao/cadastrar/${acomodacao.id}"/>', '<f:message key="cadastrar.item"/>', '615', '130', 'cadastrarItemAcomodacao');">
+							<span class="k-icon k-i-plus"></span> <f:message key="cadastrar.produto.acomodacao"/>
+						</button>
+					</td>
+				</tr>
+				<tr style="height: 10px;"></tr>
+				<tr style="height: 10px;">
+					<td colspan="4" style="width: 570px;">
+						<div id="divItemAcomodacao" style="width: 570px;"></div>
+					</td>
+				</tr>
+				<tr style="height: 10px;"></tr>
+	   		</table>
+	   		<br/>
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 800px;">
+				<tr style="height: 40px;">
+					<td rowspan="2" style="width: 20px;"></td>
+            		<td colspan="7" style="text-align: center;">
+	            		<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="alterar"/></button>
+            		</td>
+            	</tr>
+			</table>
+	    </form>
+	</body>
+</html>

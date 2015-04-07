@@ -1,0 +1,82 @@
+package administrativo.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity(name = "ADMINISTRATIVO_FUNCAO")
+@Table(name = "ADMINISTRATIVO_FUNCAO")
+public class Funcao implements Serializable {
+
+	private static final long serialVersionUID = 1390104109715182730L;
+
+	private Long id;
+	private String pacote;
+	private String classe;
+	private String controller;
+	private String metodo;
+	private String nome;
+ 
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "pacote", nullable = false)
+	public String getPacote() {
+		return pacote;
+	}
+
+	public void setPacote(String pacote) {
+		this.pacote = pacote;
+	}
+
+	@Column(name = "classe", nullable = false)
+	public String getClasse() {
+		return classe;
+	}
+
+	public void setClasse(String classe) {
+		this.classe = classe;
+	}
+
+	@Column(name = "controller", nullable = false)
+	public String getController() {
+		return controller;
+	}
+
+	public void setController(String controller) {
+		this.controller = controller;
+	}
+
+	@Column(name = "metodo", nullable = false)
+	public String getMetodo() {
+		return metodo;
+	}
+
+	public void setMetodo(String metodo) {
+		this.metodo = metodo;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	 
+}

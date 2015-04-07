@@ -1,0 +1,96 @@
+package reserva.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity(name = "RESERVA_RESPONSAVEL")
+@Table(name = "RESERVA_RESPONSAVEL")
+public class Responsavel implements Serializable {
+
+	private static final long serialVersionUID = 4174339113361090835L;
+	
+	private Long id;
+	private String nome;
+	private String sexo;
+	private String cpfCnpj;
+	private String rg;
+	private String telefone;
+	private String email;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "sexo", nullable = false)
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+	@Column(name = "cpfCnpj", nullable = false)
+	public String getCpfCnpj() {
+		return cpfCnpj;
+	}
+
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
+	}
+
+	@Column(name = "rg", nullable = true)
+	public String getRg() {
+		return rg;
+	}
+
+	public void setRg(String rg) {
+		this.rg = rg;
+	}
+
+	@Column(name = "telefone", nullable = false)
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	@Column(name = "email", nullable = false)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+}

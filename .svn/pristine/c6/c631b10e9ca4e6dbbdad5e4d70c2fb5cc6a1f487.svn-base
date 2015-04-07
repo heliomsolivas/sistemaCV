@@ -1,0 +1,100 @@
+// document.ready();
+$(function() {	 
+	$("#frigobarList").load(caminhoAbsoluto + "hotel/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+	
+	$("#frigobarAcomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+	
+	$("#codigoFrigobar").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#frigobarList").load(caminhoAbsoluto + "hotel/frigobar/pesquisar", {codigo: parametro, nomeFrigobar: null});
+		} else {
+			$("#frigobarList").load(caminhoAbsoluto + "hotel/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+		}
+	});
+	
+	$("#nomeFrigobar").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){						
+			$("#frigobarList").load(caminhoAbsoluto + "hotel/frigobar/pesquisar", {codigo: null, nomeFrigobar: parametro});
+		} else {
+			$("#frigobarList").load(caminhoAbsoluto + "hotel/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+		}
+	});
+	
+	$("#-codigoFrigobar").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#frigobarAcomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/frigobar/pesquisar", {codigo: parametro, nomeFrigobar: null});
+		} else {
+			$("#frigobarAcomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+		}
+	});
+	
+	$("#-nomeFrigobar").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){						
+			$("#frigobarAcomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/frigobar/pesquisar", {codigo: null, nomeFrigobar: parametro});
+		} else {
+			$("#frigobarAcomodacaoList").load(caminhoAbsoluto + "hotel/acomodacao/frigobar/pesquisar", {codigo: null, nomeFrigobar: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarItensPadraoFrigobar() {
+ 	$.ajax({
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		type: "POST",
+		url: caminhoAbsoluto + "hotel/frigobar/gravar",
+		data: $("#formFrigobar").serialize(),
+		success: function(retorno) {
+					$("#cadastrarFrigobar").data("kendoWindow").destroy();
+					$("#listaFrigobar").load(caminhoAbsoluto + "hotel/frigobar/lista");
+				 }
+	});
+}
+
+function alterarItensPadraoFrigobar() {
+ 	$.ajax({
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		type: "POST",
+		url: caminhoAbsoluto + "hotel/frigobar/gravar",
+		data: $("#formAlterarFrigobar").serialize(),
+		success: function(retorno) {
+					$("#consultarFrigobarPadrao").data("kendoWindow").destroy();
+					$("#listaFrigobar").load(caminhoAbsoluto + "hotel/frigobar/lista");
+				 }
+	});
+}
+
+function alterarFrigobar() {
+ 	$.ajax({
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		type: "POST",
+		url: caminhoAbsoluto + "hotel/acomodacao/frigobar/gravar",
+		data: $("#formAcomodacaoFrigobar").serialize(),
+		success: function(retorno) {
+					$("#cadastrarAcomodacaoFrigobar").data("kendoWindow").destroy();								
+				 }
+	});
+}
+
+function selecionarFrigobar(idFrigobar) {
+ 	var idAcomodacao = $("#idAcomodacao").val();
+	$.ajax({
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		type: "POST",
+		url: caminhoAbsoluto + "hotel/acomodacao/frigobar/gravar",
+		data: {idFrigobar: idFrigobar, idAcomodacao: idAcomodacao},
+		success: function(retorno) {
+					$("#cadastrarAcomodacaoFrigobar").data("kendoWindow").destroy();								
+				 }
+	});
+}
+
+//Outras Funções

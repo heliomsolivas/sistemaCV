@@ -1,0 +1,54 @@
+package estoque.dao;
+
+import estoque.bean.Fabricante;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoFabricante extends Dao<Fabricante>{
+
+	public DaoFabricante(Session session) {
+		super(session, Fabricante.class);
+	}
+	
+	public Collection<Fabricante> pesquisarFabricante (Long codigo, String nomeFabricante) {
+		Collection<Fabricante> fabricanteList = new ArrayList<Fabricante>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM ESTOQUE_FABRICANTE WHERE 1 = 1";
+
+		if (codigo != null) {
+			consulta += " AND id = :codigo ORDER BY id ASC";
+			parameters.put("codigo", codigo);			
+		} else {
+			consulta += " AND nome LIKE :nomeFabricante";
+			parameters.put("nomeFabricante", "%" + nomeFabricante + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Fabricante item = (Fabricante) query.list().get(x);
+			fabricanteList.add(item);
+		}
+
+		return fabricanteList;
+	}
+}

@@ -1,0 +1,303 @@
+package financeiro.controller;
+ 
+import financeiro.bean.Cheque;
+import financeiro.bean.ContaCaixa;
+import financeiro.bean.ContaPagar;
+import financeiro.bean.ContaReceber;
+import financeiro.bean.FormaPagamento;
+import financeiro.bean.Movimentacao;
+import financeiro.bean.SituacaoCheque;
+import financeiro.bean.TipoDocumento;
+import financeiro.bean.TipoMovimentacao;
+import financeiro.dao.DaoCheque;
+import financeiro.dao.DaoContaCaixa;
+import financeiro.dao.DaoContaPagar;
+import financeiro.dao.DaoContaReceber;
+import financeiro.dao.DaoMovimentacao;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.dao.DaoHotel;
+
+import java.util.Arrays;
+import java.util.Calendar;
+
+import javax.servlet.http.HttpServletResponse;
+
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("financeiro/")
+public class FinanceiroController {
+	
+    private final DaoCheque daoCheque;
+    private final DaoContaCaixa daoContaCaixa;
+    private final DaoContaPagar daoContaPagar;
+    private final DaoContaReceber daoContaReceber;
+    private final DaoHotel daoHotel;
+    private final DaoMovimentacao daoMovimentacao;
+    private final Erro erro;
+    private final Result result;
+
+    public FinanceiroController(DaoCheque daoCheque, DaoContaCaixa daoContaCaixa, DaoContaPagar daoContaPagar, 
+    		DaoContaReceber daoContaReceber, DaoHotel daoHotel,  DaoMovimentacao daoMovimentacao,  Erro erro, Result result) {
+    	this.daoCheque = daoCheque;
+    	this.daoContaCaixa = daoContaCaixa;
+		this.daoContaPagar = daoContaPagar;
+		this.daoContaReceber = daoContaReceber;
+		this.daoHotel = daoHotel;
+		this.daoMovimentacao = daoMovimentacao;
+		this.erro = erro;
+		this.result = result;
+    }
+    
+    @Path("cheque/cadastrar")
+	public void formCheque() {		
+		result.include("situacaoList", Arrays.asList(SituacaoCheque.values()));
+	}
+    
+    @Path("contaCaixa/cadastrar")
+	public void formContaCaixa() {
+	}
+    
+    @Path("contaPagar/cadastrar")
+	public void formContaPagar() {		
+		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+    	result.include("formaPagamentoList", Arrays.asList(FormaPagamento.values()));
+    	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+	}
+    
+    @Path("contaReceber/cadastrar")
+	public void formContaReceber() {		
+		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+    	result.include("formaPagamentoList", Arrays.asList(FormaPagamento.values()));
+    	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+	}
+    
+    @Path("movimentacao/cadastrar")
+	public void formMovimentacao() {
+		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+    	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+    	result.include("tipoMovimentacaoList", Arrays.asList(TipoMovimentacao.values()));
+	}
+    
+    @Path("cheque/consultar/{id}")
+	public void consultarCheque(Long id) {
+		result.include("cheque", daoCheque.buscar(id));		
+		result.include("situacaoList", Arrays.asList(SituacaoCheque.values()));
+	}
+    
+    @Path("contaCaixa/consultar/{id}")
+   	public void consultarContaCaixa(Long id) {
+		result.include("contaCaixa", daoContaCaixa.buscar(id));
+   	}
+    
+    @Path("contaPagar/consultar/{id}")
+   	public void consultarContaPagar(Long id) {
+		result.include("contaPagar", daoContaPagar.buscar(id));   		
+   		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+       	result.include("formaPagamentoList", Arrays.asList(FormaPagamento.values()));
+       	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+   	}
+    
+    @Path("contaReceber/consultar/{id}")
+   	public void consultarContaReceber(Long id) {
+		result.include("contaReceber", daoContaReceber.buscar(id));   		
+   		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+       	result.include("formaPagamentoList", Arrays.asList(FormaPagamento.values()));
+       	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+   	}
+       
+    @Path("movimentacao/consultar/{id}")
+   	public void consultarMovimentacao(Long id) {
+		result.include("movimentacao", daoMovimentacao.buscar(id));   		
+   		result.include("contaCaixaList", daoContaCaixa.listarTudo());
+       	result.include("tipoDocumentoList", Arrays.asList(TipoDocumento.values()));
+       	result.include("tipoMovimentacaoList", Arrays.asList(TipoMovimentacao.values()));
+   	}
+    
+    @Path("cheque/lista")
+    public void listaCheque() {
+    	result.include("chequeList", daoCheque.listarTudo("id", "ASC"));
+    }
+    
+    @Path("contaCaixa/lista")
+    public void listaContaCaixa() {
+    	result.include("contaCaixaList", daoContaCaixa.listarTudo("id", "ASC"));
+    }
+    
+    @Path("contaPagar/lista")
+    public void listaContaPagar() {
+    }
+    
+    @Path("contaReceber/lista")
+    public void listaContaReceber() {
+    }
+    
+    @Path("movimentacao/lista")
+    public void listaMovimentacao() {
+    }
+    
+    @Post("contaPagar/pesquisar")
+   	public void divListaContaPagar(Calendar dataInicio, Calendar dataFim) {
+    	if ((dataInicio != null) && (dataFim == null))
+			result.include("contaPagarList", daoContaPagar.pesquisarContaPagar(dataInicio, null));
+   		else if ((dataInicio == null) && (dataFim != null))
+   			result.include("contaPagarList", daoContaPagar.pesquisarContaPagar(null, dataFim));
+   		else if ((dataInicio != null) && (dataFim != null))
+   			result.include("contaPagarList", daoContaPagar.pesquisarContaPagar(dataInicio, dataFim));
+   		else
+   			result.include("contaPagarList", daoContaPagar.listarTudo("id", "ASC"));
+   	}
+    
+    @Post("contaReceber/pesquisar")
+   	public void divListaContaReceber(Calendar dataInicio, Calendar dataFim) {
+    	if ((dataInicio != null) && (dataFim == null))
+			result.include("contaReceberList", daoContaReceber.pesquisarContaReceber(dataInicio, null));
+   		else if ((dataInicio == null) && (dataFim != null))
+   			result.include("contaReceberList", daoContaReceber.pesquisarContaReceber(null, dataFim));
+   		else if ((dataInicio != null) && (dataFim != null))
+   			result.include("contaReceberList", daoContaReceber.pesquisarContaReceber(dataInicio, dataFim));
+   		else
+   			result.include("contaReceberList", daoContaReceber.listarTudo("id", "ASC"));
+   	}
+    
+    @Post("movimentacao/pesquisar")
+   	public void divListaMovimentacao(Calendar dataInicio, Calendar dataFim) {
+    	if ((dataInicio != null) && (dataFim == null))
+			result.include("movimentacaoList", daoMovimentacao.pesquisarMovimentacao(dataInicio, null));
+   		else if ((dataInicio == null) && (dataFim != null))
+   			result.include("movimentacaoList", daoMovimentacao.pesquisarMovimentacao(null, dataFim));
+   		else if ((dataInicio != null) && (dataFim != null))
+   			result.include("movimentacaoList", daoMovimentacao.pesquisarMovimentacao(dataInicio, dataFim));
+   		else
+   			result.include("movimentacaoList", daoMovimentacao.listarTudo("id", "ASC"));
+   	}
+    
+    @Post("cheque/gravar")
+    public void gravar(Cheque cheque) {
+    	try {    		
+        	daoCheque.atualizar(cheque);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaCaixa/gravar")
+    public void gravar(ContaCaixa contaCaixa) {
+    	try {
+    		if(contaCaixa.getId() == null)
+    			contaCaixa.setHotel(daoHotel.busca());
+    		
+        	daoContaCaixa.atualizar(contaCaixa);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaPagar/gravar")
+    public void gravar(ContaPagar contaPagar) {
+    	try {
+    		daoContaPagar.atualizar(contaPagar);
+		} catch (Exception e) {
+			result.include("mensagem", "hotel.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaReceber/gravar")
+    public void gravar(ContaReceber contaReceber) {
+    	try {    		
+    		daoContaReceber.atualizar(contaReceber);
+		} catch (Exception e) {
+			result.include("mensagem", "hotel.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("movimentacao/gravar")
+    public void gravar(Movimentacao movimentacao) {
+    	try {    		
+    		 daoMovimentacao.atualizar(movimentacao);
+		} catch (Exception e) {
+			result.include("mensagem", "financeiro.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("cheque/remover")
+    public void remover(Cheque cheque, Long id) {
+    	try {
+    		cheque = daoCheque.buscar(id);
+    		
+    		daoCheque.remover(cheque);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaCaixa/remover")
+    public void remover(ContaCaixa contaCaixa, Long id, HttpServletResponse response) {
+    	try {
+    		contaCaixa = daoContaCaixa.buscar(id);
+    		
+    		if ((contaCaixa.getContaPagarList().isEmpty()) && (contaCaixa.getContaReceberList().isEmpty()) &&
+				(contaCaixa.getMovimentacaoList().isEmpty()))
+        		daoContaCaixa.remover(contaCaixa);
+    		else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    		
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaPagar/remover")
+    public void remover(ContaPagar contaPagar, Long id) {
+    	try {
+    		contaPagar = daoContaPagar.buscar(id);
+    		
+    		daoContaPagar.remover(contaPagar);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("contaReceber/remover")
+    public void remover(ContaReceber contaReceber, Long id) {
+    	try {
+    		contaReceber = daoContaReceber.buscar(id);
+    		
+    		daoContaReceber.remover(contaReceber);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+    	result.nothing();
+    }
+    
+    @Post("movimentacao/remover")
+    public void remover(Movimentacao movimentacao, Long id) {
+    	try {
+    		movimentacao = daoMovimentacao.buscar(id);
+    		
+    		daoMovimentacao.remover(movimentacao);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+    	result.nothing();
+    }
+}

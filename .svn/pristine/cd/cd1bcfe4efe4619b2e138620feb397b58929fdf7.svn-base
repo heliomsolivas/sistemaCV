@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#total").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+				$("#quant").kendoNumericTextBox({
+					format : "#"
+				});
+
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required':   '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formItemProduto").bValidator(options);
+				
+				$("#formItemProduto").submit(function() {
+					if($("#formItemProduto").data("bValidator").isValid()){
+						$("#cadastrarItemProduto").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/clientes/itemConsumo/gravar"/>",
+							data: $("#formItemProduto").serialize(),
+							success: function (retorno) {
+										$("#cadastrarItemProduto").data("kendoWindow").destroy();
+										$("#cadastrarItemConsumo").data("kendoWindow").destroy();
+										$("#divConsumo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#divConsumo").load("<c:url value="/clientes/consumo/divLista/${hospedeHospedagem.id}"/>");
+										$("#divResumo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#divResumo").load("<c:url value="/clientes/resumoLancamento/divLista/${hospedeHospedagem.id}"/>");
+				           			}
+						});
+					}
+					return false;
+				});
+				
+				$("#selectProduto").change(function(){
+					if ($("#selectProduto").val() != "") {
+						var nome = $("#selectProduto").val();
+						$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "GET",
+							url: "<c:url value="/estoque/produto/atualizaDados/"/>" + nome,
+							success: function(retorno){
+										if (retorno != "") {
+											retorno = retorno.split("],[");
+											$("#categoriaProduto").val(retorno[0]);
+											$("#unitario").val(retorno[1]);
+											$("#valorUnit").val(retorno[2]);
+										} else
+											$("#teste").empty().append("Produto não Encontrado");
+										}
+						});
+					}
+				});
+				
+				$("#quant").change(function(){
+					if ($("#quant").val() != "") {
+						var valorTotal = ($("#quant").val() * $("#valorUnit").val());
+						
+						$("#total").val("R$ " + valorTotal);
+					}
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formItemProduto" name="formItemProduto" action="#">
+			<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+				<tr valign="bottom" style="height: 0px;">
+	   				<td rowspan="8" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.produto"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.local.consumo"/>
+	   				</td>
+	   				<td rowspan="8" style="width: 15px;"></td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="hidden" value="${hospedeHospedagem.hospedagem.id}" name="idHospedagem">
+	   					<input type="hidden" value="PRODUTO" name="item.categoria">
+	   					<select id="selectProduto" name="item.produto" data-bvalidator="required" style="width: 370px;">
+							<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${produtoList}" var="item">
+							<option value="${item.nome}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<select name="item.localConsumo" data-bvalidator="required" style="width: 175px;">
+							<option value=""><f:message key="selecione"/></option>
+							<option value="RECEPCAO"><f:message key="recepcao"/></option>
+							<option value="FRIGOBAR"><f:message key="frigobar"/></option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195x;">
+	   					<f:message key="campo.quantidade"/>
+	   				</td>
+	   				<td style="width: 195x;">
+	   					<f:message key="campo.valor.unitario"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.valor.total"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195x;">
+	   					<input id="quant" type="text" data-bvalidator="required" name="item.quantidade" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valorUnit" type="hidden">
+	   					<input id="unitario" type="text" data-bvalidator="required" class="k-textbox" placeholder="R$ 0,00" style="width: 175px;" disabled>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<input id="total" type="text" data-bvalidator="required" class="k-textbox" placeholder="R$ 0,00" style="width: 175px;" disabled>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+	   			<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+            			<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	            		<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+            		</td>
+            	</tr>	   		
+	   		</table>
+	   	</form>
+	</body>
+</html>

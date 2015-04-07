@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {	
+	$("#fabricanteList").load(caminhoAbsoluto + "estoque/fabricante/pesquisar", {codigo: null, nomeFabricante: null});
+	
+	$("#codigoFabricante").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#fabricanteList").load(caminhoAbsoluto + "estoque/fabricante/pesquisar", {codigo: parametro, nomeFabricante: null});
+		} else {
+			$("#fabricanteList").load(caminhoAbsoluto + "estoque/fabricante/pesquisar", {codigo: null, nomeFabricante: null});
+		}
+	});
+	
+	$("#nomeFabricante").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#fabricanteList").load(caminhoAbsoluto + "estoque/fabricante/pesquisar", {codigo: null, nomeFabricante: parametro});
+		} else {
+			$("#fabricanteList").load(caminhoAbsoluto + "estoque/fabricante/pesquisar", {codigo: null, nomeFabricante: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarFabricante() {
+	validator =  $("#formFabricante").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "estoque/fabricante/gravar",
+			data: $("#formFabricante").serialize(),
+			success: function (retorno) {
+						$("#cadastrarFabricante").data("kendoWindow").destroy();
+						$("#listaFabricante").load(caminhoAbsoluto + "estoque/fabricante/lista");
+           			}
+		});
+	}
+}
+
+function alterarFabricante() {
+	validator =  $("#formAlterarFabricante").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "estoque/fabricante/gravar",
+			data: $("#formAlterarFabricante").serialize(),
+			success: function (retorno) {
+						$("#consultarFabricante").data("kendoWindow").destroy();
+						$("#listaFabricante").load(caminhoAbsoluto + "estoque/fabricante/lista");
+           			}
+		});
+	}
+}

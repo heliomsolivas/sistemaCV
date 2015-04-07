@@ -1,0 +1,54 @@
+package contabil.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import contabil.bean.ContaContabil;
+
+@Component
+public class DaoContaContabil extends Dao<ContaContabil> {
+	
+	public DaoContaContabil(Session session) {
+    	super(session, ContaContabil.class); 
+    }
+	
+	public Collection<ContaContabil> pesquisarConta(Integer codigoReduzido, String parametro) {
+		Collection<ContaContabil> contaContabilList = new ArrayList<ContaContabil>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM CONTABIL_CONTA WHERE 1 = 1";
+
+		if (codigoReduzido != null) {
+			consulta += " AND codigoReduzido = :codigoReduzido ORDER BY id ASC";
+			parameters.put("codigoReduzido", codigoReduzido);			
+		} else {
+			consulta += " AND nome LIKE :parametro OR numero LIKE :parametro ORDER BY id ASC";
+			parameters.put("parametro", "%" + parametro + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ContaContabil item = (ContaContabil) query.list().get(x);
+			contaContabilList.add(item);
+		}
+
+		return contaContabilList;
+	}
+}

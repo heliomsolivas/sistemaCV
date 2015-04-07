@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#tabelaAcomodacao").tablesorter({
+					headers: {
+						5: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : true,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : ['', '', '', 'filterValorDiaria', ''],
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_hideFilters : false,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '#filterAcomodacao',
+				     	filter_saveFilters : false,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value',
+			     		filter_functions : {
+							4 : {
+								"Livre": function(e, n, f, i, $r) { return e === f; },
+								"Ocupada": function(e, n, f, i, $r) { return e === f; },
+								"Manutenção": function(e, n, f, i, $r) { return e === f; },
+								"Limpeza": function(e, n, f, i, $r) { return e === f; }
+							}
+						}
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoAcomodacao"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+
+				$(".filterValorDiaria").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: true});
+			});
+
+			function excluirAcomodacao(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.acomodacao"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#listaAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/hotel/acomodacao/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+		    									$("#listaAcomodacao").load("<c:url value="/hotel/acomodacao/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.acomodacao"/>', '<f:message key="erro"/>');
+  								 				$("#listaAcomodacao").load("<c:url value="/hotel/acomodacao/lista"/>");
+					                		}
+		    					});
+		                    }
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+			
+			function consultarAcomodacao(id) {
+				consultar(null, '<f:message key="informacoes.acomodacao"/>', '825', '520', 'consultarAcomodacao');
+				
+				$("#consultarAcomodacao").load("<c:url value="/hotel/acomodacao/consultar/"/>" + id);
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaAcomodacao">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 90px;"><f:message key="titulo.lista.numero.acomodacao"/></th>
+						<th style="width: 240px;"><f:message key="titulo.lista.nome.acomodacao"/></th>
+						<th style="width: 80px;"><f:message key="titulo.lista.camas"/></th>
+						<th style="width: 120px;"><f:message key="titulo.lista.valor.diaria"/></th>
+						<th style="width: 100px;"><f:message key="titulo.lista.situacao.acomodacao"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${acomodacaoList}" var="acomodacao">
+						<tr style="height: 35px;" ondblclick="consultarAcomodacao(${acomodacao.id});">
+							<td style="width: 90px; text-align:center;">${acomodacao.numero}</td>
+							<td style="width: 240px; text-align:center;">${acomodacao.nome}</td>
+							<td style="width: 80px; text-align:center;">${acomodacao.numeroCamas}</td>
+							<td style="width: 120px; text-align:center;">${acomodacao.valorDiariaString}</td>
+							<td style="width: 100px; text-align:center;">${acomodacao.status.nome}</td>
+							<td style="width: 70px; text-align:center;">
+								<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/hotel/acomodacao/consultar/${acomodacao.id}"/>', '<f:message key="informacoes.acomodacao"/>', '825', '520', 'consultarAcomodacao');">
+									<span class="k-icon k-edit"></span>
+								</a>
+								<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirAcomodacao(${acomodacao.id})">
+									<span class="k-icon k-delete"></span>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoAcomodacao" class="paginacao">
+			<div style="margin-left: 222px;">
+				<div class="first"></div>
+				<div class="prev"></div>
+				<input type="text" class="pagedisplay k-textbox" style="height: 20px;">
+				<div class="next"></div>
+				<div class="last"></div>
+			</div>
+			<a id="filterAcomodacao" href="#" class="k-button k-button-icontext k-delete filterReset"> 
+				<span class="icon icon-refresh icon-darkgray"></span>
+			</a>
+		</div>
+	</body>
+</html>

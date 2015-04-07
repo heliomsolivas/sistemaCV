@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required':   '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formTipoAcomodacao").bValidator(options);
+				
+				$("#formTipoAcomodacao").submit(function() {
+					if($("#formTipoAcomodacao").data("bValidator").isValid()){
+						$("#cadastrarTipoAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/hotel/tipo/acomodacao/gravar"/>",
+							data: $("#formTipoAcomodacao").serialize(),
+							success: function (retorno) {
+										$("#cadastrarTipoAcomodacao").data("kendoWindow").destroy();
+										$("#listaTipoAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#listaTipoAcomodacao").load("<c:url value="/hotel/tipo/acomodacao/lista"/>");
+				           			}
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+    	<form id="formTipoAcomodacao" name="formTipoAcomodacao" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 400px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="30" style="width: 15px;"></td>
+	   				<td colspan="3" style="width: 390px;">
+	   					<f:message key="campo.nome.tipo.acomodacao"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="tipo.nome" style="width: 370px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 390px;">
+	   					<f:message key="campo.descricao"/>
+	   				</td>
+   				</tr>
+   				<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<textarea class="k-textbox" data-bvalidator="required" name="tipo.descricao" style="width: 370px; height: 70px;"></textarea>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 30px;"></tr>
+   				<tr style="height: 20px;">
+            		<td colspan="2" style="text-align: center;">
+            			<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	            		<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+            		</td>
+        		</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

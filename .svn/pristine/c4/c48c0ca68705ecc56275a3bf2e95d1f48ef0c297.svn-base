@@ -1,0 +1,73 @@
+// document.ready();
+$(function() {
+	$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+	
+	$("#numeroDocumentoLancamento").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: parametro, dataInicio: null, dataFim: null});
+		} else {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataInicioLancamento").change(function(){
+		var parametro = $(this).val();
+		var parametro2 = $("#dataFimLancamento").val();
+		
+		if ((parametro != '') && (parametro2 == '')) {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: null});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+
+	$("#dataFimLancamento").change(function() {
+		var parametro = $("#dataInicioLancamento").val();
+		var parametro2 = $(this).val();
+		
+		if ((parametro == '') && (parametro2 != '')) {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: parametro2});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#lancamentoList").load(caminhoAbsoluto + "contabil/lancamento/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarLancamento() {
+    validator =  $("#formLancamento").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/lancamento/gravar",
+			data: $("#formLancamento").serialize(),
+			success: function(retorno) {
+						$("#cadastrarLancamento").data("kendoWindow").destroy();
+						$("#listaLancamento").load(caminhoAbsoluto + "contabil/lancamento/lista");
+					 }
+		});
+	}
+}
+
+function alterarLancamento() {
+    validator =  $("#formAlterarLancamento").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/lancamento/gravar",
+			data: $("#formAlterarLancamento").serialize(),
+			success: function(retorno) {
+						$("#consultarLancamento").data("kendoWindow").destroy();
+						$("#listaLancamento").load(caminhoAbsoluto + "contabil/lancamento/lista");
+					 }
+		});
+	}
+}

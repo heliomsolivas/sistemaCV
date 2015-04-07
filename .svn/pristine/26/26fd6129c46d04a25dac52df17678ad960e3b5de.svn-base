@@ -1,0 +1,159 @@
+package reserva.controller;
+
+import static br.com.caelum.vraptor.view.Results.json;
+import generic.component.Erro;
+import hotel.bean.Acomodacao;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import reserva.bean.Reserva;
+import reserva.bean.Responsavel;
+import reserva.bean.Situacao;
+import reserva.dao.DaoReserva;
+import reserva.dao.DaoResponsavel;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+import clientes.bean.Hospedagem;
+
+@Resource
+@Path("reserva/")
+public class ReservaController {
+	
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoReserva daoReserva;
+	private final DaoResponsavel daoResponsavel;
+	private final DaoHotel daoHotel;
+	private final Erro erro;
+	private final Result result;
+	
+	public ReservaController(DaoAcomodacao daoAcomodacao, DaoReserva daoReserva, DaoResponsavel daoResponsavel,
+			DaoHotel daoHotel, Erro erro, Result result) {
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoReserva = daoReserva;
+		this.daoResponsavel = daoResponsavel;
+		this.daoHotel = daoHotel;
+		this.erro = erro;
+		this.result = result;
+	}
+	
+	@Path("agenda/consultar")
+	public void teste() {
+	}
+	
+	@Path("read")
+	public void List() {
+		Collection<Hospedagem> hospedagemList = new ArrayList<Hospedagem>();
+		result.use(json()).from(hospedagemList).serialize();
+	}
+	
+	@Path("sistema/cadastrar")
+	public void formReserva() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Path("sistema/consultar/{id}")
+	public void consultar(Long id) {
+		result.include("reserva", daoReserva.buscar(id));
+		result.include("situacaoList", Situacao.values());
+	}
+	
+	@Path("sistema/lista")
+	public void listaReserva() {
+		result.include("reservaList", daoReserva.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrar")
+	public void cadastrarReserva() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Path("formulario")
+	public void formulario() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Post("concluida")
+	public void reservaConcluida(String codigo) {
+		result.include("mensagem", "Reserva " + "<i>"+ codigo + "</i>" + " Realizada com Sucesso!");
+	}
+	
+	@Post("sistema/pesquisar")
+	public void divListaReserva(Long codigo, Calendar dataInicio, Calendar dataFim) {		
+		if (codigo != null)
+			result.include("reservaList", daoReserva.pesquisarReserva(codigo, null, null));
+		else if ((dataInicio != null) && (dataFim == null))   			 
+			result.include("reservaList", daoReserva.pesquisarReserva(null, dataInicio, null));
+		else if ((dataInicio == null) && (dataFim != null))
+			result.include("reservaList", daoReserva.pesquisarReserva(null, null, dataFim));
+		else if ((dataInicio != null) && (dataFim != null))
+			result.include("reservaList", daoReserva.pesquisarReserva(null, dataInicio, dataFim));
+		else
+			result.include("reservaList", daoReserva.listarTudo("id", "ASC"));
+	}
+	
+	@Post("acomodacao/pesquisar")
+	public void divListaAcomodacao(Calendar dataCheckIn, Calendar dataCheckOut){
+		result.include("acomodacaoList", daoAcomodacao.listarAtivasReserva(dataCheckIn, dataCheckOut));
+	}
+	
+	@Post("gravar")
+	public void gravar(Reserva reserva, Responsavel responsavel) {
+		try {			
+			String observacao = "";
+			
+			if(reserva.getObservacao() != null) {
+				observacao = reserva.getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			if(reserva.getId() == null ){
+				daoResponsavel.atualizar(responsavel);
+				
+				Responsavel responsavelNovo = daoResponsavel.buscar(responsavel.getId());
+				Acomodacao acomodacao = daoAcomodacao.buscar(reserva.getAcomodacao().getId());
+				Calendar data = new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR"));
+				
+				reserva.setValorDiaria(acomodacao.getValorDiaria());
+				reserva.setObservacao(observacao);
+				reserva.setDataReserva(data);
+				reserva.setNumeroPessoas(acomodacao.getMaximoHospedes());
+				reserva.setSituacao(Situacao.AGUARDANDO_RETORNO);
+				reserva.setReembolsoCancelamento(false);
+				reserva.setResponsavel(responsavelNovo);
+				
+				if (reserva.getDataPrevisaoCheckOut() != null) {
+					Integer numeroDiarias = reserva.getDataPrevisaoCheckOut().get(Calendar.DAY_OF_MONTH) - data.get(Calendar.DAY_OF_MONTH);
+					
+					reserva.setNumeroDiarias(numeroDiarias);
+					reserva.setValorTotal(acomodacao.getValorDiaria() * numeroDiarias);
+				}
+			}
+			
+			daoReserva.atualizar(reserva);
+			
+			result.use(Results.http()).body(reserva.getCodigo());
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("acomodacao/atualizaDados/{id}")
+	public void atualizaDadosAcomodacao(Acomodacao acomodacao, Long id) {
+		acomodacao = daoAcomodacao.buscar(id);
+		result.use(Results.http()).body(acomodacao.getNome() + "],[" + acomodacao.getNumero() + "],[" + acomodacao.getMaximoHospedesString() + "],[" + acomodacao.getNumeroCamasString() + "],[" + acomodacao.getValorDiariaString());
+	}
+}

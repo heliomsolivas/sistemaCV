@@ -1,0 +1,602 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="shortcut icon" href="../imagens/logo.ico">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/examples-offline.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/kendo.common.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/kendo.default.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/layoutmodelo.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/displaytag.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/opa-icons.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/smartpaginator.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/lightbox.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/smart_wizard.css">
+		
+		<script type="text/javascript" src="../js/jquery-1.10.1.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-migrate-1.2.1.min.js"></script>
+		<script type="text/javascript" src="../js/kendo.all.min.js"></script>
+		<script type="text/javascript" src="../js/kendo.web.min.js"></script>
+		<script type="text/javascript" src="../js/console.js"></script>
+		<script type="text/javascript" src="../js/jquery.maskMoney.js"></script>
+		<script type="text/javascript" src="../js/jquery.maskedinput-1.2.2.js"></script>
+ 		<script type="text/javascript" src="../js/kendo.culture.pt-BR.min.js"></script>
+		<script type="text/javascript" src="../js/smartpaginator.js"></script>
+		<script type="text/javascript" src="../js/lightbox-2.6.min.js"></script>
+		<script type="text/javascript" src="../js/kendo.culture.pt-BR.min.js"/></script>
+		<script type="text/javascript" src="../js/jquery.smartWizard.js"></script>
+		
+		<script id="template" type="text/x-kendo-template">
+			<img src="../imagens/hotel/#=target.data('id')#.jpg" alt="#=target.data('title')#" />
+			<p>#=target.data('title')#</p>
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				kendo.culture("pt-BR");
+				$('#wizard').smartWizard({transitionEffect:'slideleft',onLeaveStep:leaveAStepCallback,onFinish:onFinishCallback,enableFinishButton:false});
+				$("#rg").mask("99.999.999-9");
+				$("#cpf").mask("999.999.999-99");
+				$("#telefone").mask("(99) 99999-9999");
+				$("#checkIn").kendoDateTimePicker({
+					    format: "dd/MM/yyyy HH:mm:ss"
+					});
+				$("#checkOut").kendoDateTimePicker({
+					    format: "dd/MM/yyyy HH:mm:ss"
+					});
+				
+				$("#acomodacao").change(
+					function(){
+						if ($("#acomodacao").val() != "") {
+							var id = $("#acomodacao").val();
+							$.ajax({
+								contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+								type: "GET", 
+								url: "<c:url value="/hotel/atualizaDadosAcomodacao/"/>" + id,
+								success: function(retorno){
+											if (retorno != "") {
+												retorno = retorno.split("],[");
+												$("#nome").val(retorno[0]);
+												$("#numero").val(retorno[1]);
+												$("#nPessoas").val(retorno[2]);
+												$("#nCamas").val(retorno[3]);
+												$("#preco").val(retorno[4]);
+												$("#valorTotal").val(retorno[4]);
+											} else
+												$("#numero").empty().append("Acomodação não Encontrada");
+											}
+							});
+					}
+				}
+			);
+			
+				$("#imagens").kendoTooltip({
+					filter: "a",
+					content: kendo.template($("#template").html()),
+					width: 400,
+					height: 200,
+					position: "top"
+				});
+
+				function leaveAStepCallback(obj){
+					var step_num= obj.attr('rel');
+					return validateSteps(step_num);
+				}
+
+				function onFinishCallback(){
+					if(validateAllSteps()){
+						$.ajax({
+						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+						type: "POST",
+						url: "<c:url value="/reserva/gravarReserva"/>",
+						data: $("#formReserva").serialize(),
+						success: function(retorno) {
+									$("#reserva").hide();
+								 }
+						});
+					} 
+				}
+			});
+
+			function validateAllSteps(){
+				var isStepValid = true;
+				if(validateStep1() == false){
+					isStepValid = false;
+					$('#wizard').smartWizard('setError',{stepnum:1,iserror:true});
+				} else{
+					$('#wizard').smartWizard('setError',{stepnum:1,iserror:false});
+				}
+				if(validateStep2() == false){
+					isStepValid = false;
+					$('#wizard').smartWizard('setError',{stepnum:2,iserror:true});
+				} else{
+					$('#wizard').smartWizard('setError',{stepnum:2,iserror:false});
+				}				
+				if(validateStep3() == false){
+			        isStepValid = false;
+			        $('#wizard').smartWizard('setError',{stepnum:3,iserror:true});
+		       } else{
+		        	$('#wizard').smartWizard('setError',{stepnum:3,iserror:false});
+		       }
+		       if(!isStepValid){
+					$('#wizard').smartWizard('showMessage','<f:message key= "mensagem.preencherCampos"/>');
+				}
+				return isStepValid;
+			}
+
+				function validateSteps(step){
+					var isStepValid = true;
+					if(step == 1){ // validar step 1
+						if(validateStep1() == false ){
+							isStepValid = false;
+							$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+						} else{
+							$('#wizard').smartWizard('hideMessage');
+							$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});
+							$("#exibirCheckIn").val($("#checkIn").val());
+				          	$("#exibirCheckOut").val($("#checkOut").val());
+					}
+				}
+					if(step == 2){ // validar step2
+						if(validateStep2() == false ){
+							isStepValid = false; 
+							$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+						} else{
+							$('#wizard').smartWizard('hideMessage');
+							$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});
+							var id = $("#acomodacao").val();
+				          	
+							$.ajax({
+								contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+								type: "GET", 
+								url: "<c:url value="/hotel/atualizaDadosAcomodacao/"/>" + id,
+								success: function(retorno){
+											if (retorno != "") {
+												retorno = retorno.split("],[");
+												$("#exibirNome").val(retorno[0]);
+												$("#exibirNumero").val(retorno[1] + " " + " -");
+												$("#exibirValorTotal").val(retorno[4]);
+											} else
+												$("#numero").empty().append("Acomodação não Encontrada");
+										}
+							});
+						}
+					}
+									 
+			      	if(step == 3){ // validate step3
+				        if(validateStep3() == false ){
+				            isStepValid = false;
+				         //   $('#wizard').smartWizard('showMessage','Por favor Preencha todos os Campos');
+				          	$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+				        } else {
+				          	$('#wizard').smartWizard('hideMessage');
+				          	$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});				          	
+				          	$("#exibirResponsavel").val($("#nomeResponsavel").val());
+				        }
+			      }
+					return isStepValid;
+				}
+
+				function validateStep1(){
+					var isValid = true;
+					var un = $('#checkIn').val();
+					if (!un && un.length <= 0){ // Validate CheckIn
+						isValid = false;
+						$('#msg_checkIn').html('').show();
+					} else{
+						$('#msg_checkIn').html('').hide();
+					}
+					
+					var pw = $('#checkOut').val();
+					if(!pw && pw.length <= 0){ // validate CheckOut
+						isValid = false;
+						$('#msg_checkOut').html('').show();
+					}else{
+						$('#msg_checkOut').html('').hide();
+					}
+					return isValid;
+				}
+
+				function validateStep2(){
+					var isValid = true; 
+					var un = $('#acomodacao').val();
+					if(!un && un.length <= 0){ // Validate Acomodacao
+						isValid = false;
+						$('#msg_acomodacao').html('').show();
+					} else{
+						$('#msg_acomodacao').html('').hide();
+					}
+					return isValid;
+				}
+				
+				function validateStep3(){
+			      	var isValid = true; 
+					var un = $('#nomeResponsavel').val();					
+					if (!un && un.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+
+					var un2 = $('#sexo').val();
+					if (!un2 && un2.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+					
+					var un3 = $('#rg').val();
+					if (!un3 && un3.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+					
+					var un4 = $('#cpf').val();
+					if (!un4 && un4.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+					
+					var un5 = $('#telefone').val();
+					if (!un5 && un5.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+					
+					var un6 = $('#email').val();
+					if (!un6 && un6.length <= 0){ // Validate Responsavel
+						isValid = false;
+						$('#msg_responsavel').html('').show();
+					} else{
+						$('#msg_responsavel').html('').hide();
+					}
+			      return isValid;
+			    }
+				
+				function pesquisar() {
+					var id = $("#codigo").val();
+				 	$.ajax({
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					type: "POST",
+					url: "<c:url value="/clientes/pesquisar"/>" + id,
+					success: function(retorno) {
+								if (retorno != "") {
+									retorno = retorno.split("],[");
+									$("#nomeHospede").val(retorno[0]);
+									$("#CpfHospede").val(retorno[1]);
+								}
+							 }
+					});
+		    	}
+		    	
+				function maisInfoAcomodacao () {
+					var w = $("<div id='" + this.id + "'></div>").appendTo("#container");
+					w.kendoWindow({
+					  	modal: true,
+	                    position: {
+				    		top: 200,
+				    		left: 500,
+					  	},
+	                    resizable: false,
+	                    visible: false,
+	                //    content: url,
+	                    actions: ["Close"],
+	                    close: function() {
+							w.data("kendoWindow").destroy();
+	                    }
+	                });
+	                w.data("kendoWindow").open();
+				}
+		</script>
+	</head>
+	<body class="divConteudo">
+	<style scoped>
+		.divFormInput {
+			margin: 15px;
+		}
+		.divForm {
+			margin-left: 25px;
+		}
+		.form {
+			margin-top: 20px;
+		}
+		.titulo {
+			font-weight: bold;
+		}
+		.swMain div.actionBar {
+		  	margin: 20px 0 0 0;
+		}
+		.swMain .msgBox {
+		  	position:relative;
+		  	display:none;
+		  	float: left;
+		  	margin-left: 130px;
+		  	padding: 3px;
+		  	color:#FF0000;
+		  	width: auto;
+		}
+	</style>
+		<div id="reserva" style="width: 640px; height: 400px; margin-top: 150px; margin-left: 450px; border: 1px solid #C0C0C0; border-radius: 8px; background-color: white;">
+			<div class="demoHead" style="margin-left: 15px; margin-right: 15px; margin-top: 15px;">
+				<form id="formReserva" name="formReserva" action="#">
+			  		<div id="wizard" class="swMain" style="width: 616px;">
+						<div class="form" style="height: 230px;">
+							<h2 class="StepTitle" style="margin-left: 33px;">
+								<img class="linkSemBorda" src="../imagens/icones/iconePeriodo.png" style="height: 15px;"/> Período
+							</h2>
+							<hr width="550" color="black" size="1" style="margin-left: 30px; margin-top: -4px;">
+				            <div class="divFormInput" style="width: 350px;">
+				            	<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+				            		<tr valign="bottom" style="height: 40px;">
+			            				<td rowspan="22" style="width: 40px;"></td>
+			            				<td colspan="2" style="width: 270px;">
+			            					Data Prevista Check In
+			            				</td>
+			            				<td colspan="2" style="width: 230px;">
+			            					Data Prevista Check Out
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 10px;">
+		            					<td colspan="2" style="width: 270px;">
+		            						<input type="hidden" class="k-textbox" value="${hotel.id}" name="reserva.hotel.id">
+		            						<input id="checkIn" type="text" name="reserva.dataPrevisaoCheckIn" style="width: 230px;"/>
+		            					</td>
+		            					<td colspan="2" style="width: 230px;">
+		            						<input id="checkOut" type="text" name="reserva.dataPrevisaoCheckOut" style="width: 230px;" />
+		            					</td>
+		            				</tr>
+		            				<tr style="height: 40px;"></tr>
+		            				<tr style="height: 20px;">
+		            					<td colspan="4" style="text-align: center;">
+		            						Check Out Estendido Gratuito?
+		            						<span style="margin: 15px;">
+		            							Sim
+		            							<input type="radio" name="reserva.checkOutEstendidoGratuito" value="true"/>
+		            						</span>
+		            						<span>
+		            							Não
+		            							<input type="radio" name="reserva.checkOutEstendidoGratuito" value="false" checked/>
+		            						</span>
+		            					</td>
+		            				</tr>
+	            				</table>
+			            	</div>
+			            </div>
+			            <div class="form" style="height: 260px;">
+			            	<h2 class="StepTitle" style="margin-left: 33px;">
+			            		<img class="linkSemBorda" src="../imagens/icones/iconeAcomodacao.png" style="height: 15px;"/> <f:message key="subTitulo.acomodacao"/>
+		            		</h2>
+							<hr width="550" color="black" size="1" style="margin-left: 30px; margin-top: -4px;">
+			            	<div class="divFormInput">
+			            		<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+			            			<tr style="height: 20px;">
+			            				<td rowspan="12" style="width: 70px;"></td>
+			            				<td style="width: 200px; text-align: center; background-color: #C5C5C5;
+			            				border: 2px solid #fff; border-radius: 4px 0px 0px 0px;">
+			            					Selecione a Acomodação
+			            				</td>
+			            				<td style="width: 80px; text-align: center; background-color: #C5C5C5;
+			            				border: 2px solid #fff;">
+			            					Número
+			            				</td>
+			            				<td style="width: 100px; text-align: center; background-color: #C5C5C5;
+			            				border: 2px solid #fff;">
+			            					Pessoas
+			            				</td>
+			            				<td style="width: 100px; text-align: center; background-color: #C5C5C5;
+			            				border: 2px solid #fff;">
+			            					Camas
+			            				</td>
+			            				<td style="width: 110px; text-align: center; background-color: #C5C5C5;
+			            				border: 1px solid #fff; border-radius: 0px 4px 0px 0px;">
+			            					Preço
+			            				</td>
+			            			</tr>
+									<tr style="text-align: center;">
+			            				<td style="width: 200px; height: 50px; background-color: #fff; text-align: center;">
+			            					<select id="acomodacao" name="reserva.acomodacao.id" style="width: 180px;">
+												<option value=""><f:message key="selecione"/></option>
+												<c:forEach items="${acomodacaoList}" var="item">
+												<option value="${item.id}">${item.nome}</option>
+												</c:forEach>
+											</select>
+		            					</td>
+			            				<td style="width: 80px; height: 50px; background-color: #fff; text-align: center;">
+			            					<input id="numero" type="text" class="k-textbox" style="width: 60px; text-align: center;" disabled>
+		            					</td>
+		            					<td style="width: 100px; height: 50px; background-color: #fff; text-align: center;">
+			            					<input id="nPessoas" type="text" class="k-textbox" style="width: 60px; text-align: center;" disabled>
+		            					</td>
+		            					<td style="width: 100px; height: 50px; background-color: #fff; text-align: center;">
+											<input id="nCamas" type="text" class="k-textbox" style="width: 60px; text-align: center;" disabled>
+		            					</td>
+		            					<td style="width: 110px; height: 50px; background-color: #fff; text-align: center;">
+			            					<input id="preco" type="text" class="k-textbox" style="width: 90px; text-align: center;" disabled>
+		            					</td>
+			            			</tr>
+			            			<tr style="height: 25px;">
+			            				<td>
+			            					<a href="#" onclick="maisInfoAcomodacao();">
+			            						<f:message key="campo.info"/>
+			            					</a>
+			            				</td>
+			            			</tr>
+		            				<tr style="height: 40px;">
+		            					<td id="imagens" class="dairy-photos" style="margin-left: 20px;">
+		            						<a href="../imagens/hotel/quarto.jpg" data-lightbox="roadtrip" data-id="quarto2" title="Quarto" style="float: left; margin-right: 5px;">
+		                        				<img src="../imagens/hotel/quarto.jpg" style="width: 40px; height: 30px;"/>
+				                        	</a>
+					                        <a href="../imagens/hotel/banheiro.jpg" data-lightbox="roadtrip" data-id="banheiro2" title="Banheiro" style="float: left;">
+					                        	<img src="../imagens/hotel/banheiro.jpg" style="width: 40px; height: 30px;"/>
+					                        </a>
+		            					</td>
+		            				</tr>
+		            				<tr valign="bottom">
+		            					<td colspan="5" style="text-align: right; margin-right: 30px;">
+		            						<span style="font-size: 14px; margin-right: 15px;">
+		            							<b>Valor Total</b>
+		            						</span>
+		            					</td>
+			            			</tr>
+			            			<tr style="height: 10px;">
+			            				<td colspan="5" style="text-align: right;">
+			            					<input id="valorTotal" type="text" class="k-textbox" style="width: 100px;" disabled>
+			            				</td>
+			            			</tr>
+			            			<tr style="height: 20px;"></tr>
+		            			</table>
+			            	</div>
+			        	</div>
+			        	<div class="form" style="height: 260px;">
+			        		<h2 class="StepTitle" style="margin-left: 33px;">
+			        			<img class="linkSemBorda" src="../imagens/icones/iconeHospede.png" style="height: 15px;"/> Responsável
+			        		</h2>
+							<hr width="550" color="black" size="1" style="margin-left: 30px; margin-top: -4px;">
+				            <div class="divFormInput">
+				            	<table border="0" cellpadding="0" cellspacing="0" style="width: 535px;">
+				            		<tr valign="bottom" style="height: 0px;">
+						   				<td rowspan="15" style="width: 60px;"></td>
+						   				<td colspan="3" style="width: 520px;"></td>
+						   			</tr>
+				            		<tr valign="bottom" style="height: 20px;">
+			            				<td colspan="2" style="width: 320px;">
+			            					Nome do Responsável
+			            				</td>
+			            				<td style="width: 180px;">
+			            					Sexo
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 10px;">
+		            					<td colspan="2" style="width: 195px;">
+			            					<input id="nomeResponsavel" type="text" class="k-textbox" name="responsavel.nome" style="width: 300px;"/>
+			            				</td>
+		            					<td style="width: 180px;">
+		            						<select id="sexo" name="responsavel.sexo" required style="width: 180px;">
+												<option value=""><f:message key="selecione"/></option>
+												<option value="Masculino" <c:if test="${responsavel.sexo == 'Masculino'}">selected</c:if>>Masculino</option>
+												<option value="Feminino" <c:if test="${responsavel.sexo == 'Feminino'}">selected</c:if>>Feminino</option>
+											</select>
+		            					</td>
+		            				</tr>
+		            				<tr valign="bottom" style="height: 25px;">
+			            				<td style="width: 160px;">
+			            					RG
+			            				</td>
+			            				<td style="width: 160px;">
+			            					CPF
+			            				</td>
+			            				<td style="width: 180px;">
+			            					Telefone
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 10px;">
+		            					<td style="width: 160px;">
+			            					<input id="rg" type="text" class="k-textbox" name="responsavel.rg" style="width: 140px;"/>
+			            				</td>
+			            				<td style="width: 160px;">
+			            					<input id="cpf" type="text" class="k-textbox" name="responsavel.cpf" style="width: 140px;"/>
+			            				</td>
+			            				<td style="width: 180px;">
+			            					<input id="telefone" type="text" class="k-textbox" name="responsavel.telefone" style="width: 180px;"/>
+			            				</td>		            					
+		            				</tr>
+		            				<tr valign="bottom" style="height: 25px;">
+			            				<td colspan="2" style="width: 320px;">
+			            					Email
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 10px;">
+		            					<td colspan="2" style="width: 320px;">
+			            					<input id="email" type="text" class="k-textbox" name="responsavel.email" style="width: 300px;"/>
+			            				</td>
+		            				</tr>
+		            			</table>
+			            	</div>
+			        	</div>
+			        	<div class="form" style="height: 260px;">
+			        		<h2 class="StepTitle" style="margin-left: 33px;">
+			        			<img class="linkSemBorda" src="../imagens/icones/iconeConfirmar.png" style="height: 15px;"/> <f:message key="subTitulo.confirmar"/>
+		        			</h2>
+							<hr width="550" color="black" size="1" style="margin-left: 30px; margin-top: -4px;">
+			        		 <div class="divFormInput divForm">
+				            	<table border="0" cellpadding="0" cellspacing="0" style="width: 535px;">
+				            		<tr valign="bottom" style="height: 0px;">
+						   				<td rowspan="15" style="width: 40px;"></td>
+						   				<td colspan="4" style="width: 520px;"></td>
+						   			</tr>
+				            		<tr style="height: 20px;">
+			            				<td class="titulo" style="width: 200px;">
+			            					Horário Check In:
+			            				</td>
+			            				<td style="width: 195px;">
+			            					<input id="exibirCheckIn" type="text" style="width: 195px; border: 0px; background: none;" disabled/>
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 25px;">
+		            					<td class="titulo" style="width: 200px;">
+			            					Horário Check Out:
+			            				</td>
+		            					<td style="width: 195px;">
+		            						<input id="exibirCheckOut" type="text" style="width: 195px; border: 0px; background: none;" disabled/>
+		            					</td>
+		            				</tr>
+		            				<tr style="height: 25px;">
+		            					<td class="titulo" style="width: 200px;">
+			            					Acomodação:
+			            				</td>
+		            					<td colspan="3" style="width: 320px;">
+		            						<input id="exibirNumero" type="text" style="float: left; width: 50px; border: 0px; background: none;" disabled>
+		            						<input id="exibirNome" type="text" style="float: left; width: 250px; border: 0px; background: none;" disabled>
+		            					</td>
+		            				</tr>
+		            				<tr style="height: 25px;">
+		            					<td class="titulo" style="width: 200px;">
+			            					Responsável:
+			            				</td>
+		            					<td colspan="3" style="width: 320px;">
+		            						<input id="exibirResponsavel" type="text" style="float: left; width: 250px; border: 0px; background: none;" disabled>
+		            					</td>
+		            				</tr>
+		            				<tr style="height: 25px;">
+		            					<td class="titulo" style="width: 200px;">
+			            					Valor Diária:
+			            				</td>
+		            					<td style="width: 195px;">
+		            						<input id="exibirValorTotal" type="text" style="width: 195px; border: 0px; background: none;" disabled>
+		            					</td>
+		            				</tr>
+		            				<tr style="height: 20px;">
+		            					<td valign="bottom" colspan="4" style="width: 200px;">
+			            					Observações
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 10px;">
+		            					<td colspan="4" style="width: 200px;">
+			            					<textarea class="k-textbox" name="reserva.observacao" style="width: 500px; height: 60px;"></textarea>
+			            				</td>
+		            				</tr>
+		            				<tr style="height: 20px;"></tr>
+	            				</table>
+						   	</div>
+			        	</div>
+			        </div>
+		  		</form>
+		  	</div>
+		 </div>
+	</body>
+</html>

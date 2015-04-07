@@ -1,0 +1,137 @@
+package administrativo.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import administrativo.bean.Funcao;
+import administrativo.bean.Perfil;
+import administrativo.bean.Permissao;
+import administrativo.dao.DaoFuncao;
+import administrativo.dao.DaoPerfil;
+import administrativo.dao.DaoPermissao;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("perfil/")
+public class PerfilController {
+	
+	private final DaoFuncao daoFuncao;
+	private final DaoPerfil daoPerfil;
+	private final DaoPermissao daoPermissao;
+	private final Erro erro;
+	private final Result result;
+
+	public PerfilController(DaoFuncao daoFuncao, DaoPerfil daoPerfil, DaoPermissao daoPermissao, Erro erro, Result result) {
+		this.daoFuncao = daoFuncao;
+		this.daoPerfil = daoPerfil;
+		this.daoPermissao = daoPermissao;
+		this.erro = erro;
+		this.result = result;
+	}
+
+	@Path("consultar/{id}")
+	public void consultar(Long id) {
+		Collection<Funcao> funcoesPerfil = daoPerfil.listarFuncoes(id);
+		LinkedHashMap<Funcao, Boolean> mapFuncao = new LinkedHashMap<Funcao, Boolean>();
+
+		for (Funcao funcao : daoFuncao.listar())
+			mapFuncao.put(funcao, funcoesPerfil.contains(funcao));
+
+		result.include("tituloPagina", "perfil.consultar");
+		result.include("perfil", daoPerfil.buscar(id));
+		result.include("mapFuncao", mapFuncao);
+	}
+	
+	@Path("formulario")
+	public void formulario() {
+		
+	}
+	
+	@Post("gravar")
+	public void gravar(Perfil perfil, List<Long> listaIdFuncoes) {
+		Collection<Permissao> permissoes = new ArrayList<Permissao>();
+		Collection<Funcao> funcoesPerfil = new ArrayList<Funcao>();
+		Perfil perfilAtualizado;
+
+		if (perfil.getId() != null) {
+			perfilAtualizado = daoPerfil.buscar(perfil.getId());
+			funcoesPerfil = daoFuncao.listarPorPerfil(perfil.getId());
+		} else
+			perfilAtualizado = new Perfil();
+
+		try {
+			for (Long id : listaIdFuncoes) {
+				Funcao funcao = daoFuncao.buscar(id);
+
+				Permissao permissao = new Permissao();
+				if (!funcoesPerfil.contains(funcao)) {
+					permissao.setFuncao(funcao);
+					permissao.setPerfil(perfilAtualizado);
+				} else
+					permissao = daoPermissao.buscar(perfilAtualizado.getId(), funcao.getId());
+
+				permissoes.add(permissao);
+			}
+
+			if ((perfilAtualizado != null) && (perfilAtualizado.getPermissoes() != null))
+				for (Permissao permissao : perfilAtualizado.getPermissoes())
+					if (!listaIdFuncoes.contains(permissao.getFuncao().getId()))
+						daoPermissao.remover(permissao);
+
+			perfilAtualizado.setNome(perfil.getNome());
+			perfilAtualizado.setDescricao(perfil.getDescricao());
+			perfilAtualizado.setPermissoes(permissoes);
+
+			daoPerfil.atualizar(perfilAtualizado);
+		} catch (Exception e) {
+			result.include("mensagem", "perfil.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+
+		result.nothing();
+	}
+	
+	@Path("lista")
+	public void lista() {
+		result.include("perfilList", daoPerfil.listarTudo("id", "ASC"));
+	}
+
+	@Path("novo")
+	public void novo() {
+		LinkedHashMap<Funcao, Boolean> mapFuncao = new LinkedHashMap<Funcao, Boolean>();
+		
+		for (Funcao funcao : daoFuncao.listar())
+			mapFuncao.put(funcao, false);
+
+		result.include("tituloPagina", "perfil.novo");
+		result.include("mapFuncao", mapFuncao);
+		result.forwardTo(PerfilController.class).formulario();
+	}
+	
+	@Post("remover")
+	public void remover(Perfil perfil, Long id, HttpServletResponse response) {
+		try {
+			perfil = daoPerfil.buscar(id);
+			
+			if (perfil.getUsuarios().isEmpty())
+				daoPerfil.remover(perfil);
+			else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+}

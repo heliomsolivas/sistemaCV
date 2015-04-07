@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="../css/tablesorter.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.all.js"/>"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaPerfil").tablesorter({
+					headers: {4: {sorter: false} }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoPerfil"),
+					positionFixed: false,
+					size: 9
+				})
+				.tablesorterFilter({
+					size: 9,
+					filterColumns: ${fn:length(perfilList)},
+					filterCaseSensitive: true
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div id="pesquisaInputs" class="pesquisaInputs">
+			<a href="#" class="k-button k-button-icontext k-add" onclick="exibe('<c:url value="/perfil/novo"/>','Cadastrar Novo Perfil', '490px', 'auto', 'cadastrarPerfil');">
+				<span class="k-icon k-add"></span> <f:message key="novo"/>
+			</a>
+			<br/>
+			<br/>
+			<div class="divLista">
+				<table class="tabela" id="tabelaPerfil">
+					<thead>
+						<tr style="height: 25px;">
+							<th style="width: 90px;"><f:message key="titulo.lista.codigo.perfil"/></th>
+							<th style="width: 230px;"><f:message key="titulo.lista.nome.perfil"/></th>
+							<th style="width: 250px;"><f:message key="titulo.lista.descricao.perfil"/></th>
+							<th style="width: 70px;"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${!empty perfilList}">
+								<c:forEach items="${perfilList}" var="perfil">
+									<tr style="height: 35px;">
+										<td style="width: 90px; text-align:center;">${perfil.codigo}</td>
+										<td style="width: 230px; text-align:center;">${perfil.nome}</td>
+										<td style="width: 250px; text-align:center;">${perfil.descricao}</td>
+										<td style="width: 70px; text-align:center;">
+											<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/perfil/consultar/${perfil.id}"/>', 'Informações do Perfil', '490px', '630', '730', 'consultarPerfil');">
+												<span class="k-icon k-edit"></span>
+											</a>
+											<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;"  onclick="excluir('<c:url value="/perfil/remover/${perfil.id}"/>', '<c:url value="/perfil/lista"/>', 'listaPerfil');">
+												<span class="k-icon k-delete"></span>
+											</a>
+										</td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr class="nenhumItem">
+									<td colspan="4"><f:message key="mensagem.nenhum.item.encontrado"/></td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>
+			<div id="paginacaoPerfil" class="pager" style="margin-left: 180px;">
+				<div class="first"></div>
+				<div class="prev"></div>
+				<input type="text" class="pagedisplay"/>
+				<div class="next"></div>
+				<div class="last"></div>
+			</div>
+		</div>
+	</body>
+</html>

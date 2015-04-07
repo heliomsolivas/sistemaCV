@@ -1,0 +1,268 @@
+package hotel.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import clientes.bean.HospedeHospedagem;
+
+@Entity(name = "HOTEL_ACOMODACAO")
+@Table(name = "HOTEL_ACOMODACAO")
+public class Acomodacao implements Serializable {
+
+	private static final long serialVersionUID = -292283274424728115L;
+	
+	private Long id;
+	private Hotel hotel;
+	private TipoAcomodacao tipo;
+	private Status status;
+	private String numero;
+	private String nome;
+	private String observacoes;
+	private Integer maximoHospedes;
+	private Integer numeroCamas;
+	private Boolean arCondicionado;
+	private Boolean camaBox;
+	private Boolean cofre;
+	private Boolean dvd;
+	private Boolean fogao;
+	private Boolean frigobar;
+	private Boolean microondas;
+	private Boolean secadorCabelo;
+	private Boolean tvTubo;
+	private Boolean tvLCD;
+	private Boolean utensiliosCozinha;
+	private Boolean ventilador;
+	private Double valorDiaria;
+	private Collection<HospedeHospedagem> hospedeHospedagemList;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+	
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_tipo", nullable = false)
+	public TipoAcomodacao getTipo() {
+		return tipo;
+	}
+	
+	public void setTipo(TipoAcomodacao tipo) {
+		this.tipo = tipo;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_status", nullable = false)
+	public Status getStatus() {
+		return status;
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
+	@Column(name = "numero", nullable = false)
+	public String getNumero() {
+		return numero;
+	}
+	
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+	
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	@Column(name = "observacoes", nullable = true)
+	public String getObservacoes() {
+		return observacoes;
+	}
+	
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
+	
+	@Column(name = "maximoHospedes", nullable = false)
+	public Integer getMaximoHospedes() {
+		return maximoHospedes;
+	}
+	
+	public void setMaximoHospedes(Integer maximoHospedes) {
+		this.maximoHospedes = maximoHospedes;
+	}
+	
+	@Column(name = "numeroCamas", nullable = false)
+	public Integer getNumeroCamas() {
+		return numeroCamas;
+	}
+	
+	public void setNumeroCamas(Integer numeroCamas) {
+		this.numeroCamas = numeroCamas;
+	}
+	
+	@Column(name = "arCondicionado", nullable = false)
+	public Boolean getArCondicionado() {
+		return arCondicionado;
+	}
+	
+	public void setArCondicionado(Boolean arCondicionado) {
+		this.arCondicionado = arCondicionado;
+	}
+	
+	@Column(name = "camaBox", nullable = false)
+	public Boolean getCamaBox() {
+		return camaBox;
+	}
+	
+	public void setCamaBox(Boolean camaBox) {
+		this.camaBox = camaBox;
+	}
+	
+	@Column(name = "cofre", nullable = false)
+	public Boolean getCofre() {
+		return cofre;
+	}
+	
+	public void setCofre(Boolean cofre) {
+		this.cofre = cofre;
+	}
+	
+	@Column(name = "dvd", nullable = false)
+	public Boolean getDvd() {
+		return dvd;
+	}
+	
+	public void setDvd(Boolean dvd) {
+		this.dvd = dvd;
+	}
+	
+	@Column(name = "fogao", nullable = false)
+	public Boolean getFogao() {
+		return fogao;
+	}
+	
+	public void setFogao(Boolean fogao) {
+		this.fogao = fogao;
+	}
+	
+	@Column(name = "frigobar", nullable = false)
+	public Boolean getFrigobar() {
+		return frigobar;
+	}
+	
+	public void setFrigobar(Boolean frigobar) {
+		this.frigobar = frigobar;
+	}
+	
+	@Column(name = "microondas", nullable = false)
+	public Boolean getMicroondas() {
+		return microondas;
+	}
+	
+	public void setMicroondas(Boolean microondas) {
+		this.microondas = microondas;
+	}
+	
+	@Column(name = "secadorCabelo", nullable = false)
+	public Boolean getSecadorCabelo() {
+		return secadorCabelo;
+	}
+	
+	public void setSecadorCabelo(Boolean secadorCabelo) {
+		this.secadorCabelo = secadorCabelo;
+	}
+	
+	@Column(name = "tvTubo", nullable = false)
+	public Boolean getTvTubo() {
+		return tvTubo;
+	}
+	
+	public void setTvTubo(Boolean tvTubo) {
+		this.tvTubo = tvTubo;
+	}
+	
+	@Column(name = "tvLCD", nullable = false)
+	public Boolean getTvLCD() {
+		return tvLCD;
+	}
+	
+	public void setTvLCD(Boolean tvLCD) {
+		this.tvLCD = tvLCD;
+	}
+	
+	@Column(name = "utensiliosCozinha", nullable = false)
+	public Boolean getUtensiliosCozinha() {
+		return utensiliosCozinha;
+	}
+	
+	public void setUtensiliosCozinha(Boolean utensiliosCozinha) {
+		this.utensiliosCozinha = utensiliosCozinha;
+	}
+	
+	@Column(name = "ventilador", nullable = false)
+	public Boolean getVentilador() {
+		return ventilador;
+	}
+	
+	public void setVentilador(Boolean ventilador) {
+		this.ventilador = ventilador;
+	}
+	
+	@Column(name = "valorDiaria", nullable = false)
+	public Double getValorDiaria() {
+		return valorDiaria;
+	}
+	
+	public void setValorDiaria(Double valorDiaria) {
+		this.valorDiaria = valorDiaria;
+	}
+	
+	@OneToMany(mappedBy = "hospede", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<HospedeHospedagem> getHospedeHospedagemList() {
+		return hospedeHospedagemList;
+	}
+	
+	public void setHospedeHospedagemList(Collection<HospedeHospedagem> hospedeHospedagemList) {
+		this.hospedeHospedagemList = hospedeHospedagemList;
+	}
+	
+	@Transient
+	public String getValorDiariaString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorDiaria);
+	}
+	
+}

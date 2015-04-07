@@ -1,0 +1,18 @@
+package financeiro.bean;
+
+public enum TipoMovimentacao {
+
+	CREDITO("Crédito"),
+	DEBITO("Débito");
+
+	private String nome;
+
+	private TipoMovimentacao(String nome) {
+		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+}

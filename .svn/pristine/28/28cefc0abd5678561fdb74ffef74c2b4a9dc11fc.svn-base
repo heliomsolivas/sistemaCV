@@ -1,0 +1,270 @@
+package hotel.bean;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import reserva.bean.Reserva;
+
+import br.com.caelum.vraptor.Convert;
+import clientes.bean.Hospede;
+
+import compras.bean.OrdemCompra;
+
+import estoque.bean.Estoque;
+import estoque.bean.Fornecedor;
+import financeiro.bean.ContaBancaria;
+import generic.converter.CalendarConverter;
+
+@Entity(name = "HOTEL")
+@Table(name = "HOTEL")
+public class Hotel implements Serializable {
+
+	private static final long serialVersionUID = -4393561749558412383L;
+	
+	private Long id;
+	private String nome;
+	private String endereco;
+	private String bairro;
+	private String complemento;
+	private String cidade;
+	private String uf;
+	private String cep;
+	private String telefone;
+	private String site;
+	private String email;
+	private String cnpj;
+	private String logo;
+	private Calendar padraoCheckIn;
+	private Calendar padraoCheckOut;
+	private Calendar padraoCheckOutEstendido;
+	private Boolean permiteMeiaDiariaCheckOutEstendido;
+	private Collection<Reserva> reservaList;
+	private Collection<ContaBancaria> contaBancariaList;
+	private Collection<Estoque> estoqueList;
+	private Collection<Fornecedor> fornecedorList;
+	private Collection<OrdemCompra> ordemCompraList;
+	private Collection<Hospede> hospedeList;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	@Column(name = "endereco", nullable = false)
+	public String getEndereco() {
+		return endereco;
+	}
+	
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+	
+	@Column(name = "bairro", nullable = false)
+	public String getBairro() {
+		return bairro;
+	}
+	
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+	
+	@Column(name = "complemento", nullable = false)
+	public String getComplemento() {
+		return complemento;
+	}
+	
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+	
+	@Column(name = "cidade", nullable = false)
+	public String getCidade() {
+		return cidade;
+	}
+	
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+	
+	@Column(name = "uf", nullable = false)
+	public String getUf() {
+		return uf;
+	}
+	
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+	
+	@Column(name = "cep", nullable = false)
+	public String getCep() {
+		return cep;
+	}
+	
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+	
+	@Column(name = "telefone", nullable = false)
+	public String getTelefone() {
+		return telefone;
+	}
+	
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+	
+	@Column(name = "site", nullable = true)
+	public String getSite() {
+		return site;
+	}
+	
+	public void setSite(String site) {
+		this.site = site;
+	}
+	
+	@Column(name = "email", nullable = false)
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	@Column(name = "cnpj", nullable = false)
+	public String getCnpj() {
+		return cnpj;
+	}
+	
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+	
+	@Column(name = "logo", nullable = true)
+	public String getLogo() {
+		return logo;
+	}
+	
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
+	
+	@Column(name = "padraoCheckIn", nullable = false)
+	public Calendar getPadraoCheckIn() {
+		return padraoCheckIn;
+	}
+	
+	@Convert(CalendarConverter.class)
+	public void setPadraoCheckIn(Calendar padraoCheckIn) {
+		this.padraoCheckIn = padraoCheckIn;
+	}
+	
+	@Column(name = "padraoCheckOut", nullable = false)
+	public Calendar getPadraoCheckOut() {
+		return padraoCheckOut;
+	}
+	
+	@Convert(CalendarConverter.class)
+	public void setPadraoCheckOut(Calendar padraoCheckOut) {
+		this.padraoCheckOut = padraoCheckOut;
+	}
+	
+	@Column(name = "padraoCheckOutEstendido", nullable = false)
+	public Calendar getPadraoCheckOutEstendido() {
+		return padraoCheckOutEstendido;
+	}
+	
+	@Convert(CalendarConverter.class)
+	public void setPadraoCheckOutEstendido(Calendar padraoCheckOutEstendido) {
+		this.padraoCheckOutEstendido = padraoCheckOutEstendido;
+	}
+	
+	@Column(name = "permiteMeiaDiariaCheckOutEstendido", nullable = false)
+	public Boolean getPermiteMeiaDiariaCheckOutEstendido() {
+		return permiteMeiaDiariaCheckOutEstendido;
+	}
+	
+	public void setPermiteMeiaDiariaCheckOutEstendido(Boolean permiteMeiaDiariaCheckOutEstendido) {
+		this.permiteMeiaDiariaCheckOutEstendido = permiteMeiaDiariaCheckOutEstendido;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Reserva> getReservaList() {
+		return reservaList;
+	}
+	
+	public void setReservaList(Collection<Reserva> reservaList) {
+		this.reservaList = reservaList;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ContaBancaria> getContaBancariaList() {
+		return contaBancariaList;
+	}
+	
+	public void setContaBancariaList(Collection<ContaBancaria> contaBancariaList) {
+		this.contaBancariaList = contaBancariaList;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Estoque> getEstoqueList() {
+		return estoqueList;
+	}
+	
+	public void setEstoqueList(Collection<Estoque> estoqueList) {
+		this.estoqueList = estoqueList;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Fornecedor> getFornecedorList() {
+		return fornecedorList;
+	}
+	
+	public void setFornecedorList(Collection<Fornecedor> fornecedorList) {
+		this.fornecedorList = fornecedorList;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<OrdemCompra> getOrdemCompraList() {
+		return ordemCompraList;
+	}
+	
+	public void setOrdemCompraList(Collection<OrdemCompra> ordemCompraList) {
+		this.ordemCompraList = ordemCompraList;
+	}
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Hospede> getHospedeList() {
+		return hospedeList;
+	}
+	
+	public void setHospedeList(Collection<Hospede> hospedeList) {
+		this.hospedeList = hospedeList;
+	}
+
+}

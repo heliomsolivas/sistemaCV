@@ -1,0 +1,16 @@
+package financeiro.dao;
+
+import financeiro.bean.ContaReceber;
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoContaReceber extends Dao<ContaReceber> {
+	
+	public DaoContaReceber(Session session) {
+		super(session, ContaReceber.class);
+	}
+}

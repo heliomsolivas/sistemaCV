@@ -1,0 +1,70 @@
+USE essenciadovale
+GO
+/****** Object:  Table [dbo].[PERFIL]    Script Date: 09/25/2013 09:47:50 ******/
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_PERFIL] ON
+INSERT [dbo].[ADMINISTRATIVO_PERFIL] ([id],   [descricao], [nome]) VALUES (CAST(1 AS Numeric(19, 0)),   N'Usuário Administrador do Sistema', N'Administrativo')
+INSERT [dbo].[ADMINISTRATIVO_PERFIL] ([id],   [descricao], [nome]) VALUES (CAST(3 AS Numeric(19, 0)),    N'Usuário Cadastro', N'Cadastro')
+INSERT [dbo].[ADMINISTRATIVO_PERFIL] ([id],   [descricao], [nome]) VALUES (CAST(4 AS Numeric(19, 0)),   N'Administrador', N'Administrador')
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_PERFIL] OFF
+/****** Object:  Table [dbo].[FUNCAO]    Script Date: 09/25/2013 09:47:50 ******/
+
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ON
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(1 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'formulario', N'Formulario', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(2 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'formularioAlterarSenha', N'Formulario Alterar Senha', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(3 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'formularioRedefinirSenha', N'Formulario Redefinir Senha', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(4 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'novo', N'Novo', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(5 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'consultar', N'Consultar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(6 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'gravar', N'Gravar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(7 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'alterarSenha', N'Alterar Senha', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(8 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'redefinirSenha', N'Redefinir Senha', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(9 AS Numeric(19, 0)), N'Usuário', N'UsuarioController',  N'listar', N'Listar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(10 AS Numeric(19, 0)), N'Usuário', N'UsuarioController', N'validarUsername', N'Validar Nome de Acesso', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(11 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'formulario', N'Formulário', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(12 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'novo', N'Novo', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(13 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'consultar', N'Consultar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(14 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'gravar', N'Gravar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(15 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'listar', N'Listar', N'Sistema')
+INSERT [dbo].[ADMINISTRATIVO_FUNCAO] ([id], [classe], [controller],   [metodo], [nome], [pacote]) VALUES (CAST(16 AS Numeric(19, 0)), N'Perfil', N'PerfilController',  N'remover', N'Remover', N'Sistema')
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_FUNCAO] OFF
+/****** Object:  Table [dbo].[USUARIO]    Script Date: 09/25/2013 09:47:50 ******/
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_USUARIO] ON
+INSERT [dbo].[ADMINISTRATIVO_USUARIO] ([id], [ativo], [email], [nome], [password], [username], [fk_perfil]) VALUES (CAST(1 AS Numeric(19, 0)), 1, N'luizhen@gmail.com', N'Luiz Henrique', N'3803779db92da08a4693a803dcd6af4bc8274ebd754134bd', N'administrador', CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_USUARIO] ([id], [ativo], [email], [nome], [password], [username], [fk_perfil]) VALUES (CAST(2 AS Numeric(19, 0)), 1, N'teste@teste.com.br', N'Administrador', N'fe7bf1c8d9b3eb981ae6f40fca797f63f277b9bc273c9d91', N'teste', CAST(1 AS Numeric(19, 0)))
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_USUARIO] OFF
+/****** Object:  Table [dbo].[PERMISSAO]    Script Date: 09/25/2013 09:47:50 ******/
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ON
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(1 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(2 AS Numeric(19, 0)), CAST(2 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(3 AS Numeric(19, 0)), CAST(3 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(4 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(5 AS Numeric(19, 0)), CAST(5 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(6 AS Numeric(19, 0)), CAST(6 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(7 AS Numeric(19, 0)), CAST(7 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(8 AS Numeric(19, 0)), CAST(8 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(9 AS Numeric(19, 0)), CAST(9 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(10 AS Numeric(19, 0)), CAST(10 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(11 AS Numeric(19, 0)), CAST(11 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(12 AS Numeric(19, 0)), CAST(12 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(13 AS Numeric(19, 0)), CAST(13 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(14 AS Numeric(19, 0)), CAST(14 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(15 AS Numeric(19, 0)), CAST(15 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(16 AS Numeric(19, 0)), CAST(16 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(24 AS Numeric(19, 0)), CAST(2 AS Numeric(19, 0)), CAST(3 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(121 AS Numeric(19, 0)), CAST(7 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(122 AS Numeric(19, 0)), CAST(5 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(123 AS Numeric(19, 0)), CAST(1 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(124 AS Numeric(19, 0)), CAST(2 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(125 AS Numeric(19, 0)), CAST(3 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(126 AS Numeric(19, 0)), CAST(6 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(127 AS Numeric(19, 0)), CAST(9 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(128 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(129 AS Numeric(19, 0)), CAST(8 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] ([id], [fk_funcao], [fk_perfil]) VALUES (CAST(130 AS Numeric(19, 0)), CAST(10 AS Numeric(19, 0)), CAST(4 AS Numeric(19, 0)))
+ 
+SET IDENTITY_INSERT [dbo].[ADMINISTRATIVO_PERMISSAO] OFF
+
+INSERT HOTEL_STATUS (descricao, titulo)
+VALUES ('Acomodação Livre para Check In', 'Livre'),
+	   ('Acomodação Ocupada para Check In', 'Ocupada'),
+	   ('Acomodação em Manutenção', 'Manutenção'),
+	   ('Acomodação em Limpeza', 'Limpeza')

@@ -1,0 +1,73 @@
+// document.ready();
+$(function() {
+	$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+
+	$("#numeroDocumentoReceber").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: parametro, dataInicio: null, dataFim: null});
+		} else {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataInicioReceber").change(function(){
+		var parametro = $(this).val();
+		var parametro2 = $("#dataFimReceber").val();
+		
+		if ((parametro != '') && (parametro2 == '')) {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: null});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataFimReceber").change(function() {
+		var parametro = $("#dataInicioReceber").val();
+		var parametro2 = $(this).val();
+		
+		if ((parametro == '') && (parametro2 != '')) {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: parametro2});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#contaReceberList").load(caminhoAbsoluto + "financeiro/contaReceber/pesquisar", {numeroDocumento: null, dataInicio: null, dataFim: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarContaReceber() {
+    validator =   $("#formContaReceber").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaReceber/gravar",
+			data: $("#formContaReceber").serialize(),
+			success: function(retorno) {						
+						$("#cadastrarContaReceber").data("kendoWindow").destroy();
+						$("#listaContaReceber").load(caminhoAbsoluto + "financeiro/contaReceber/lista");
+					 }
+		});
+	}
+}
+
+function alterarContaReceber() {
+    validator =   $("#formAlterarContaReceber").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaReceber/gravar",
+			data: $("#formAlterarContaReceber").serialize(),
+			success: function(retorno) {					
+						$("#consultarContaReceber").data("kendoWindow").destroy();
+						$("#listaContaReceber").load(caminhoAbsoluto + "financeiro/contaReceber/lista");
+					 }
+		});
+	}
+}

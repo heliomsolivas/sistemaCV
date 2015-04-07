@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				for (var i = 0; i < 8; i++) { 
+					$("#-quantidade" + i).kendoNumericTextBox({ format : "#" });
+				}
+				
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formAlterarFrigobar").bValidator(options);
+				
+				$("#formAlterarFrigobar").submit(function() {
+					if($("#formAlterarFrigobar").data("bValidator").isValid()){
+						$("#consultarFrigobar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/hotel/frigobar/gravar"/>",
+							data: $("#formAlterarFrigobar").serialize(),
+							success: function (retorno) {
+										$("#consultarFrigobar").data("kendoWindow").destroy();
+										$("#listaFrigobar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#listaFrigobar").load("<c:url value="/hotel/frigobar/lista"/>");
+				           			}
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formAlterarFrigobar" name="formAlterarFrigobar" action="#">
+			<table border="0" cellspacing="0" cellpadding="0" style="width: 500px;">
+				<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="30" style="width: 15px;"></td>
+	   				<td colspan="3" style="width: 470px;">
+	   					<f:message key="campo.nome.padrao"/>
+	   				</td>
+	   				<td rowspan="30" style="width: 15px;"></td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 470px;">
+	   					<input type="hidden" name="frigobar.id" value="${frigobar.id}">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="frigobar.nome" value="${frigobar.nome}" style="width: 470px;">
+	   				</td>
+	   			</tr>
+	   			<c:forEach items="${frigobar.itensPadraoFrigobarList}" var="item" end="6" varStatus="s">
+	   				<tr valign="bottom" style="height: 25px;">
+		   				<td colspan="2" style="width: 390x;">
+		   					<f:message key="campo.item"/>
+		   				</td>
+		   				<td style="width: 80px;">
+		   					<f:message key="campo.quantidade.item"/>
+		   				</td>
+					</tr>
+		   			<tr style="height: 10px;">
+	   					<c:choose>
+		   					<c:when test="${item != null}">
+		   						<td colspan="2" style="width: 390px;">
+			   						<input type="hidden" name="itemList[${s.index}].id" value="${item.id}">
+				   					<select name="itemList[${s.index}].produto.id" style="width: 370px;">
+										<option value="${item.produto.id}">${item.produto.nome}</option>
+										<c:forEach items="${produtoList}" var="produto">
+											<option value="${produto.id}">${produto.nome}</option>
+										</c:forEach>
+									</select>
+								</td>
+								<td style="width: 80px;">
+				   					<input id="-quantidade${s.index}" name="itemList[${s.index}].quantidade" value="${item.quantidade}" min="0" style="width: 80px;">
+				   				</td>
+		   					</c:when>
+		   				</c:choose>
+		   			</tr>
+	   			</c:forEach>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390x;">
+	   					<f:message key="campo.item"/>
+	   				</td>
+	   				<td style="width: 80px;">
+	   					<f:message key="campo.quantidade.item"/>
+	   				</td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390x;">
+   						<select name="itemList[7].produto.id" style="width: 370px;">
+							<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${produtoList}" var="produto">
+								<option value="${produto.id}">${produto.nome}</option>
+							</c:forEach>
+						</select>
+					</td>
+					<td style="width: 80px;">
+	   					<input id="-quantidade7" name="itemList[7].quantidade" min="0" style="width: 80px;">
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 30px;"></tr>
+	   			<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+	            		<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="alterar"/></button>
+            		</td>
+            	</tr>
+	   		</table>
+	   	</form>
+	</body>
+</html>

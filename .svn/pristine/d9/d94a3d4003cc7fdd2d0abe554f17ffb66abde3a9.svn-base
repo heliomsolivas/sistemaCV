@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#valorDiariaAcomodacao").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+				$("#nHospedesAcomodacao").kendoNumericTextBox({
+					format : "#"
+				});
+				$("#nCamasAcomodacao").kendoNumericTextBox({
+					format : "#"
+				});
+                $("#tipoAcomodacao").change(function() {
+					if ($("#tipoAcomodacao").val() != "") {
+						var id = $("#tipoAcomodacao").val();
+						$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "GET",
+							url: "<c:url value="/hotel/tipo/acomodacao/atualizaDados/"/>" + id,
+							success: function(retorno){
+										if (retorno != "") {
+											retorno = retorno.split("],[");
+											$("#descricaoTipoAcomodacao").val(retorno[0]);
+										} else {
+											$("#descricaoTipoAcomodacao").empty().append("<f:message key="mensagem.tipo.acomodacao"/>");
+										}
+									 }
+						});
+					}
+				});
+				
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formAcomodacao").bValidator(options);
+				
+				$("#formAcomodacao").submit(function() {
+					if($("#formAcomodacao").data("bValidator").isValid()){
+						$("#cadastrarAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/hotel/acomodacao/gravar"/>",
+							data: $("#formAcomodacao").serialize(),
+							success: function (retorno) {
+										$("#cadastrarAcomodacao").data("kendoWindow").destroy();
+										$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+										$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>");
+										$("#listaAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});								
+										$("#listaAcomodacao").load("<c:url value="/hotel/acomodacao/lista"/>");
+				           			}
+						});
+					}
+					return false;
+				});
+   				
+			});
+		</script>
+		<style type="text/css">
+			input[type="radio"] {
+				margin-right: 5px;
+			}
+		</style>
+	</head>
+	<body class="divConteudo">
+	   <form id="formAcomodacao" name="formAcomodacao" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="30" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.acomodacao"/>
+	   				</td>
+	   				<td colspan="2" style="width: 180px;">
+	   					<f:message key="campo.numero.acomodacao"/>
+	   				</td>
+	   				<td rowspan="30" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="acomodacao.nome" style="width: 370px;"/>
+	   				</td>
+	   				<td colspan="2" style="width: 175px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="acomodacao.numero" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.tipo.acomodacao"/>
+	   				</td>
+	   				<td style="width: 100px;">
+	   					<f:message key="campo.numero.camas"/>
+	   				</td>
+	   				<td style="width: 80px;">
+	   					<f:message key="campo.numero.hospedes"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<select id="tipoAcomodacao" data-bvalidator="required" name="acomodacao.tipo.id" style="width: 370px;">
+							<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${tipoAcomodacaoList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 100px;">
+	   					<input id="nCamasAcomodacao" type="text" data-bvalidator="required" name="acomodacao.numeroCamas" step="1" style="width: 80px;"/>
+	   				</td>
+	   				<td style="width: 80px;">
+	   					<input id="nHospedesAcomodacao" type="text"data-bvalidator="required"  name="acomodacao.maximoHospedes" step="1" style="width: 80px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<f:message key="campo.descricao.tipo.acomodacao"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<textarea id="descricaoTipoAcomodacao" class="k-textbox" style="width: 570px; height: 60px;" disabled></textarea>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<f:message key="campo.observacoes"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<textarea class="k-textbox" name="acomodacao.observacoes" style="width: 570px; height: 60px;"></textarea>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;">
+	   				<td colspan="4" style="width: 570px;">
+	   					<h4 style="margin-bottom: -5px;"><f:message key="sub.titulo.especificacoes"/></h4>
+	            		<hr color="black" size="1"  width="570" style="margin-left: -3px;">
+	   				</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td colspan="2">
+            			<label style="margin-left: 120px; margin-right: 5px;">
+            				<f:message key="sim"/>
+            			</label>
+            			<label>
+            				<f:message key="nao"/>
+            			</label>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.ar.condicionado" />
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.arCondicionado" value="true"/>
+        				<input type="radio" name="acomodacao.arCondicionado" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.cama.box"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.camaBox" value="true"/>
+            			<input type="radio" name="acomodacao.camaBox" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.secador.cabelo"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.secadorCabelo" value="true"/>
+            			<input type="radio" name="acomodacao.secadorCabelo" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.cofre"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.cofre" value="true"/>
+            			<input type="radio" name="acomodacao.cofre" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.dvd"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.dvd" value="true"/>
+            			<input type="radio" name="acomodacao.dvd" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.fogao"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.fogao" value="true"/>
+            			<input type="radio" name="acomodacao.fogao" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.microondas"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.microondas" value="true"/>
+            			<input type="radio" name="acomodacao.microondas" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.frigobar"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.frigobar" value="true"/>
+            			<input type="radio" name="acomodacao.frigobar" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.tv.lcd"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.tvLCD" value="true"/>
+            			<input type="radio" name="acomodacao.tvLCD" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.tv.tubo"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.tvTubo" value="true"/>
+            			<input type="radio" name="acomodacao.tvTubo" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.utensilios.cozinha"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.utensiliosCozinha" value="true"/>
+            			<input type="radio" name="acomodacao.utensiliosCozinha" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 30px;">
+            		<td style="width: 120px;">
+        				<f:message key="campo.ventilador"/>
+            		</td>
+            		<td colspan="2">
+            			<input type="radio" name="acomodacao.ventilador" value="true"/>
+            			<input type="radio" name="acomodacao.ventilador" value="false" checked/>
+            		</td>
+            	</tr>
+            	<tr style="height: 20px;">
+	   				<td colspan="4" style="width: 590px;">
+	   					<h4 style="margin-bottom: -5px;"> <f:message key="sub.titulo.selecione.imagens.acomodacao"/> </h4>
+	            		<hr color="black" size="1" width="570" style="margin-left: -3px;">
+	   				</td>
+            	</tr>
+            	<tr style="height: 50px;">
+            		<td colspan="2">
+            			<input type="file">
+            		</td>
+            	</tr>
+            	<tr style="height: 50px;">
+            		<td colspan="2">
+            			<input type="file">
+            		</td>
+            	</tr>
+            	<tr style="height: 50px;">
+            		<td colspan="2">
+            			<input type="file">
+            		</td>
+            	</tr>
+            	<tr style="height: 50px;">
+            		<td colspan="2">
+            			<input type="file">
+            		</td>
+            	</tr>
+            	<tr valign="bottom" style="height: 50px;">
+            		<td colspan="5">
+            			<label style="width: 120px; margin-left: 400px;">
+            				<f:message key="campo.valor.diaria"/>
+            			</label>
+            		</td>
+            	</tr>
+            	<tr style="height: 10px;">
+            		<td colspan="5">
+            			<span style="width: 170px; margin-left: 400px;">
+            				<input id="valorDiariaAcomodacao" type="text" class="k-textbox" data-bvalidator="required" name="acomodacao.valorDiaria" placeholder="R$ 0,00" style="width: 170px;"/>
+            			</span>
+            		</td>
+            	</tr>
+            	<tr style="height: 20px;"></tr>
+            	<tr style="height: 40px;">
+            		<td colspan="5" style="width: 570px; text-align: center;">
+            			<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	            		<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+            		</td>
+            	</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

@@ -1,0 +1,81 @@
+package hotel.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity(name = "HOTEL_FRIGOBAR")
+@Table(name = "HOTEL_FRIGOBAR")
+public class Frigobar implements Serializable {
+
+	private static final long serialVersionUID = 2210888417919934553L;
+	
+	private Long id;
+	private String nome;
+	private Integer contador;
+	private Collection<ItensFrigobar> itensFrigobarList;
+	private Collection<ItensPadraoFrigobar> itensPadraoFrigobarList;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	@Column(name = "contador", nullable = false)
+	public Integer getContador() {
+		return contador;
+	}
+	
+	public void setContador(Integer contador) {
+		this.contador = contador;
+	}
+	
+	@OneToMany(mappedBy = "frigobar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ItensFrigobar> getItensFrigobarList() {
+		return itensFrigobarList;
+	}
+	
+	public void setItensFrigobarList(
+			Collection<ItensFrigobar> itensFrigobarList) {
+		this.itensFrigobarList = itensFrigobarList;
+	}
+	
+	@OneToMany(mappedBy = "frigobar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ItensPadraoFrigobar> getItensPadraoFrigobarList() {
+		return itensPadraoFrigobarList;
+	}
+
+	public void setItensPadraoFrigobarList(Collection<ItensPadraoFrigobar> itensPadraoFrigobarList) {
+		this.itensPadraoFrigobarList = itensPadraoFrigobarList;
+	}
+
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+}

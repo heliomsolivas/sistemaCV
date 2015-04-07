@@ -1,0 +1,254 @@
+package clientes.bean;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity(name = "CLIENTES_RESPONSAVEL")
+@Table(name = "CLIENTES_RESPONSAVEL")
+public class Responsavel implements Serializable {
+
+	private static final long serialVersionUID = -8672618105007537241L;
+
+	private Long id;
+	private Hospede hospede;
+	private String nome;
+	private String sexo;
+	private String cpf;
+	private String rg;
+	private String estadoCivil;
+	private String naturalidade;
+	private String nacionalidade;
+	private Calendar dataNascimento;
+	private String endereco;
+	private String bairro;
+	private String complemento;
+	private String cidade;
+	private String estado;
+	private String cep;
+	private String telefoneResidencial;
+	private String telefoneCelular;
+	private String telefoneComercial;
+	private String email;
+	private String profissao;
+	private String grauParentesco;
+	private String observacoes;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@OneToOne(mappedBy = "responsavel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Hospede getPaciente() {
+		return hospede;
+	}
+
+	public void setPaciente(Hospede hospede) {
+		this.hospede = hospede;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "sexo", nullable = false)
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+	@Column(name = "cpf", nullable = false)
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	@Column(name = "rg", nullable = false)
+	public String getRg() {
+		return rg;
+	}
+
+	public void setRg(String rg) {
+		this.rg = rg;
+	}
+
+	@Column(name = "estadoCivil", nullable = false)
+	public String getEstadoCivil() {
+		return estadoCivil;
+	}
+
+	public void setEstadoCivil(String estadoCivil) {
+		this.estadoCivil = estadoCivil;
+	}
+
+	@Column(name = "naturalidade", nullable = false)
+	public String getNaturalidade() {
+		return naturalidade;
+	}
+
+	public void setNaturalidade(String naturalidade) {
+		this.naturalidade = naturalidade;
+	}
+
+	@Column(name = "nacionalidade", nullable = false)
+	public String getNacionalidade() {
+		return nacionalidade;
+	}
+
+	public void setNacionalidade(String nacionalidade) {
+		this.nacionalidade = nacionalidade;
+	}
+
+	@Column(name = "dataNascimento", nullable = false)
+	public Calendar getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(Calendar dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	@Column(name = "endereco", nullable = false)
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	@Column(name = "bairro", nullable = false)
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	@Column(name = "complemento", nullable = true)
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	@Column(name = "cidade", nullable = false)
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	@Column(name = "estado", nullable = false)
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	@Column(name = "cep", nullable = false)
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	@Column(name = "telefoneResidencial", nullable = false)
+	public String getTelefoneResidencial() {
+		return telefoneResidencial;
+	}
+
+	public void setTelefoneResidencial(String telefoneResidencial) {
+		this.telefoneResidencial = telefoneResidencial;
+	}
+
+	@Column(name = "telefoneCelular", nullable = false)
+	public String getTelefoneCelular() {
+		return telefoneCelular;
+	}
+
+	public void setTelefoneCelular(String telefoneCelular) {
+		this.telefoneCelular = telefoneCelular;
+	}
+
+	@Column(name = "telefoneComercial", nullable = false)
+	public String getTelefoneComercial() {
+		return telefoneComercial;
+	}
+
+	public void setTelefoneComercial(String telefoneComercial) {
+		this.telefoneComercial = telefoneComercial;
+	}
+
+	@Column(name = "email", nullable = false)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "profissao", nullable = false)
+	public String getProfissao() {
+		return profissao;
+	}
+
+	public void setProfissao(String profissao) {
+		this.profissao = profissao;
+	}
+
+	@Column(name = "grauParentesco", nullable = false)
+	public String getGrauParentesco() {
+		return grauParentesco;
+	}
+
+	public void setGrauParentesco(String grauParentesco) {
+		this.grauParentesco = grauParentesco;
+	}
+
+	@Column(name = "observacoes", length = 5000, nullable = true)
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
+
+}

@@ -1,0 +1,54 @@
+package financeiro.dao;
+
+import financeiro.bean.Cheque;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoCheque extends Dao<Cheque>  {
+
+    public DaoCheque(Session session) {
+    	super(session, Cheque.class);
+    }
+    
+    public Collection<Cheque> pesquisarCheque(String numero, String nomeTitular) {
+		Collection<Cheque> chequeList = new ArrayList<Cheque>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM FINANCEIRO_CHEQUE WHERE 1 = 1";
+
+		if (numero != null) {
+			consulta += " AND numero LIKE :numero ORDER BY id ASC";
+			parameters.put("numero", "%" + numero + "%");
+		} else {
+			consulta += " AND nomeTitular LIKE :nomeTitular ORDER BY id ASC";
+			parameters.put("nomeTitular", "%" + nomeTitular + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Cheque item = (Cheque) query.list().get(x);
+			chequeList.add(item);
+		}
+
+		return chequeList;
+	}
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">		
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+			});
+			
+			$(function() {
+				$("#scheduler").kendoScheduler({
+			        height: 460,
+			        views: [
+			            { type: "day", selected: true },
+			            "week",
+			            "month",
+			            "agenda"
+			        ],
+			        timezone: "Etc/UTC",
+			        dataSource: {
+			            batch: true,
+			            transport: {
+			                read: {
+			                    url: "http://demos.kendoui.com/service/tasks",
+			                    dataType: "jsonp"
+			                },
+			                update: {
+			                    url: "http://demos.kendoui.com/service/tasks/update",
+			                    dataType: "jsonp"
+			                },
+			                create: {
+			                    url: "http://demos.kendoui.com/service/tasks/create",
+			                    dataType: "jsonp"
+			                },
+			                destroy: {
+			                    url: "http://demos.kendoui.com/service/tasks/destroy",
+			                    dataType: "jsonp"
+			                },
+			                parameterMap: function(options, operation) {
+			                    if (operation !== "read" && options.models) {
+			                        return {models: kendo.stringify(options.models)};
+			                    }
+			                }
+			            },
+			            schema: {
+			                model: {
+			                    id: "taskId",
+			                    fields: {
+			                        taskId: { from: "TaskID", type: "number" },
+			                        title: { from: "Title", defaultValue: "Nenhum Título", validation: { required: true } },
+			                        start: { type: "date", from: "Start" },
+			                        end: { type: "date", from: "End" },
+			                        startTimezone: { from: "StartTimezone" },
+			                        endTimezone: { from: "EndTimezone" },
+			                        description: { from: "Description" },
+			                        recurrenceId: { from: "RecurrenceID" },
+			                        recurrenceRule: { from: "RecurrenceRule" },
+			                        recurrenceException: { from: "RecurrenceException" },
+			                        ownerId: { from: "OwnerID", defaultValue: 1 },
+			                        isAllDay: { type: "boolean", from: "IsAllDay" }
+			                    }
+			                }
+			            },
+			            filter: {
+			                logic: "or",
+			                filters: [
+			                    { field: "ownerId", operator: "eq", value: 1 },
+			                    { field: "ownerId", operator: "eq", value: 2 },
+			                    { field: "ownerId", operator: "eq", value: 3 }
+			                ]
+			            }
+			        },
+			        resources: [
+			            {
+			                field: "ownerId",
+			                title: "Proprietário",
+			                dataSource: [
+			                    { text: "Alex", value: 1, color: "#f8a398" },
+			                    { text: "Bob", value: 2, color: "#51a0ed" },
+			                    { text: "Charlie", value: 3, color: "#56ca85" }
+			                ]
+			            }
+			        ]
+			    });
+			    
+			    $("#people :checkbox").change(function(e) {
+			        var checked = $.map($("#people :checked"), function(checkbox) {
+			            return parseInt($(checkbox).val());
+			        });
+			        
+			        var filter = {
+			            logic: "or",
+			            filters: $.map(checked, function(value) {
+			                return {
+			                    operator: "eq",
+			                    field: "ownerId",
+			                    value: value
+			                };
+			            })
+			        };
+			
+			        var scheduler = $("#scheduler").data("kendoScheduler");
+			
+			        scheduler.dataSource.filter(filter);
+			    });
+		    });
+		</script>
+	</head>
+	<body class="divConteudo">
+	<style scoped>
+	    .k-nav-current > .k-link span + span {
+		    display: inline-block;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    overflow: hidden;
+		    vertical-align: top;
+		    margin-top: -10px;
+		}
+		#people {
+		    background: url('../imagens/imagemTeste.png') transparent no-repeat;
+		    height: 115px;
+		    position: relative;
+		    margin-left: 20px;
+		}
+		#alex {
+		    position: absolute;
+		    left: 404px;
+		    top: 81px;
+		}
+		#bob {
+		    position: absolute;
+		    left: 519px;
+		    top: 81px;
+		}
+		#charlie {
+		    position: absolute;
+		    left: 634px;
+		    top: 81px;
+		}
+	</style>
+		<div style="width: 800px;">
+			<div id="example" class="k-content" style="margin-bottom: 0px; margin-top: 0px; border: 0px; background: none;">
+		  		<div id="people">
+			        <input id="alex" type="checkbox" value="1" checked>
+			        <input id="bob" type="checkbox" value="2" checked >
+			        <input id="charlie" type="checkbox" value="3" checked>
+		    	</div>
+			    <div id="scheduler" style="width: 750px; margin-left: 20px; margin-right: 20px;"></div>
+			</div>
+		</div>
+	</body>
+</html>

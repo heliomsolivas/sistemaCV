@@ -1,0 +1,190 @@
+package estoque.controller;
+
+import estoque.bean.Fabricante;
+import estoque.bean.Fornecedor;
+import estoque.bean.Produto;
+import estoque.dao.DaoFabricante;
+import estoque.dao.DaoFornecedor;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.bean.ItensFrigobar;
+import hotel.bean.ItensPadraoFrigobar;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoItensFrigobar;
+import hotel.dao.DaoItensPadraoFrigobar;
+
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletResponse;
+
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("estoque/")
+public class EstoqueController {
+	
+	private final DaoFabricante daoFabricante;
+	private final DaoFornecedor daoFornecedor;
+	private final DaoHotel daoHotel;
+	private final DaoItensFrigobar daoItensFrigobar;
+	private final DaoItensPadraoFrigobar daoItensPadraoFrigobar;	
+	private final DaoProduto daoProduto;
+	private final Erro erro;
+	private final Result result;
+	
+	public EstoqueController(DaoFabricante daoFabricante, DaoFornecedor daoFornecedor, DaoHotel daoHotel, DaoItensFrigobar daoItensFrigobar,
+		DaoItensPadraoFrigobar daoItensPadraoFrigobar, DaoProduto daoProduto, Erro erro, Result result) {
+		this.daoFabricante = daoFabricante;
+		this.daoFornecedor = daoFornecedor;
+		this.daoHotel = daoHotel;
+		this.daoItensFrigobar = daoItensFrigobar;
+		this.daoItensPadraoFrigobar = daoItensPadraoFrigobar;
+		this.daoProduto = daoProduto;
+		this.erro = erro;
+		this.result = result;
+	}
+	
+	@Path("fabricante/cadastrar")
+	public void formFabricante() {
+	}
+	
+	@Path("fornecedor/cadastrar")
+	public void formFornecedor() {
+	}
+	
+	@Path("produto/cadastrar")
+	public void formProduto() {		
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("fabricante/consultar/{id}")
+	public void consultarFabricante(Long id) {
+		result.include("fabricante", daoFabricante.buscar(id));
+	}
+	
+	@Path("fornecedor/consultar/{id}")
+	public void consultarFornecedor(Long id) {
+		result.include("fornecedor", daoFornecedor.buscar(id));
+	}
+	
+	@Path("produto/consultar/{id}")
+	public void consultarProduto(Long id) {
+		result.include("produto", daoProduto.buscar(id));
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("fabricante/lista")
+	public void listaFabricante() {
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("fornecedor/lista")
+	public void listaFornecedor() {
+		result.include("fornecedorList", daoFornecedor.listarTudo("id", "ASC"));
+	}
+	
+	@Path("produto/lista")
+	public void listaProduto() {
+		result.include("produtoList", daoProduto.listarTudo("id", "ASC"));
+	}
+	
+	@Post("fabricante/gravar")
+	public void gravar(Fabricante fabricante) {
+		try {			
+			daoFabricante.atualizar(fabricante);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("fornecedor/gravar")
+	public void gravar(Fornecedor fornecedor) {
+		try {
+			if(fornecedor.getId() == null)
+				fornecedor.setHotel(daoHotel.busca());
+			
+			daoFornecedor.atualizar(fornecedor);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("produto/gravar")
+	public void gravar(Produto produto) {
+		try {			
+			if (produto.getQuantidade() >= 1)
+				produto.setAtivo(true);
+			else
+				produto.setAtivo(false);
+			
+			daoProduto.atualizar(produto);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("fabricante/remover")
+	public void remover(Fabricante fabricante, Long id, HttpServletResponse response) {
+		try {
+			fabricante = daoFabricante.buscar(id);
+			
+			if(fabricante.getProdutoList().isEmpty())
+				daoFabricante.remover(fabricante);
+			else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("fornecedor/remover")
+	public void remover(Fornecedor fornecedor, Long id) {
+		try {
+			fornecedor = daoFornecedor.buscar(id);
+			
+			daoFornecedor.remover(fornecedor);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("produto/remover")
+	public void remover(Produto produto, Long id, HttpServletResponse response) {
+		try {
+			Collection<ItensPadraoFrigobar> itensPadrao = daoItensPadraoFrigobar.pesquisarPorProduto(id);
+			Collection<ItensFrigobar> itens = daoItensFrigobar.pesquisarPorProduto(id);
+			
+			if ((itensPadrao.isEmpty()) && (itens.isEmpty())){
+				produto = daoProduto.buscar(id);
+				
+				daoProduto.remover(produto);
+			} else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("produto/atualizaDados/{nome}")
+	public void atualizaDados(Produto produto, String nome) {
+		produto = daoProduto.pesquisarPorNome(nome);
+		result.use(Results.http()).body(produto.getCategoria() + "],[" + produto.getValorUnitarioString() + "],[" + produto.getValorUnitario());
+	}
+}

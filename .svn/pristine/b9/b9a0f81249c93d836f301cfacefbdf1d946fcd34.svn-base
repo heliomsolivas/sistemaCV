@@ -1,0 +1,17 @@
+package financeiro.dao;
+
+import financeiro.bean.ContaBancaria;
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoContaBancaria extends Dao<ContaBancaria> {
+	
+	public DaoContaBancaria(Session session) {
+		super(session, ContaBancaria.class);
+	}
+	
+}

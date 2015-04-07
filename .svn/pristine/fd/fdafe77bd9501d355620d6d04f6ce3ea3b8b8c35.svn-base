@@ -1,0 +1,222 @@
+.tabela {
+	width: 100%;
+	height: auto;
+	border-collapse: collapse;
+	border-spacing: 1px;
+}
+.tabela th {
+	background-color: #DCDCDC;
+	font-weight: normal;
+	color: #000;
+	height: 25px;
+	border: 1px solid #FFF;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+			-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+.tabela td {
+	color: #000;
+	border: 1px solid #FFF;
+	height: 25px;
+	border-spacing: 1px;
+}
+.tabela tr:nth-child(even) { /*Definido cor das linhas pares*/
+	background-color: #FFF;
+}
+.tabela tr:nth-child(odd) { /*Definindo cor das Linhas impáres*/
+	background-color: #F5F5F5;
+}
+.tabela tr:nth-child(even):hover{
+	background-color: #efefef;
+}
+.tabela tr:nth-child(odd):hover{
+	background-color:#dfdfdf;
+}
+/* header */
+.tablesorter-default tfoot th,
+.tablesorter-default tfoot td {
+	border: 0;
+}
+.tablesorter-default .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+	background-position: center right;
+	background-repeat: no-repeat; 
+	cursor: pointer;
+	white-space: normal;
+}
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	background-repeat: no-repeat;
+	background-position: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+	background-repeat: no-repeat;
+	background-position: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+.tablesorter-default thead .sorter-false {
+	background-image: none;
+	cursor: default;
+}
+/* table processing indicator */
+.tablesorter-default .tablesorter-processing {
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+	/* background-image: url(../addons/pager/icons/loading.gif) !important; */
+	background-image: url('data:image/gif;base64,R0lGODlhFAAUAKEAAO7u7lpaWgAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQBCgACACwAAAAAFAAUAAACQZRvoIDtu1wLQUAlqKTVxqwhXIiBnDg6Y4eyx4lKW5XK7wrLeK3vbq8J2W4T4e1nMhpWrZCTt3xKZ8kgsggdJmUFACH5BAEKAAIALAcAAAALAAcAAAIUVB6ii7jajgCAuUmtovxtXnmdUAAAIfkEAQoAAgAsDQACAAcACwAAAhRUIpmHy/3gUVQAQO9NetuugCFWAAAh+QQBCgACACwNAAcABwALAAACE5QVcZjKbVo6ck2AF95m5/6BSwEAIfkEAQoAAgAsBwANAAsABwAAAhOUH3kr6QaAcSrGWe1VQl+mMUIBACH5BAEKAAIALAIADQALAAcAAAIUlICmh7ncTAgqijkruDiv7n2YUAAAIfkEAQoAAgAsAAAHAAcACwAAAhQUIGmHyedehIoqFXLKfPOAaZdWAAAh+QQFCgACACwAAAIABwALAAACFJQFcJiXb15zLYRl7cla8OtlGGgUADs=') !important;
+}
+
+.tablesorter-default .tablesorter-filter-row td {
+	background: #eee;
+	height: 30px;
+	border-bottom: #ccc 1px solid;
+	line-height: normal;
+	text-align: center; /* center the input */
+	-webkit-transition: line-height 0.1s ease;
+	-moz-transition: line-height 0.1s ease;
+	-o-transition: line-height 0.1s ease;
+	transition: line-height 0.1s ease;
+}
+.tablesorter-default .tablesorter-filter-row td > input {
+	width: 90%;
+	height: 1.8em;
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #C0C0C0;
+	background-color: #FFFFFF;	
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+	-moz-box-sizing: border-box;
+	padding: 3px;
+}
+.tablesorter-default .tablesorter-filter-row td > select {
+	width: 90%;
+	height: 1.8em;	
+	padding: 1px;
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #C0C0C0;
+	background-color: #FFFFFF;	
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+	-moz-box-sizing: border-box;
+	
+}
+/* optional disabled input styling */
+.tablesorter-default .tablesorter-filter-row .disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	cursor: not-allowed;
+}
+/* pager wrapper, in thead/tfoot */
+td.tablesorter-pager {
+	background-color: #e6eeee;
+	margin: 0; /* needed for bootstrap .pager gets a 18px bottom margin */
+}
+/* pager navigation arrows */
+.tablesorter-pager img {
+	vertical-align: middle;
+	margin-right: 2px;
+	cursor: pointer;
+}
+
+/* pager output text */
+.tablesorter-pager .pagedisplay {
+	padding: 0 5px 0 5px;
+	width: auto;
+	white-space: nowrap;
+	text-align: center;
+}
+
+/* pager element reset (needed for bootstrap) */
+.tablesorter-pager select {
+	margin: 0;
+	padding: 0;
+}
+
+/*** css used when "updateArrows" option is true ***/
+/* the pager itself gets a disabled class when the number of rows is less than the size */
+.tablesorter-pager.disabled {
+	display: none;
+}
+/* hide or fade out pager arrows when the first or last row is visible */
+.tablesorter-pager .disabled {
+	/* visibility: hidden */
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	cursor: default;
+}
+.tablesorter-pager {
+	margin-top: 20px;
+	width: 270px;
+}
+.nenhumItem {
+	font-family: cursive;
+	color: #000;
+	height: 315px;
+	letter-spacing: 1px;
+	text-align: center;
+}
+.nenhumItem > td {
+	background-color: #F5F5F5;
+	border: 0px;
+}
+.first {
+	background: url("tablesorter/paginacao-primeiro.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	width: 16px;
+}
+.prev {
+	background: url("tablesorter/paginacao-anterior.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	margin-left: 5px;
+	width: 16px;
+}
+.next {
+	background: url("tablesorter/paginacao-proximo.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	width: 16px;
+}
+.last {
+	background: url("tablesorter/paginacao-ultimo.png") no-repeat !important;
+	cursor: pointer;
+	float: left;
+	height: 16px;
+	margin-left: 5px;
+	width: 16px;
+}
+.pagedisplay {
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	background: none;
+	border: 0px;
+	float: left;
+	height: 15px;
+	text-align: center;
+	width: 180px;
+}
+.divLista{
+	width: 650px;
+	height: 415px;
+	margin-left: 15px;
+ 	margin-right: 15px;
+ 	margin-top: 5px;
+	border: 1px solid #C0C0C0;
+	border-radius: 2px; 
+	background-color: #FFFFFF;
+}

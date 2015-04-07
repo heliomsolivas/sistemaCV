@@ -1,0 +1,19 @@
+package financeiro.bean;
+
+public enum SituacaoCheque {
+
+	COMPENSADO("Compensado"),
+	DEVOLVIDO("Devolvido"),
+	PENDENTE("Pendente");
+
+	private String nome;
+
+	private SituacaoCheque(String nome) {
+		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+}

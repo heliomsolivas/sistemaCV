@@ -1,0 +1,114 @@
+package contabil.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "CONTABIL_CONTA")
+@Table(name = "CONTABIL_CONTA")
+public class ContaContabil implements Serializable {
+
+	private static final long serialVersionUID = 506400153956119732L;
+
+	private Long id;
+	private String numero;
+	private String nome;
+	private String descricao;
+	private Integer codigoReduzido;
+	private Double saldo;
+	private Boolean ativa;
+	private Collection<Lancamento> lancamentoList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "numero", nullable = false)
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "descricao", nullable = true)
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	@Column(name = "codigoReduzido", nullable = false)
+	public Integer getCodigoReduzido() {
+		return codigoReduzido;
+	}
+
+	public void setCodigoReduzido(Integer codigoReduzido) {
+		this.codigoReduzido = codigoReduzido;
+	}
+
+	@Column(name = "saldo", nullable = false)
+	public Double getSaldo() {
+		return saldo;
+	}
+
+	@Convert(Double.class)
+	public void setSaldo(Double saldo) {
+		this.saldo = saldo;
+	}
+
+	@Column(name = "ativa", nullable = false)
+	public Boolean getAtiva() {
+		return ativa;
+	}
+
+	public void setAtiva(Boolean ativa) {
+		this.ativa = ativa;
+	}
+
+	@OneToMany(mappedBy = "contaDebito", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Lancamento> getLancamentoList() {
+		return lancamentoList;
+	}
+
+	public void setLancamentoList(Collection<Lancamento> lancamentoList) {
+		this.lancamentoList = lancamentoList;
+	}
+	
+	@Transient
+	public String getSaldoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(saldo);
+	}
+}

@@ -1,0 +1,37 @@
+package compras.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+import compras.bean.ItemOrdemCompraHospedagem;
+
+@Component
+public class DaoItemOrdemCompraHospedagem extends Dao<ItemOrdemCompraHospedagem>{
+
+	public DaoItemOrdemCompraHospedagem(Session session) {
+		super(session, ItemOrdemCompraHospedagem.class);
+	}
+	
+	public Collection<ItemOrdemCompraHospedagem> buscaItemOrdemCompra(Long idHospedagem) {
+		Collection<ItemOrdemCompraHospedagem> itemList = new ArrayList<ItemOrdemCompraHospedagem>();
+
+		String consulta = "FROM COMPRAS_ITEMORDEMCOMPRAHOSPEDAGEM WHERE fk_hospedagem = :idHospedagem";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idHospedagem", idHospedagem);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItemOrdemCompraHospedagem item = (ItemOrdemCompraHospedagem) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+}

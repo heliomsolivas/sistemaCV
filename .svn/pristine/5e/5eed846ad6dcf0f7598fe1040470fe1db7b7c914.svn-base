@@ -1,0 +1,268 @@
+package financeiro.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+import clientes.bean.HospedeHospedagem;
+
+@Entity(name = "FINANCEIRO_CONTARECEBER")
+@Table(name = "FINANCEIRO_CONTARECEBER")
+public class ContaReceber implements Serializable {
+
+	private static final long serialVersionUID = 2345200346761832735L;
+
+	private Long id;
+	private ContaCaixa contaCaixa;
+	private TipoDocumento tipoDocumento;
+	private FormaPagamento formaPagamento;
+	private HospedeHospedagem hospedeHospedagem;
+	private String numeroDocumento;
+	private String historico;
+	private String descricao;
+	private Boolean cancelado;
+	private Calendar dataLancamento;
+	private Calendar dataVencimento;
+	private Calendar dataPagamento;
+	private Double valor;
+	private Double desconto;
+	private Double multa;
+	private Double juros;
+	private Double valorTotal;
+	private Double valorPagamento;
+	private Collection<ContaReceberCheque> chequeRecebidoList; 
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_contaCaixa", nullable = false)
+	public ContaCaixa getContaCaixa() {
+		return contaCaixa;
+	}
+
+	public void setContaCaixa(ContaCaixa contaCaixa) {
+		this.contaCaixa = contaCaixa;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hospedeHospedagem", nullable = true)
+	public HospedeHospedagem getHospedeHospedagem() {
+		return hospedeHospedagem;
+	}
+
+	public void setHospedeHospedagem(HospedeHospedagem hospedeHospedagem) {
+		this.hospedeHospedagem = hospedeHospedagem;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
+	}
+
+	@Column(name = "numeroDocumento", nullable = true)
+	public String getNumeroDocumento() {
+		return numeroDocumento;
+	}
+
+	public void setNumeroDocumento(String numeroDocumento) {
+		this.numeroDocumento = numeroDocumento;
+	}
+
+	@Column(name = "historico", nullable = true)
+	public String getHistorico() {
+		return historico;
+	}
+
+	public void setHistorico(String historico) {
+		this.historico = historico;
+	}
+
+	@Column(name = "descricao", length = 5000, nullable = true)
+	public String getDescricao() {
+		return descricao;
+	}
+	
+	public void setDescricao (String descricao){
+		this.descricao = descricao;
+	}
+
+	@Column(name = "cancelado", nullable = false)
+	public Boolean getCancelado() {
+		return cancelado;
+	}
+
+	public void setCancelado(Boolean cancelado) {
+		this.cancelado = cancelado;
+	}
+
+	@Column(name = "dataLancamento", nullable = false)
+	public Calendar getDataLancamento() {
+		return dataLancamento;
+	}
+
+	public void setDataLancamento(Calendar dataLancamento) {
+		this.dataLancamento = dataLancamento;
+	}
+
+	@Column(name = "dataVencimento", nullable = false)
+	public Calendar getDataVencimento() {
+		return dataVencimento;
+	}
+
+	public void setDataVencimento(Calendar dataVencimento) {
+		this.dataVencimento = dataVencimento;
+	}
+
+	@Column(name = "dataPagamento", nullable = true)
+	public Calendar getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(Calendar dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+
+	@Column(name = "valor", nullable = false)
+	public Double getValor() {
+		return valor;
+	}
+
+	@Convert(Double.class)
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+
+	@Column(name = "desconto", nullable = true)
+	public Double getDesconto() {
+		return desconto;
+	}
+
+	@Convert(Double.class)
+	public void setDesconto(Double desconto) {
+		this.desconto = desconto;
+	}
+
+	@Column(name = "multa", nullable = true)
+	public Double getMulta() {
+		return multa;
+	}
+
+	@Convert(Double.class)
+	public void setMulta(Double multa) {
+		this.multa = multa;
+	}
+
+	@Column(name = "juros", nullable = true)
+	public Double getJuros() {
+		return juros;
+	}
+
+	@Convert(Double.class)
+	public void setJuros(Double juros) {
+		this.juros = juros;
+	}
+	
+	@Column(name = "valorPagamento", nullable = true)
+	public Double getValorPagamento() {
+		return valorPagamento;
+	}
+
+	@Convert(Double.class)
+	public void setValorPagamento(Double valorPagamento) {
+		this.valorPagamento = valorPagamento;
+	}
+
+	@Column(name = "valorTotal", nullable = false)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	@Convert(Double.class)
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	@OneToMany(mappedBy = "contaReceber", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ContaReceberCheque> getChequeRecebidoList() {
+		return chequeRecebidoList;
+	}
+
+	public void setChequeRecebidoList(Collection<ContaReceberCheque> chequeRecebidoList) {
+		this.chequeRecebidoList = chequeRecebidoList;
+	}
+
+	@Transient
+	public String getValorString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valor);
+	}
+	
+	@Transient
+	public String getJurosString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(juros);
+	}
+	
+	@Transient
+	public String getDescontoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(desconto);
+	}
+	
+	@Transient
+	public String getMultaString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(multa);
+	}
+	
+	@Transient
+	public String getValorTotalString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valorTotal);
+	}
+	
+	@Transient
+	public String getValorPagamentoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valorPagamento);
+	}
+	
+}

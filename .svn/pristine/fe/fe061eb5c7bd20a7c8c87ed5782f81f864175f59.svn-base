@@ -1,0 +1,138 @@
+package administrativo.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Blowfish;
+import generic.component.Erro;
+import generic.component.UserSession;
+
+import java.util.Collection;
+
+import administrativo.bean.Usuario;
+import administrativo.dao.DaoPerfil;
+import administrativo.dao.DaoUsuario;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+import br.com.caelum.vraptor.view.Results;
+
+@LogonRequired @PerfilRequired
+@Resource
+public class UsuarioController {
+
+	private final Blowfish blowfish;
+	private final DaoPerfil daoPerfil;
+	private final DaoUsuario daoUsuario;
+	private final Erro erro;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+
+	public UsuarioController(Blowfish blowfish, DaoPerfil daoPerfil, DaoUsuario daoUsuario, Erro erro, 
+		Localization localization, Result result, UserSession userSession) {
+		this.blowfish = blowfish;
+		this.daoPerfil = daoPerfil;
+		this.daoUsuario = daoUsuario;
+		this.erro = erro;
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+	}
+
+	@Post("/usuario/alterarSenha")
+	public void alterarSenha(String senhaAtual, String senhaNova) {
+		Usuario usuario = userSession.getUsuario();
+
+		if (senhaAtual.equals(blowfish.decryptString(usuario.getPassword()))) {
+			try {
+				usuario.setPassword(blowfish.encryptString(senhaNova));
+
+				daoUsuario.atualizar(usuario);
+
+				result.use(Results.http()).body(localization.getMessage("usuario.alterarSenha.sucesso"));
+			} catch (Exception e) {
+				result.use(Results.http()).body(localization.getMessage("usuario.alterarSenha.erro"));
+				erro.imprimir(this.getClass().getName(), "alterarSenha" ,e);
+			}
+		} else
+			result.use(Results.http()).body(localization.getMessage("usuario.senha.incorreta"));
+	}
+
+	@Path("/usuario/consultar/{usuario.id}")
+	public void consultar(Usuario usuario) {
+		result.include("tituloPagina", "usuario.titulo.consultar");
+		result.include("usuario", daoUsuario.buscar(usuario.getId()));
+		result.forwardTo(UsuarioController.class).formulario();
+	}
+
+	@Path("/usuario/formulario")
+	public void formulario() {
+		result.include("perfilList", daoPerfil.listarTudo("nome", "ASC"));
+	}
+
+	@Path("/usuario/formularioAlterarSenha")
+	public void formularioAlterarSenha() {
+	}
+
+	@Path("/usuario/formularioRedefinirSenha/{usuario.id}")
+	public void formularioRedefinirSenha(Usuario usuario) {
+		result.include("usuario", daoUsuario.buscar(usuario.getId()));
+	}
+
+	@Post("/usuario/gravar")
+	public void gravar(Usuario usuario) {
+		try {
+			if (usuario.getId() == null) {
+				usuario.setPassword(blowfish.encryptString(usuario.getPassword()));
+				usuario.setAtivo(true);
+			}
+
+			daoUsuario.atualizar(usuario);
+			result.include("mensagem", "usuario.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+
+		result.forwardTo(UsuarioController.class).listar();
+	}
+
+	@Path("/usuario/listar")
+	public Collection<Usuario> listar() {
+		return daoUsuario.listarTudo("nome", "ASC");
+	}
+
+	@Path("/usuario/novo")
+	public void novo() {
+		result.include("tituloPagina", "usuario.titulo.novo");
+		result.forwardTo(UsuarioController.class).formulario();
+	}
+
+	@Post("/usuario/redefinirSenha")
+	public void redefinirSenha(Long idUsuario, String senha) {
+		try {
+			Usuario usuario = daoUsuario.buscar(idUsuario);
+			usuario.setPassword(blowfish.encryptString(senha));
+
+			daoUsuario.atualizar(usuario);
+
+			result.use(Results.http()).body(localization.getMessage("usuario.redefinirSenha.sucesso"));
+		} catch (Exception e) {
+			result.use(Results.http()).body(localization.getMessage("usuario.redefinirSenha.erro"));
+			erro.imprimir(this.getClass().getName(), "redefinirSenha" ,e);
+		}
+	}
+
+	@Post("/usuario/validarUsername")
+	public void validarUsername(String username) {
+		Boolean usernameDisponivel = false;
+
+		if (daoUsuario.buscar(username) == null)
+			usernameDisponivel = true;
+
+		result.use(Results.http()).body(usernameDisponivel.toString());
+	}
+
+}

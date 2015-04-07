@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.sql.index">
+
+    <class name="hotel.bean.Acomodacao" table="HOTEL_ACOMODACAO">    
+        <id name="id" type="long">
+            <generator class="native" />
+        </id>
+        
+        <property name="nome">
+            <column name="nome" index="IDX_NAME" />
+        </property>
+        
+        <property name="numero">
+            <column name="numero" index="IDX_NUMBER" />
+        </property>        
+    </class>
+        
+</hibernate-mapping>

@@ -1,0 +1,54 @@
+package estoque.dao;
+
+import estoque.bean.Fornecedor;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoFornecedor extends Dao<Fornecedor>{
+
+	public DaoFornecedor(Session session) {
+		super(session, Fornecedor.class);
+	}
+	
+	public Collection<Fornecedor> pesquisarFornecedor (Long codigo, String nomeFornecedor) {
+		Collection<Fornecedor> fornecedorList = new ArrayList<Fornecedor>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM ESTOQUE_FORNECEDOR WHERE 1 = 1";
+
+		if (codigo != null) {
+			consulta += " AND id = :codigo ORDER BY id ASC";
+			parameters.put("codigo", codigo);			
+		} else {
+			consulta += " AND nome LIKE :nomeFornecedor ORDER BY id ASC";
+			parameters.put("nomeFornecedor", "%" + nomeFornecedor + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Fornecedor item = (Fornecedor) query.list().get(x);
+			fornecedorList.add(item);
+		}
+
+		return fornecedorList;
+	}
+}

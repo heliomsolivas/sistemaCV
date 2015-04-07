@@ -1,0 +1,57 @@
+package financeiro.dao;
+
+import financeiro.bean.Movimentacao;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoMovimentacao extends Dao<Movimentacao>  {
+
+    public DaoMovimentacao(Session session) {
+    	super(session, Movimentacao.class); 
+    }
+    
+    public Collection<Movimentacao> pesquisarMovimentacao(Calendar dataInicio, Calendar dataFim) {
+		Collection<Movimentacao> movimentacaoList = new ArrayList<Movimentacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM FINANCEIRO_MOVIMENTACAO WHERE 1 = 1";
+
+		if ((dataInicio != null) && (dataFim == null)){
+			consulta += " AND data >= :dataInicio ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+		} else {
+			consulta += " AND data BETWEEN :dataInicio AND :dataFim ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+			parameters.put("dataFim", dataFim);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Movimentacao item = (Movimentacao) query.list().get(x);
+			movimentacaoList.add(item);
+		}
+
+		return movimentacaoList;
+	}
+}
+  

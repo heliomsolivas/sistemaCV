@@ -1,0 +1,16 @@
+package financeiro.dao;
+
+import financeiro.bean.Especie;
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoEspecie extends Dao<Especie> {
+	
+	public DaoEspecie(Session session) {
+		super(session, Especie.class);
+	}
+}

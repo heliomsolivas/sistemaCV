@@ -1,0 +1,417 @@
+package hotel.controller;
+
+import estoque.bean.Produto;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.bean.Acomodacao;
+import hotel.bean.Frigobar;
+import hotel.bean.Hotel;
+import hotel.bean.ItensFrigobar;
+import hotel.bean.ItensPadraoFrigobar;
+import hotel.bean.Status;
+import hotel.bean.TipoAcomodacao;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoFrigobar;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoItensFrigobar;
+import hotel.dao.DaoItensPadraoFrigobar;
+import hotel.dao.DaoTipoAcomodacao;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+import clientes.bean.Hospedagem;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospedeHospedagem;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("hotel/")
+public class HotelController {
+	
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoFrigobar daoFrigobar;
+	private final DaoItensFrigobar daoItensFrigobar;
+	private final DaoItensPadraoFrigobar daoItensPadraoFrigobar;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoHotel daoHotel;
+	private final DaoProduto daoProduto;
+	private final DaoTipoAcomodacao daoTipoAcomodacao;
+	private final Erro erro;
+	private final Result result;
+
+	public HotelController(DaoAcomodacao daoAcomodacao, DaoFrigobar daoFrigobar, DaoItensPadraoFrigobar daoItensPadraoFrigobar, 
+			DaoItensFrigobar daoItensFrigobar, DaoHospedeHospedagem daoHospedeHospedagem, DaoHospedagem daoHospedagem, DaoHotel daoHotel, 
+			DaoProduto daoProduto, DaoTipoAcomodacao daoTipoAcomodacao, Erro erro, Result result) {
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoFrigobar = daoFrigobar;		
+		this.daoItensPadraoFrigobar = daoItensPadraoFrigobar;
+		this.daoItensFrigobar = daoItensFrigobar;
+		this.daoHospedagem = daoHospedagem;
+		this.daoHotel = daoHotel;
+		this.daoProduto = daoProduto;
+		this.daoTipoAcomodacao = daoTipoAcomodacao;
+		this.erro = erro;
+		this.result = result;
+	}
+	
+	@Path("cadastrar")
+	public void formHotel() {
+	}
+	
+	@Path("acomodacao/cadastrar")
+	public void formAcomodacao() {
+		result.include("tipoAcomodacaoList", daoTipoAcomodacao.listarTudo("nome", "ASC"));
+	}
+	
+	@Path("frigobar/cadastrar")
+	public void formFrigobar() {
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	@Path("tipo/acomodacao/cadastrar")
+	public void formTipoAcomodacao() {
+	}
+	
+	@Path("item/acomodacao/cadastrar/{id}")
+	public void cadastrarItemAcomodacao(Long id){
+		result.include("acomodacao", daoAcomodacao.buscar(id));
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	@Path("consultar")
+	public void consultarHotel() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Path("acomodacao/consultar/{id}")
+	public void consultarAcomodacao(Long id) {
+		result.include("acomodacao", daoAcomodacao.buscar(id));
+		result.include("tipoAcomodacaoList", daoTipoAcomodacao.listarTudo("nome", "ASC"));
+		result.include("statusList", Arrays.asList(Status.LIMPEZA, Status.LIVRE, Status.MANUTENCAO));
+	}
+	
+	@Path("acomodacao/frigobar/consultar/{id}")
+	public void consultarFrigobarAcomodacao (Long id) {
+		result.include("acomodacao", daoAcomodacao.buscar(id));
+		result.include("frigobarList", daoFrigobar.listarTudo("id", "ASC"));
+	}
+	
+	@Path("acomodacao/frigobar/itens/{id}")
+	public void listaItensFrigobar (Long id) {
+		result.include("frigobar", daoFrigobar.buscar(id));
+	}
+	
+	@Path("frigobar/consultar/{id}")
+	public void consultarFrigobar(Long id) {
+		result.include("frigobar", daoFrigobar.buscar(id));
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	@Path("tipo/acomodacao/consultar/{id}")
+	public void consultarTipoAcomodacao(Long id) {
+		result.include("tipo", daoTipoAcomodacao.buscar(id));
+	}
+	
+	@Path("acomodacao/lista")
+	public void listaAcomodacao() {
+		result.include("acomodacaoList", daoAcomodacao.listarTudo("id", "ASC"));
+	}
+	
+	@Path("frigobar/lista")
+	public void listaFrigobar() {
+		result.include("frigobarList", daoFrigobar.listarTudo("id", "ASC"));
+	}
+	
+	@Path("tipo/acomodacao/lista")
+	public void listaTipoAcomodacao() {
+		result.include("tipoAcomodacaoList", daoTipoAcomodacao.listarTudo("id", "ASC"));
+	}
+	
+	@Post("item/acomodacao/pesquisar")
+	public void divListaItemAcomodacao(Long id) {
+		Acomodacao acomodacao = daoAcomodacao.buscar(id);
+		result.include("itensFrigobarList", daoItensFrigobar.buscaItensAcomodacao(acomodacao.getId()));
+		result.include("acomodacao", acomodacao);
+	}
+	
+	@Post("gravar")
+	public void gravar(Hotel hotel, String padraoCheckIn, String padraoCheckOut, String padraoCheckOutEstendido) {
+		try {
+			String[] horaPadraoCheckIn = padraoCheckIn.split(":");
+			
+			String[] horaPadraoCheckOut = padraoCheckOut.split(":");
+			
+			String[] horaPadraoCheckOutEstendido = padraoCheckOutEstendido.split(":");
+			
+			Integer horaCheckIn = Integer.parseInt(horaPadraoCheckIn[0]);
+			Integer minutoCheckIn = Integer.parseInt(horaPadraoCheckIn[1]);
+			
+			Integer horaCheckOut = Integer.parseInt(horaPadraoCheckOut[0]);
+			Integer minutoCheckOut = Integer.parseInt(horaPadraoCheckOut[1]);
+			
+			Integer horaCheckOutEstendido = Integer.parseInt(horaPadraoCheckOutEstendido[0]);
+			Integer minutoCheckOutEstendido = Integer.parseInt(horaPadraoCheckOutEstendido[1]);
+			
+			Calendar calendarPadraoCheckIn = Calendar.getInstance();
+			Calendar calendarPadraoCheckOut = Calendar.getInstance();
+			Calendar calendarPadraoCheckOutEstendido = Calendar.getInstance();
+			
+			calendarPadraoCheckIn.set(calendarPadraoCheckIn.get(Calendar.YEAR), calendarPadraoCheckIn.get(Calendar.MONTH), calendarPadraoCheckIn.get(Calendar.DAY_OF_MONTH), horaCheckIn, minutoCheckIn);
+			
+			calendarPadraoCheckOut.set(calendarPadraoCheckIn.get(Calendar.YEAR), calendarPadraoCheckIn.get(Calendar.MONTH), calendarPadraoCheckIn.get(Calendar.DAY_OF_MONTH), horaCheckOut, minutoCheckOut);
+			
+			calendarPadraoCheckOutEstendido.set(calendarPadraoCheckIn.get(Calendar.YEAR), calendarPadraoCheckIn.get(Calendar.MONTH), calendarPadraoCheckIn.get(Calendar.DAY_OF_MONTH), horaCheckOutEstendido, minutoCheckOutEstendido);
+			
+			hotel.setPadraoCheckIn(calendarPadraoCheckIn);
+			
+			hotel.setPadraoCheckOut(calendarPadraoCheckOut);
+			
+			hotel.setPadraoCheckOutEstendido(calendarPadraoCheckOutEstendido);
+			
+			daoHotel.atualizar(hotel);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("acomodacao/gravar")
+	public void gravar(Acomodacao acomodacao) {
+		try {
+			String observacoes = "";
+			
+			if(acomodacao.getObservacoes() != null) {
+				observacoes = acomodacao.getObservacoes();
+				observacoes = observacoes.replaceAll("\\<.*?\\>", "");
+				observacoes = observacoes.replaceAll("\n", "<br/>");
+			}
+			
+			acomodacao.setObservacoes(observacoes);
+			
+			if(acomodacao.getId() == null){
+				acomodacao.setStatus(Status.LIVRE);
+				acomodacao.setHotel(daoHotel.busca());
+			}
+			
+			daoAcomodacao.atualizar(acomodacao);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("acomodacao/frigobar/gravar")
+	public void gravarAcomodacaoFrigobar(Long idFrigobar, Long idAcomodacao) {
+		try {
+			Collection<ItensFrigobar> itemList  = daoItensFrigobar.buscaItensAcomodacao(idAcomodacao);
+			
+			for (ItensFrigobar item : itemList) {
+				Produto produto = daoProduto.buscar(item.getProduto().getId());
+				
+				produto.setQuantidade(produto.getQuantidade() + item.getQuantidade());
+				
+				daoProduto.atualizar(produto);
+			}
+			
+			daoItensFrigobar.removerItensAcomodacao(idAcomodacao);
+			
+			Acomodacao acomodacao = daoAcomodacao.buscar(idAcomodacao);
+			
+			if(idFrigobar != null){
+				Frigobar frigobar = daoFrigobar.buscar(idFrigobar);
+				
+				acomodacao.setTipoFrigobar(frigobar);
+				
+				daoAcomodacao.atualizar(acomodacao);
+				
+				for (ItensPadraoFrigobar itemPadrao : frigobar.getItensPadraoFrigobarList()) {
+					Produto produto = daoProduto.buscar(itemPadrao.getProduto().getId());
+					ItensFrigobar item = new ItensFrigobar();
+					
+					produto.setQuantidade(produto.getQuantidade() - itemPadrao.getQuantidade());
+					
+					item.setAcomodacao(acomodacao);
+					item.setFrigobar(itemPadrao.getFrigobar());
+					item.setProduto(itemPadrao.getProduto());
+					item.setQuantidade(itemPadrao.getQuantidade());
+					
+					daoProduto.atualizar(produto);
+					daoItensFrigobar.adicionar(item);
+				}
+			} else {
+				Frigobar frigobar = daoFrigobar.buscar(acomodacao.getTipoFrigobar().getId());
+				
+				acomodacao.setTipoFrigobar(null);
+				
+				daoAcomodacao.atualizar(acomodacao);
+				
+				for (ItensFrigobar item : frigobar.getItensFrigobarList()) {
+					Produto produto = daoProduto.buscar(item.getProduto().getId());
+					
+					produto.setQuantidade(produto.getQuantidade() + item.getQuantidade());
+					
+					daoProduto.atualizar(produto);
+				}
+			}		
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("frigobar/gravar")
+	public void gravar(Frigobar frigobar, List<ItensPadraoFrigobar> itemList) {
+		try {
+			frigobar.setContador(0);
+			
+			daoFrigobar.atualizar(frigobar);
+			
+			for (ItensPadraoFrigobar item : itemList){
+				if(item.getProduto().getId() != null) {
+					
+					frigobar.setContador(frigobar.getContador() + 1);
+					item.setFrigobar(frigobar);
+					
+					daoFrigobar.atualizar(frigobar);
+					daoItensPadraoFrigobar.atualizar(item);
+				}
+			}
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("item/acomodacao/gravar")
+	public void gravar(ItensFrigobar item) {
+		try {
+			Produto produto = daoProduto.buscar(item.getProduto().getId());
+			
+			if(produto.getQuantidade() >= item.getQuantidade()){
+				produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
+				
+				daoProduto.atualizar(produto);
+			}
+			
+			daoItensFrigobar.atualizar(item);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("tipo/acomodacao/gravar")
+	public void gravar(TipoAcomodacao tipo) {
+		try {
+			daoTipoAcomodacao.atualizar(tipo);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("acomodacao/remover")
+	public void remover(Acomodacao acomodacao, Long id, HttpServletResponse response) {
+		try {
+			Collection<Hospedagem> hospedagemList = daoHospedagem.buscaPorAcomodacao(id);
+			
+			if(hospedagemList.isEmpty()){
+				acomodacao = daoAcomodacao.buscar(id);
+				
+				daoAcomodacao.remover(acomodacao);
+			} else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);			
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("tipo/acomodacao/remover")
+	public void remover(TipoAcomodacao tipo, Long id, HttpServletResponse response) {
+		try {		
+			Collection<Acomodacao> acomodacaoList = daoAcomodacao.buscaPorTipo(id);
+			
+			if(acomodacaoList.isEmpty()){
+				tipo = daoTipoAcomodacao.buscar(id);
+				
+				daoTipoAcomodacao.remover(tipo);
+			} else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);			
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("item/acomodacao/remover")
+	public void remover(ItensFrigobar item, Long id) {
+		try {
+			item = daoItensFrigobar.buscar(id);
+			
+			Produto produto = daoProduto.buscar(item.getProduto().getId());
+			
+			produto.setQuantidade(produto.getQuantidade() + item.getQuantidade());
+			
+			daoProduto.atualizar(produto);
+			daoItensFrigobar.remover(item);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("frigobar/remover")
+	public void remover(Frigobar frigobar, Long id, HttpServletResponse response) {
+		try {
+			Collection<Acomodacao> acomodacaoList = daoAcomodacao.buscaPorFrigobar(id);
+			
+			if(acomodacaoList.isEmpty()){
+				frigobar = daoFrigobar.buscar(id);
+				
+				daoFrigobar.remover(frigobar);
+			} else
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("acomodacao/atualizaDados/{id}")
+	public void atualizaDadosAcomodacao(Acomodacao acomodacao, Long id) {
+		acomodacao = daoAcomodacao.buscar(id);
+		result.use(Results.http()).body(acomodacao.getNome() + "],[" + acomodacao.getNumero() + "],[" + acomodacao.getMaximoHospedesString() + "],[" + acomodacao.getNumeroCamasString() + "],[" + acomodacao.getValorDiariaString());
+	}
+	
+	@Get("acomodacao/atualizaDados2/{id}")
+	public void atualizaDados2(Acomodacao acomodacao, Long id) {
+		acomodacao = daoAcomodacao.buscar(id);
+		result.use(Results.http()).body(acomodacao.getNumero() + "],[" + acomodacao.getTipo().getNome() + "],[" + acomodacao.getStatus().getNome() + "],[" + acomodacao.getMaximoHospedesString() + "],[" + acomodacao.getNumeroCamasString() + "],[" + acomodacao.getValorDiariaString());
+	}
+	
+	@Get("acomodacao/atualizaDados3/{id}")
+	public void atualizaDados3(Acomodacao acomodacao, Long id) {
+		acomodacao = daoAcomodacao.buscar(id);
+		result.use(Results.http()).body(acomodacao.getNumero() + "],[" + acomodacao.getValorDiariaString() + "],[" + acomodacao.getValorDiaria());
+	}
+	
+	@Get("tipo/acomodacao/atualizaDados/{id}")
+	public void atualizaDadosTipoAcomodacao(TipoAcomodacao tipoAcomodacao, Long id) {
+		tipoAcomodacao = daoTipoAcomodacao.buscar(id);
+		result.use(Results.http()).body(tipoAcomodacao.getDescricao());
+	}
+}

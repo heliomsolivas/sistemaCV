@@ -1,0 +1,70 @@
+package clientes.bean;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import administrativo.bean.Usuario;
+
+@Entity(name = "CLIENTES_CONSUMO")
+@Table(name = "CLIENTES_CONSUMO")
+public class Consumo implements Serializable {
+	
+	private static final long serialVersionUID = 7009836337883359468L;
+	
+	private Long id;
+	private Hospedagem hospedagem;
+	private Usuario usuario;
+	private Collection<ItemConsumo> itemConsumoList;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hospedagem", nullable = false)
+	public Hospedagem getHospedagem() {
+		return hospedagem;
+	}
+
+	public void setHospedagem(Hospedagem hospedagem) {
+		this.hospedagem = hospedagem;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_usuario", nullable = false)
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	
+	@OneToMany(mappedBy = "consumo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ItemConsumo> getItemConsumoList() {
+		return itemConsumoList;
+	}
+
+	public void setItemConsumoList(
+			Collection<ItemConsumo> itemConsumoList) {
+		this.itemConsumoList = itemConsumoList;
+	}
+}

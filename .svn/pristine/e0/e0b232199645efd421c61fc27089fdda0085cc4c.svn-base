@@ -1,0 +1,16 @@
+package contabil.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import contabil.bean.ContaContabil;
+
+@Component
+public class DaoContaContabil extends Dao<ContaContabil> {
+	
+	public DaoContaContabil(Session session) {
+    	super(session, ContaContabil.class); 
+    }
+}

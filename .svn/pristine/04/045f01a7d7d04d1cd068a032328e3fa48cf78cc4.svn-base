@@ -1,0 +1,137 @@
+package reserva.controller;
+
+import static br.com.caelum.vraptor.view.Results.json;
+import generic.component.Erro;
+import hotel.bean.Acomodacao;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import reserva.bean.Reserva;
+import reserva.bean.Responsavel;
+import reserva.dao.DaoReserva;
+import reserva.dao.DaoResponsavel;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import clientes.bean.Hospedagem;
+
+@Resource
+@Path("reserva/")
+public class ReservaController {
+	
+	private final DaoAcomodacao daoAcomodacao;
+	private final DaoReserva daoReserva;
+	private final DaoResponsavel daoResponsavel;
+	private final DaoHotel daoHotel;
+	private final Erro erro;
+	private final Result result;
+
+	public ReservaController(DaoAcomodacao daoAcomodacao, DaoReserva daoReserva, DaoResponsavel daoResponsavel,
+			DaoHotel daoHotel, Erro erro, Result result) {
+		this.daoAcomodacao = daoAcomodacao;
+		this.daoReserva = daoReserva;
+		this.daoResponsavel = daoResponsavel;
+		this.daoHotel = daoHotel;
+		this.erro = erro;
+		this.result = result;
+	}
+
+	@Path("consultarAgenda")
+	public void teste() {
+	}
+	
+	@Path("read")
+	public void List() {
+		Collection<Hospedagem> hospedagemList = new ArrayList<Hospedagem>();
+		result.use(json()).from(hospedagemList).serialize();
+	}
+	
+	@Path("consultarReserva/{id}")
+	public void consultarReserva(Long id) {
+		result.include("reserva", daoReserva.buscar(id));
+	}
+	
+	@Path("cadastrarReserva")
+	public void formReserva() {
+		result.include("acomodacaoList", daoAcomodacao.listarAtivos());
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Post("gravarReserva")
+	public void gravarReserva (Reserva reserva, Responsavel responsavel) {
+		try {
+			daoResponsavel.adicionar(responsavel);
+			
+			String observacao = "";
+			
+			if(reserva.getObservacao() != null){
+				observacao = reserva.getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			Responsavel responsavel2 = daoResponsavel.buscar(responsavel.getId());
+			Acomodacao acomodacao = daoAcomodacao.buscar(reserva.getAcomodacao().getId());
+			Calendar data = new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR"));
+			
+			reserva.setValorDiaria(acomodacao.getValorDiaria());
+			reserva.setObservacao(observacao);
+			reserva.setDataPrevisaoCheckIn(reserva.getDataPrevisaoCheckIn());
+			reserva.setDataReserva(data);
+			reserva.setNumeroPessoas(acomodacao.getMaximoHospedes());
+			reserva.setSituacao("Aguardando Retorno");
+			reserva.setReembolsoCancelamento(false);
+			reserva.setResponsavel(responsavel2);
+			
+			if (reserva.getDataPrevisaoCheckOut() != null) {
+				Integer numeroDiarias = reserva.getDataPrevisaoCheckOut().get(Calendar.DAY_OF_MONTH) - data.get(Calendar.DAY_OF_MONTH);
+				
+				reserva.setNumeroDiarias(numeroDiarias);
+				reserva.setValorTotal(acomodacao.getValorDiaria() * numeroDiarias);
+			}
+			
+			daoReserva.adicionar(reserva);
+			
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarReserva")
+	public void alterarReserva(Reserva reserva) {
+		try {
+			Reserva reserva2 = daoReserva.buscar(reserva.getId());
+			
+			String observacao = "";
+			
+			if (reserva.getObservacao() != null){
+				observacao = reserva.getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+				
+				reserva2.setObservacao(observacao);
+			}
+			
+			if(reserva.getSituacao() != null)
+				reserva2.setSituacao(reserva.getSituacao());
+			
+			daoReserva.atualizar(reserva2);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+}

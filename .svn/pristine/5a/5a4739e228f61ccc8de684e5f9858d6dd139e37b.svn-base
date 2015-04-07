@@ -1,0 +1,127 @@
+package compras.controller;
+
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoStatus;
+
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import clientes.bean.Hospedagem;
+import clientes.bean.HospedeHospedagem;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospede;
+import clientes.dao.DaoHospedeHospedagem;
+
+import compras.bean.ItemOrdemCompra;
+import compras.bean.ItemOrdemCompraHospedagem;
+import compras.dao.DaoItemOrdemCompra;
+import compras.dao.DaoItemOrdemCompraHospedagem;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("compras/")
+public class ComprasController {
+	
+	private final DaoHotel daoHotel;
+	private final DaoHospede daoHospede;
+	private final DaoProduto daoProduto;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+	private final DaoItemOrdemCompra daoItemOrdemCompra;
+	private final DaoItemOrdemCompraHospedagem daoItemOrdemCompraHospedagem;
+	private final DaoStatus daoStatus;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoAcomodacao daoAcomodacao;
+	private final UserSession userSession;
+	private final Erro erro;
+	private final Result result;
+	
+	
+	public ComprasController(DaoHotel daoHotel, DaoHospede daoHospede, DaoProduto daoProduto, 
+			DaoHospedeHospedagem daoHospedeHospedagem, DaoItemOrdemCompra daoItemOrdemCompra, DaoItemOrdemCompraHospedagem daoItemOrdemCompraHospedagem,
+			DaoStatus daoStatus, DaoHospedagem daoHospedagem,DaoAcomodacao daoAcomodacao, 
+			UserSession userSession, Erro erro, Result result) {
+			this.daoHotel = daoHotel;
+			this.daoHospede = daoHospede;
+			this.daoProduto = daoProduto;
+			this.daoHospedeHospedagem = daoHospedeHospedagem;
+			this.daoItemOrdemCompra = daoItemOrdemCompra;
+			this.daoItemOrdemCompraHospedagem = daoItemOrdemCompraHospedagem;
+			this.daoStatus = daoStatus;
+			this.daoHospedagem = daoHospedagem;
+			this.daoAcomodacao = daoAcomodacao;
+			this.userSession = userSession;
+			this.erro = erro;
+			this.result = result;
+		}
+	
+	@Path("cadastrarItemCompra/{id}")
+	public void cadastrarItemCompra(Long id) {
+		Hospedagem hospedagem = daoHospedagem.buscar(id);
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(hospedeHospedagem.getId()));		
+		result.include("hospedagem", daoHospedagem.buscar(hospedagem.getId()));
+	}
+	
+	@Path("divItemOrdemCompra/{id}")
+	public void divItemOrdemCompra(Long id) {
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+		
+		result.include("itemList", daoItemOrdemCompraHospedagem.buscaItemOrdemCompra(hospedagem.getId()));
+	}
+	
+	@Path("cadastrarItemProduto/a/{id}/b/{idHospedeHospedagem}")
+	public void cadastrarItemProduto(Long id, Long idHospedeHospedagem) {
+		Hospedagem hospedagem = daoHospedagem.buscar(id);
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(idHospedeHospedagem);
+		
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(hospedeHospedagem.getId()));
+		result.include("hospedagem", daoHospedagem.buscar(hospedagem.getId()));
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	@Path("cadastrarItemDiaria/a/{id}/b/{idHospedeHospedagem}")
+	public void cadastrarItemDiaria(Long id, Long idHospedeHospedagem) {
+		Hospedagem hospedagem = daoHospedagem.buscar(id);
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(idHospedeHospedagem);
+		
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(hospedeHospedagem.getId()));
+		result.include("hospedagem", daoHospedagem.buscar(hospedagem.getId()));
+		result.include("acomodacaoList", daoAcomodacao.listarTudo("id", "ASC"));
+	}
+	
+	@Post("gravarItemCompra")
+	public void gravarItemCompra(ItemOrdemCompra item, Long idHospedagem, ItemOrdemCompraHospedagem itemOrdemCompraHospedagem) {
+		try {
+			item.setData(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt","BR")));
+			daoItemOrdemCompra.adicionar(item);
+			
+			ItemOrdemCompra item2 = daoItemOrdemCompra.buscar(item.getId());
+			Hospedagem hospedagem2 = daoHospedagem.buscar(idHospedagem);
+			
+			itemOrdemCompraHospedagem.setHospedagem(hospedagem2);
+			itemOrdemCompraHospedagem.setItem(item2);
+			itemOrdemCompraHospedagem.setUsuario(this.userSession.getUsuario());
+			
+			daoItemOrdemCompraHospedagem.adicionar(itemOrdemCompraHospedagem);
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+}
+	

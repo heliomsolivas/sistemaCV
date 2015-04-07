@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<div style="float: right; width: auto; height: 25px; margin-top: 5px; margin-right: 5px;">
+	<span style="margin: 10px;">
+		<img class="linkSemBorda" src="../imagens/icones/iconeOcupado.png" style="height: 15px;"/> Ocupado
+	</span>
+	<span style="margin: 10px;">
+		<img class="linkSemBorda" src="../imagens/icones/iconeLivre.png" style="height: 15px;"/> Livre
+	</span>
+	<span style="margin: 10px;">
+		<img class="linkSemBorda" src="../imagens/icones/iconeManutencao.png" style="height: 15px;"/> Manutenção
+	</span>
+	<span style="margin: 10px;">
+		<img class="linkSemBorda" src="../imagens/icones/iconeLimpeza.png" style="height: 15px;"/> Limpeza
+	</span>
+</div>
+</br>
+<div style="width: 99%; height: 94%; margin: 15px;">
+	<c:forEach items="${acomodacaoList}" var="acomodacao">
+		<c:choose>
+			<c:when test="${acomodacao.status.id == 1}">
+				<div style="float: left; width: 90px; text-align: center; margin-bottom: 20px;">
+					<b>${acomodacao.numero}</b>
+					</br>
+					<a class="linkSemBorda" href="#" onclick="infoAcomodacao('<c:url value="/hotel/exibirInfoAcomodacao/${acomodacao.id}"/>', 'Informações da Acomodação', 'infoAcomodacao');">
+						<img class="linkSemBorda" src="../imagens/porta-entrar.png"/>
+					</a>
+				</div>
+			</c:when>
+			<c:when test="${acomodacao.status.id == 2}">
+				<div style="float: left; width: 90px; text-align: center; margin-bottom: 20px;">
+					<b>${acomodacao.numero}</b>
+					</br>
+					<a class="linkSemBorda" href="#" onclick="infoAcomodacao('<c:url value="/hotel/exibirInfoAcomodacao/${acomodacao.id}"/>', 'Informações da Acomodação', 'infoAcomodacao');">
+						<img class="linkSemBorda" src="../imagens/porta-checkIn.png"/>
+					</a>
+				</div>
+			</c:when>
+			<c:when test="${acomodacao.status.id == 3}">
+				<div style="float: left; width: 90px; text-align: center; margin-bottom: 20px;">
+					<b>${acomodacao.numero}</b>
+					</br>
+					<a class="linkSemBorda" href="#" onclick="infoAcomodacao('<c:url value="/hotel/exibirInfoAcomodacao/${acomodacao.id}"/>', 'Informações da Acomodação', 'infoAcomodacao');">
+						<img class="linkSemBorda" src="../imagens/porta-manutencao.png"/>
+					</a>
+				</div>
+			</c:when>
+			<c:when test="${acomodacao.status.id == 4}">
+				<div style="float: left; width: 90px; text-align: center; margin-bottom: 20px;">
+					<b>${acomodacao.numero}</b>
+					</br>
+					<a class="linkSemBorda" href="#" onclick="infoAcomodacao('<c:url value="/hotel/exibirInfoAcomodacao/${acomodacao.id}"/>', 'Informações da Acomodação', 'infoAcomodacao');">
+						<img class="linkSemBorda" src="../imagens/porta-limpeza.png"/>
+					</a>
+				</div>
+			</c:when>
+		</c:choose>
+	</c:forEach>
+</div>

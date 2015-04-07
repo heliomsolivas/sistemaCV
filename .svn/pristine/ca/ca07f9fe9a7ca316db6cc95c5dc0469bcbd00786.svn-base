@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {	
+	$("#produtoList").load(caminhoAbsoluto + "estoque/produto/pesquisar", {codigo: null, nomeProduto: null});
+	
+	$("#codigoProduto").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#produtoList").load(caminhoAbsoluto + "estoque/produto/pesquisar", {codigo: parametro, nomeProduto: null});
+		} else {
+			$("#produtoList").load(caminhoAbsoluto + "estoque/produto/pesquisar", {codigo: null, nomeProduto: null});
+		}
+	});
+	
+	$("#nomeProduto").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#produtoList").load(caminhoAbsoluto + "estoque/produto/pesquisar", {codigo: null, nomeProduto: parametro});
+		} else {
+			$("#produtoList").load(caminhoAbsoluto + "estoque/produto/pesquisar", {codigo: null, nomeProduto: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarProduto() {
+	validator =  $("#formProduto").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "estoque/produto/gravar",
+			data: $("#formProduto").serialize(),
+			success: function (retorno) {
+						$("#cadastrarProduto").data("kendoWindow").destroy();
+						$("#listaProduto").load(caminhoAbsoluto + "estoque/produto/lista");
+           			}
+		});
+	}
+}
+
+function alterarProduto() {
+	validator =  $("#formAlterarProduto").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "estoque/produto/gravar",
+			data: $("#formAlterarProduto").serialize(),
+			success: function (retorno) {
+						$("#consultarProduto").data("kendoWindow").destroy();
+						$("#listaProduto").load(caminhoAbsoluto + "estoque/produto/lista");
+           			}
+		});
+	}
+}

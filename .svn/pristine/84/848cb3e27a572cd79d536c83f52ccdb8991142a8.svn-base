@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/displaytag.css"/>">
+		
+		<script type="text/javascript">
+ 		  	$(document).ready(function () {
+				$('#paginatorUsuario').smartpaginator({ totalrecords: ${fn:length(usuarioList)}, recordsperpage: 10, length: 3, datacontainer: 'tabelaUsuario', dataelement: 'tr', initval: 0, next: 'Proximo', prev: 'Anterior', first: 'Primeiro', last: 'Último', theme: 'green',controlsalways: true  });
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div style="width: 630px; border: 1px solid #C0C0C0; border-radius: 8px; background-color: white;">
+			<div id="listagem" style="height: 350px;">
+				<table id="tabelaUsuario" class="full_table_list" style="height: auto;">
+					<thead>
+						<tr style="height: 25px;">
+							<th style="width: 230px;">Nome</th>
+							<th style="width: 110px;">Perfil</th>
+							<th style="width: 70px;">Status</th>
+							<th style="width: 250px;"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${usuarioList}" var="usuario">
+							<tr style="height: 35px;">
+								<td style="width: 230px; text-align:center;">${usuario.nome}</td>
+								<td style="width: 110px; text-align:center;">${usuario.perfil.nome}</td>
+								<td style="width: 70px; text-align:center;">
+									<c:choose>
+										<c:when test="${usuario.ativo == true}">
+											Ativo
+										</c:when>
+										<c:otherwise>
+											Desativado
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td style="width: 250px; text-align:center;">
+									<a href="#" class="k-button k-button-icontext k-edit" onclick="consultar('<c:url value="/usuario/consultarUsuario/${usuario.id}"/>', 'Informações do Usuário', '390px', '475', '600', 'consultarUsuario');">
+										<span class="k-icon k-edit"></span>Editar
+									</a>
+									<a href="#" class="k-button k-button-icontext k-edit" onclick="consultar('<c:url value="/usuario/formularioRedefinirSenha/${usuario.id}"/>', 'Redefinir Senha', '250px', '350', '450', 'formAlterarSenha');">
+										<span class="k-icon k-edit"></span>Senha
+									</a>
+									<a href="#" class="k-button k-button-icontext k-edit" onclick="excluir('<c:url value="/usuario/removerUsuario/${usuario.id}"/>', '<c:url value="/usuario/listar"/>', 'listarUsuario');">
+										<span class="k-icon k-delete"></span>Excluir
+									</a>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+			<div id="paginatorUsuario" style="margin: auto;"></div>
+		</div>
+	</body>
+</html>

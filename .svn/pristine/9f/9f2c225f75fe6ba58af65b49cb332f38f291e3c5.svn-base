@@ -1,0 +1,438 @@
+<html><head>
+		<title></title>
+		<meta http-equiv="Cache-control" content="no-cache"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/smart_wizard.css"/>
+
+		<script type="text/javascript" src="../js/jquery.smartWizard.js"></script>
+		<script id="template" type="text/x-kendo-template">
+			&lt;img src=&quot;../imagens/hotel/#=target.data(&apos;id&apos;)#.jpg&quot; alt=&quot;#=target.data(&apos;title&apos;)#&quot; /&gt;
+			&lt;p&gt;#=target.data(&apos;title&apos;)#&lt;/p&gt;
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			$(&apos;#wizard&apos;).smartWizard({transitionEffect:&apos;slideleft&apos;,onLeaveStep:leaveAStepCallback,onFinish:onFinishCallback,enableFinishButton:false});
+			$(&quot;#codigo&quot;).mask(&quot;99999&quot;);
+			$(&quot;#rg&quot;).mask(&quot;99.999.999-9&quot;);
+			$(&quot;#cpf&quot;).mask(&quot;999.999.999-99&quot;);
+			$(&quot;#checkIn&quot;).kendoDateTimePicker({
+				    format: &quot;dd/MM/yyyy HH:mm:ss&quot;
+				});
+			$(&quot;#checkOut&quot;).kendoDateTimePicker({
+				    format: &quot;dd/MM/yyyy HH:mm:ss&quot;
+				});
+				
+			$(&quot;#acomodacao&quot;).change(
+				function(){
+					if ($(&quot;#acomodacao&quot;).val() != &quot;&quot;) {
+						var id = $(&quot;#acomodacao&quot;).val();
+						$.ajax({
+							contentType: &apos;application/x-www-form-urlencoded; charset=UTF-8&apos;,
+							type: &quot;GET&quot;, 
+							url: &quot;&quot; + id,
+							success: function(retorno){
+										if (retorno != &quot;&quot;) {
+											retorno = retorno.split(&quot;],[&quot;);
+											$(&quot;#numero&quot;).val(retorno[0]);
+											$(&quot;#nPessoas&quot;).val(retorno[1]);
+											$(&quot;#nCamas&quot;).val(retorno[2]);
+											$(&quot;#preco&quot;).val(retorno[3]);
+											$(&quot;#valorTotal&quot;).val(retorno[3]);
+										} else
+											$(&quot;#numero&quot;).empty().append(&quot;Acomodação não Encontrada&quot;);
+									}
+							});
+					}
+				}
+			);
+			
+			$(&quot;#imagens&quot;).kendoTooltip({
+					filter: &quot;a&quot;,
+					content: kendo.template($(&quot;#template&quot;).html()),
+					width: 400,
+					height: 200,
+					position: &quot;top&quot;
+				});
+
+				function leaveAStepCallback(obj){
+					var step_num= obj.attr(&apos;rel&apos;);
+					return validateSteps(step_num);
+				}
+
+				function onFinishCallback(){
+					if(validateAllSteps()){
+						$.ajax({
+						contentType: &apos;application/x-www-form-urlencoded; charset=UTF-8&apos;,
+						type: &quot;POST&quot;,
+						url: &quot;&quot;,
+						data: $(&quot;#formHospedagem&quot;).serialize(),
+						success: function(retorno) {
+									document.getElementById(&apos;formHospedagem&apos;).style.display=&apos;none&apos;;
+									window.location.reload();
+								 }
+						});
+					} 
+				}
+			});
+
+			function validateAllSteps(){
+				var isStepValid = true;
+				if(validateStep1() == false){
+					isStepValid = false;
+					$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:1,iserror:true});
+				} else{
+					$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:1,iserror:false});
+				}
+				if(validateStep2() == false){
+					isStepValid = false;
+					$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:2,iserror:true});
+				} else{
+					$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:2,iserror:false});
+				}				
+				if(validateStep3() == false){
+			        isStepValid = false;
+			        $(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:3,iserror:true});         
+		       } else{
+		        	$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:3,iserror:false});
+		       }
+		       if(!isStepValid){
+					$(&apos;#wizard&apos;).smartWizard(&apos;showMessage&apos;,&apos;&apos;);
+				}
+				return isStepValid;
+			}
+
+				function validateSteps(step){
+					var isStepValid = true;
+					if(step == 1){ // validar step 1
+						if(validateStep1() == false ){
+							isStepValid = false; 
+							$(&apos;#wizard&apos;).smartWizard(&apos;showMessage&apos;,&apos;&apos;);
+							$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:true});
+						} else{
+							$(&apos;#wizard&apos;).smartWizard(&apos;hideMessage&apos;);
+							$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:false});
+					}
+				}
+					if(step == 2){ // validar step2
+						if(validateStep2() == false ){
+							isStepValid = false; 
+							$(&apos;#wizard&apos;).smartWizard(&apos;showMessage&apos;,&apos;&apos;);
+							$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:true});         
+						} else{
+							$(&apos;#wizard&apos;).smartWizard(&apos;hideMessage&apos;);
+							$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:false});
+						}
+					}
+									 
+			      	if(step == 3){ // validate step3
+				        if(validateStep3() == false ){
+				            isStepValid = false; 
+				          	$(&apos;#wizard&apos;).smartWizard(&apos;showMessage&apos;,&apos;&apos;);
+				          	$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:true});         
+				        } else{
+				          	$(&apos;#wizard&apos;).smartWizard(&apos;hideMessage&apos;);
+				          	$(&apos;#wizard&apos;).smartWizard(&apos;setError&apos;,{stepnum:step,iserror:false});
+				        }
+				      }
+					return isStepValid;
+				}
+
+				function validateStep1(){
+					var isValid = true;
+					var un = $(&apos;#checkIn&apos;).val();
+					if(!un &amp;&amp; un.length &lt;= 0){ // Validate CheckIn
+						isValid = false;
+						$(&apos;#msg_checkIn&apos;).html(&apos;&apos;).show();
+					} else{
+						$(&apos;#msg_checkIn&apos;).html(&apos;&apos;).hide();
+					}
+					var pw = $(&apos;#checkOut&apos;).val();
+					if(!pw &amp;&amp; pw.length &lt;= 0){ // validate CheckOut
+						isValid = false;
+						$(&apos;#msg_checkOut&apos;).html(&apos;&apos;).show();
+					}else{
+						$(&apos;#msg_checkOut&apos;).html(&apos;&apos;).hide();
+					}
+					return isValid;
+				}
+
+				function validateStep2(){
+					var isValid = true; 
+					var un = $(&apos;#acomodacao&apos;).val();
+					if(!un &amp;&amp; un.length &lt;= 0){ // Validate Acomodacao
+						isValid = false;
+						$(&apos;#msg_acomodacao&apos;).html(&apos;&apos;).show();
+					} else{
+						$(&apos;#msg_acomodacao&apos;).html(&apos;&apos;).hide();
+					}
+					return isValid;
+				}
+				
+				function validateStep3(){
+			      	var isValid = true; 
+					var un = $(&apos;#hospede&apos;).val();
+					if(!un &amp;&amp; un.length &lt;= 0){ // Validate Hospede
+						isValid = false;
+						$(&apos;#msg_hospede&apos;).html(&apos;&apos;).show();
+					} else{
+						$(&apos;#msg_hospede&apos;).html(&apos;&apos;).hide();
+					}
+			      return isValid;
+			    }
+				
+				function pesquisar() {
+				 	$.ajax({
+					contentType: &apos;application/x-www-form-urlencoded; charset=UTF-8&apos;,
+					type: &quot;POST&quot;,
+					url: &quot;&quot;,
+					data: {
+							idHospede: $(&quot;#codigo&quot;).val(),
+							nomeHospede: $(&quot;#nomeHospede&quot;).val(),
+							rgHospede: $(&quot;#rgHospede&quot;).val(),
+							cpfHospede: $(&quot;#cpfHospede&quot;).val()
+						},
+					success: function(retorno) {
+							 }
+					});
+		    	}
+		    	
+		    	function selecionarHospede(id, codigo, nome, cpf) {
+				 	$(&quot;#hospede&quot;).val(id);
+				 	$(&quot;#codigo&quot;).val(codigo);
+				 	$(&quot;#nomeHospede&quot;).val(nome);
+				 	$(&quot;#cpfHospede&quot;).val(cpf);
+		    	}
+		    	
+				function maisInfoAcomodacao () {
+					var w = $(&quot;&lt;div id=&apos;&quot; + this.id + &quot;&apos;&gt;&lt;/div&gt;&quot;).appendTo(&quot;#container&quot;);
+					w.kendoWindow({
+					  	modal: true,
+	                    position: {
+				    		top: 200,
+				    		left: 500,
+					  	},
+	                    resizable: false,
+	                    visible: false,
+	                //    content: url,
+	                    actions: [&quot;Close&quot;],
+	                    close: function() {
+							w.data(&quot;kendoWindow&quot;).destroy();
+	                    }
+	                });
+	                w.data(&quot;kendoWindow&quot;).open();
+				}
+		</script>
+	</head><body class="divConteudo">
+	<style>
+		.divFormInput {
+			margin: 15px;
+		}
+		.form {
+			margin-top: 20px;
+		}
+	</style>
+		<div class="demoHead" style="margin-left: 15px; margin-right: 15px;">
+			<form id="formHospedagem" name="formHospedagem" action="#">
+		  		<div id="wizard" class="swMain" style="width: auto;">
+					<div class="form">
+			            <h2 class="StepTitle"><f:message key="subTitulo.periodo"/></h2>
+			            <div class="divFormInput">
+			            	<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+			            		<tr style="height: 20px;">
+		            				<td rowspan="2" style="width: 30px;"></td>
+		            				<td colspan="2" style="width: 270px;">
+		            					<f:message key="campo.checkIn"/>
+		            				</td>
+		            				<td colspan="2" style="width: 230px;">
+		            					<f:message key="campo.checkOut"/>
+		            				</td>
+	            				</tr>
+	            				<tr style="height: 10px;">
+	            					<td colspan="2" style="width: 270px;">
+	            						<input type="hidden" class="k-textbox" value="${hotel.id}" name="hospedagem.hotel.id"/>
+	            						<input id="checkIn" type="text" name="hospedagem.dataCheckIn" style="width: 230px;"/>
+	            					</td>
+	            					<td colspan="2" style="width: 230px;">
+	            						<input id="checkOut" type="text" name="hospedagem.dataCheckOut" style="width: 230px;"/>
+	            					</td>
+	            				</tr>
+	            				<tr style="height: 40px;"></tr>
+	            				<tr style="height: 20px;">
+	            					<td colspan="4" style="text-align: right;">
+	            						Check Out Estendido Gratuito ?
+	            						<span style="margin: 15px;">
+	            							Sim
+	            							<input type="radio" name="hospedagem.checkOutEstendidoGratuito" value="true"/>
+	            						</span>
+	            						<span>
+	            							Não
+	            							<input type="radio" name="hospedagem.checkOutEstendidoGratuito" value="false"/>
+	            						</span>
+	            					</td>
+	            				</tr>
+            				</table>
+		            	</div>
+		            </div>
+		            <div class="form">
+			            <h2 class="StepTitle"><f:message key="subTitulo.acomodacao"/></h2>
+		            	<div class="divFormInput">
+		            		<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+		            			<tr style="height: 20px;">
+		            				<td rowspan="12" style="width: 80px;"></td>
+		            				<td style="width: 250px; text-align: center; background-color: #9AC0CD;
+		            				border: 2px solid #fff; border-radius: 4px 0px 0px 0px;">
+		            					Selecione a Acomodação
+		            				</td>
+		            				<td style="width: 100px; text-align: center; background-color: #9AC0CD;
+		            				border: 2px solid #fff;">
+		            					Número
+		            				</td>
+		            				<td style="width: 130px; text-align: center; background-color: #9AC0CD;
+		            				border: 2px solid #fff;">
+		            					<f:message key="campo.tabela.nPessoas"/>
+		            				</td>
+		            				<td style="width: 130px; text-align: center; background-color: #9AC0CD;
+		            				border: 2px solid #fff;">
+		            					<f:message key="campo.tabela.nCamas"/>
+		            				</td>
+		            				<td style="width: 130px; text-align: center; background-color: #9AC0CD;
+		            				border: 2px solid #fff; border-radius: 0px 4px 0px 0px;">
+		            					<f:message key="campo.tabela.preco"/>
+		            				</td>
+		            			</tr>
+		            			<tr style="text-align: center;">
+		            				<td style="width: 250px; height: 50px; background-color: #fff; text-align: center;">
+		            					<select id="acomodacao" name="hospedagem.acomodacao.id" style="width: 180px;">
+											<option value=""><f:message key="selecione"/></option>
+											<c:forEach items="${acomodacaoList}" var="item">
+											<option value="${item.id}">${item.nome}</option>
+											</c:forEach>
+										</select>
+	            					</td>
+		            				<td style="width: 100px; height: 50px; background-color: #fff; text-align: center;">
+		            					<input id="numero" type="text" class="k-textbox" style="width: 60px;"/>
+	            					</td>
+	            					<td style="width: 130px; height: 50px; background-color: #fff; text-align: center;">
+		            					<input id="nPessoas" type="text" class="k-textbox" style="width: 70px;"/>
+	            					</td>
+	            					<td style="width: 130px; height: 50px; background-color: #fff; text-align: center;">
+										<input id="nCamas" type="text" class="k-textbox" style="width: 70px;"/>
+	            					</td>
+	            					<td style="width: 130px; height: 50px; background-color: #fff; text-align: center;">
+		            					<input id="preco" type="text" class="k-textbox" style="width: 70px;"/>
+	            					</td>
+		            			</tr>
+		            			<tr style="height: 30px;">
+		            				<td>
+		            					<a href="#" onclick="maisInfoAcomodacao();">
+		            						<f:message key="campo.info"/>
+		            					</a>
+		            				</td>
+		            			</tr>
+	            				<tr style="height: 40px;">
+	            					<td id="imagens" class="dairy-photos" style="margin-left: 20px;">
+	            						<a href="../imagens/hotel/quarto.jpg" data-lightbox="roadtrip" data-id="quarto2" title="Quarto" style="float: left; margin-right: 5px;">
+	                        				<img src="../imagens/hotel/quarto.jpg" style="width: 40px; height: 30px;"/>
+			                        	</a>
+				                        <a href="../imagens/hotel/banheiro.jpg" data-lightbox="roadtrip" data-id="banheiro2" title="Banheiro" style="float: left;">
+				                        	<img src="../imagens/hotel/banheiro.jpg" style="width: 40px; height: 30px;"/>
+				                        </a>
+	            					</td>
+	            				</tr>
+	            				<tr valign="bottom">
+	            					<td colspan="5" style="text-align: right; margin-right: 30px;">
+	            						<span style="font-size: 14px; margin-right: 15px;">
+	            							<b>Valor Total</b>
+	            						</span>
+	            					</td>
+		            			</tr>
+		            			<tr style="height: 10px;">
+		            				<td colspan="5" style="text-align: right;">
+		            					<b>R$</b> <input id="valorTotal" type="text" class="k-textbox" style="width: 100px;"/>
+		            				</td>
+		            			</tr>
+	            			</table>
+		            	</div>
+		        	</div>
+		        	<div class="form">
+			            <h2 class="StepTitle"><f:message key="subTitulo.hospede"/></h2>
+			            <div class="divFormInput">
+			            	<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+			            		<tr style="height: 20px;">
+			            			<td rowspan="12" style="width: 15px;"></td>
+			            			<td style="width: 100px;">
+					   					<f:message key="campo.codigo"/>
+					   				</td>
+					   				<td style="width: 270px;">
+					   					<f:message key="campo.nomeHospede"/>
+					   				</td>
+					   				<td style="width: 180px;">
+					   					<f:message key="campo.cpf"/>
+					   				</td>
+			            		</tr>
+			            		<tr style="height: 10px;">
+					   				<td style="width: 100px;">
+					   					<input id="hospede" type="hidden" name="idHospede"/>
+					   					<input id="codigo" type="text" class="k-textbox" style="width: 80px;"/>
+					   				</td>
+					   				<td style="width: 270px;">
+					   					<input id="nomeHospede" type="text" class="k-textbox" style="width: 255px;"/>
+					   				</td>
+					   				<td style="width: 180px;">
+					   					<input id="cpfHospede" type="text" class="k-textbox" style="width: 180px;"/>
+					   				</td>
+					   			</tr>
+					   			<tr style="height: 20px;"></tr>
+					   			<tr style="height: 20px;">
+					   				<td></td>
+					   				<td></td>
+					   				<td style="text-align: right;">
+					   					<button type="button" class="k-button" style="margin-right: 15px;" onclick="pesquisar()"><span class="k-icon k-i-search"></span>Pesquisar</button>
+					   				</td>
+					   			</tr>
+					   			<tr style="height: 20px;"></tr>
+					   			<tr style="height: 20px;">
+					   				<td colspan="3" style="width: 560px;">
+										<div style="height: 150px; width: 560px; margin-top: 5px; border: 1px solid #C0C0C0; background-color: white; overflow-y: scroll;">
+											<display:table htmlId="displaytag" name="${hospedeList}" id="hospede" sort="list" export="false" style="width: 540px;">
+												<display:setProperty name="basic.msg.empty_list">
+													<span class="textoDestaqueNormal" style="padding-left: 10px;">Nenhum Hóspede Encontrado</span>
+												</display:setProperty>
+												<display:setProperty name="paging.banner.placement" value="top"/>
+												<display:column property="codigo" title="Código" sortable="false" style="width: 50px; text-align:center; padding-left: 5px;"/>
+												<display:column property="nome" title="Nome do Hóspede" sortable="false" style="width: 250px; text-align:center; padding-left: 5px;"/>																
+												<display:column media="html" title="" style="width: 30px; text-align:center;">
+													<a href="#" onclick="selecionarHospede(${hospede.id}, '${hospede.codigo}', '${hospede.nome}', '${hospede.cpf}');">
+														<img src="../imagens/icones/iconeSelecionar.png"/>
+													</a>
+												</display:column>
+											</display:table>
+										</div>
+									</td>
+								</tr>
+			            	</table>
+		            	</div>
+		        	</div>
+		        	<div class="form">
+		        		<h2 class="StepTitle"><f:message key="subTitulo.confirmar"/></h2>
+		        		 <div class="divFormInput">
+			            	<table border="0" cellpadding="0" cellspacing="0" style="width: 550px;">
+			            		<tr style="height: 20px;">
+			            			<td rowspan="12" style="width: 15px;"></td>
+			            			<td colspan="2" style="width: 130px;">
+					   					Observações
+					   				</td>
+			            		</tr>
+			            		<tr style="height: 10px;">
+					   				<td colspan="2" style="width: 430px;">
+					   					<textarea class="k-textbox" name="hospedagem.observacao" style="width: 530px; height: 70px;"/>
+					   				</td>
+					   			</tr>
+					   		</table>
+					   	</div>
+		        	</div>
+		        </div>
+	  		</form>
+	  	</div>
+	</body></html>

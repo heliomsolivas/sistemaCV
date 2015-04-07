@@ -1,0 +1,64 @@
+package estoque.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "ESTOQUES_PRODUTOFORNECEDOR")
+@Table(name = "ESTOQUES_PRODUTOFORNECEDOR")
+public class ProdutoFornecedor implements Serializable {
+
+	private static final long serialVersionUID = -1812329205954425642L;
+
+	private Long id;
+	private Produto produto;
+	private Fornecedor fornecedor;
+	private Boolean ativo;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_produto", nullable = false)
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_fornecedor", nullable = false)
+	public Fornecedor getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedor fornecedor) {
+		this.fornecedor = fornecedor;
+	}
+
+	@Column(name = "ativo", nullable = false)
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
+}

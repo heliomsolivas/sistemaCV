@@ -1,0 +1,70 @@
+package financeiro.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity(name = "FINANCEIRO_CATEGORIA")
+@Table(name = "FINANCEIRO_CATEGORIA")
+public class Categoria implements Serializable {
+
+	private static final long serialVersionUID = -3992125373998675989L;
+
+	private Long id;
+	private String nome;
+	private String descricao;
+	private Boolean exibeContasPagar;
+	private Boolean exibeContasReceber;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "descricao", length = 5000, nullable = true)
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	@Column(name = "exibeContasPagar", nullable = false)
+	public Boolean getExibeContasPagar() {
+		return exibeContasPagar;
+	}
+
+	public void setExibeContasPagar(Boolean exibeContasPagar) {
+		this.exibeContasPagar = exibeContasPagar;
+	}
+
+	@Column(name = "exibeContasReceber", nullable = false)
+	public Boolean getExibeContasReceber() {
+		return exibeContasReceber;
+	}
+
+	public void setExibeContasReceber(Boolean exibeContasReceber) {
+		this.exibeContasReceber = exibeContasReceber;
+	}
+
+}

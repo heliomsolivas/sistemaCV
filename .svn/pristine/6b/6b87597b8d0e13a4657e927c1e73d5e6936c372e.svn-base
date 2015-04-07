@@ -1,0 +1,176 @@
+package administrativo.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Blowfish;
+import generic.component.Erro;
+import generic.component.UserSession;
+
+import java.util.Collection;
+
+import administrativo.bean.Perfil;
+import administrativo.bean.Usuario;
+import administrativo.dao.DaoPerfil;
+import administrativo.dao.DaoUsuario;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+import br.com.caelum.vraptor.view.Results;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("usuario/")
+public class UsuarioController {
+
+	private final Blowfish blowfish;
+	private final DaoPerfil daoPerfil;
+	private final DaoUsuario daoUsuario;
+	private final Erro erro;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession;
+
+	public UsuarioController(Blowfish blowfish, DaoPerfil daoPerfil, DaoUsuario daoUsuario, Erro erro, 
+		Localization localization, Result result, UserSession userSession) {
+		this.blowfish = blowfish;
+		this.daoPerfil = daoPerfil;
+		this.daoUsuario = daoUsuario;
+		this.erro = erro;
+		this.localization = localization;
+		this.result = result;
+		this.userSession = userSession;
+	}
+
+	@Post("alterarSenha")
+	public void alterarSenha(String senhaAtual, String senhaNova) {
+		Usuario usuario = userSession.getUsuario();
+
+		if (senhaAtual.equals(blowfish.decryptString(usuario.getPassword()))) {
+			try {
+				usuario.setPassword(blowfish.encryptString(senhaNova));
+
+				daoUsuario.atualizar(usuario);
+
+				result.include("mensagem", "Senha Alterada com Sucesso");
+			} catch (Exception e) {
+				result.use(Results.http()).body(localization.getMessage("usuario.alterarSenha.erro"));
+				erro.imprimir(this.getClass().getName(), "alterarSenha" ,e);
+			}
+		} else 
+			result.include("mensagem", "Senha Atual Não Corresponde");
+		
+		result.nothing();
+	}
+
+	@Path("formAlterarSenha")
+	public void formAlterarSenha() {
+	}
+
+	@Path("formulario")
+	public void formulario() {
+		result.include("perfilList", daoPerfil.listarTudo("nome", "ASC"));
+	}
+	
+	@Path("consultarUsuario/{id}")
+	public void consultarUsuario(Long id) {
+		result.include("usuario", daoUsuario.buscar(id));
+		result.include("perfilList", daoPerfil.listarTudo("nome", "ASC"));
+	}
+
+	@Path("formularioRedefinirSenha/{id}")
+	public void formularioRedefinirSenha(Long id) {
+		result.include("usuario", daoUsuario.buscar(id));
+	}
+
+	@Post("gravar")
+	public void gravar(Usuario usuario) {
+		try {
+			if (usuario.getId() == null) {
+				usuario.setPassword(blowfish.encryptString(usuario.getPassword()));
+				usuario.setAtivo(true);
+			}
+
+			daoUsuario.adicionar(usuario);
+			result.include("mensagem", "usuario.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+
+		result.nothing();
+	}
+	
+	@Post("alterarUsuario")
+	public void alterarUsuario(Usuario usuario) {
+		try {
+			Usuario usuario2 = daoUsuario.buscar(usuario.getId());
+			Perfil perfil = daoPerfil.buscar(usuario.getPerfil().getId());
+			
+			usuario2.setAtivo(usuario.getAtivo());
+			usuario2.setEmail(usuario.getEmail());
+			usuario2.setNome(usuario.getNome());
+			usuario2.setPerfil(perfil);
+			usuario2.setUsername(usuario.getUsername());			
+			
+			daoUsuario.atualizar(usuario2);
+
+			result.include("mensagem", "usuario.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerUsuario/{id}")
+	public void removerUsuario (Long id) {
+		try {
+			Usuario usuario = daoUsuario.buscar(id);
+			
+			daoUsuario.remover(usuario);
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Path("listar")
+	public Collection<Usuario> listar() {
+		return daoUsuario.listarTudo("nome", "ASC");
+	}
+
+	@Path("novo")
+	public void novo() {
+		result.include("tituloPagina", "usuario.titulo.novo");
+		result.forwardTo(UsuarioController.class).formulario();
+	}
+
+	@Post("redefinirSenha")
+	public void redefinirSenha(Long idUsuario, String senha) {
+		try {
+			Usuario usuario = daoUsuario.buscar(idUsuario);
+			usuario.setPassword(blowfish.encryptString(senha));
+
+			daoUsuario.atualizar(usuario);
+		} catch (Exception e) {
+			result.use(Results.http()).body(localization.getMessage("usuario.redefinirSenha.erro"));
+			erro.imprimir(this.getClass().getName(), "redefinirSenha" ,e);
+		}
+		
+		result.nothing();
+	}
+
+	@Post("validarUsername")
+	public void validarUsername(String username) {
+		Boolean usernameDisponivel = false;
+
+		if (daoUsuario.buscar(username) == null)
+			usernameDisponivel = true;
+
+		result.use(Results.http()).body(usernameDisponivel.toString());
+	}
+
+}

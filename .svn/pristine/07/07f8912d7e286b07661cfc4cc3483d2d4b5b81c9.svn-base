@@ -1,0 +1,61 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.Hospede;
+
+@Component
+public class DaoHospede extends Dao<Hospede>{
+	
+	public DaoHospede(Session session) {
+		super(session, Hospede.class);
+	}
+	
+	public Collection<Hospede> pesquisar(Long idHospede, String nomeHospede, String cpfHospede) {
+		Collection<Hospede> hospedeList = new ArrayList<Hospede>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM CLIENTES_HOSPEDE WHERE 1 = 1";
+
+		if (idHospede != null) {
+			consulta += " AND id = :idHospede";
+			parameters.put("idHospede", idHospede);
+		}
+		if (nomeHospede != null) {
+			consulta += " AND nome LIKE :nomeHospede";
+			parameters.put("nomeHospede", "%" + nomeHospede + "%");
+		}		
+		if (cpfHospede != null) {
+			consulta += " AND cpf = :cpfHospede";
+			parameters.put("cpfHospede", cpfHospede);	
+		} else
+			consulta += " ORDER BY id ASC";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome = iter.next();
+			query.setParameter(nome, parameters.get(nome));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Hospede item = (Hospede) query.list().get(x);
+			hospedeList.add(item);
+		}
+
+		return hospedeList;
+	}
+}
+

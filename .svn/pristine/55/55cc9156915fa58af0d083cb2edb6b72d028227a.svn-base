@@ -1,0 +1,86 @@
+package reserva.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import reserva.bean.Reserva;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoReserva  extends Dao<Reserva>{
+	
+	public DaoReserva(Session session) {
+		super(session, Reserva.class);
+	}
+	
+	public Collection<Reserva> listarAprovadas() {
+		Collection<Reserva> reservaList = new ArrayList<Reserva>();
+		
+		String consulta = "FROM RESERVA WHERE situacao = 'APROVADA' AND fk_hospedeHospedagem IS NULL ORDER BY id";
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Reserva reserva = (Reserva) query.list().get(x);
+			reservaList.add(reserva);
+		}
+		
+		return reservaList;
+	}
+	
+	public Collection<Reserva> listarRetorno() {
+		Collection<Reserva> reservaList = new ArrayList<Reserva>();
+		
+		String consulta = "FROM RESERVA WHERE situacao = 'AGUARDANDO_RETORNO' ORDER BY dataReserva";
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Reserva reserva = (Reserva) query.list().get(x);
+			reservaList.add(reserva);
+		}
+		
+		return reservaList;
+	}
+	
+	public Collection<Reserva> pesquisarReserva(Calendar dataInicio, Calendar dataFim) {
+		Collection<Reserva> reservaList = new ArrayList<Reserva>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM RESERVA WHERE 1 = 1";
+		
+		if ((dataInicio != null) && (dataFim == null)){
+			consulta += " AND dataPrevisaoCheckIn >= :dataInicio";
+			parameters.put("dataInicio", dataInicio);
+		} else {
+			consulta += " AND dataPrevisaoCheckIn BETWEEN :dataInicio AND :dataFim";
+			parameters.put("dataInicio", dataInicio);
+			parameters.put("dataFim", dataFim);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Reserva item = (Reserva) query.list().get(x);
+			reservaList.add(item);
+		}
+		
+		return reservaList;
+	}
+}

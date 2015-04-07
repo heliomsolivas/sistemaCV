@@ -1,0 +1,58 @@
+// document.ready();
+$(function() {	 
+	$("#tipoAcomodacaoList").load(caminhoAbsoluto + "hotel/tipoAcomodacao/pesquisar", {codigo: null, nomeTipoAcomodacao: null});
+	
+	$("#codigoTipoAcomodacao").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#tipoAcomodacaoList").load(caminhoAbsoluto + "hotel/tipoAcomodacao/pesquisar", {codigo: parametro, nomeTipoAcomodacao: null});
+		} else {
+			$("#tipoAcomodacaoList").load(caminhoAbsoluto + "hotel/tipoAcomodacao/pesquisar", {codigo: null, nomeTipoAcomodacao: null});
+		}
+	});
+	
+	$("#nomeTipoAcomodacao").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){						
+			$("#tipoAcomodacaoList").load(caminhoAbsoluto + "hotel/tipoAcomodacao/pesquisar", {codigo: null, nomeTipoAcomodacao: parametro});
+		} else {
+			$("#tipoAcomodacaoList").load(caminhoAbsoluto + "hotel/tipoAcomodacao/pesquisar", {codigo: null, nomeTipoAcomodacao: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarTipoAcomodacao() {
+	validator =  $("#formTipoAcomodacao").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/tipoAcomodacao/gravar",
+			data: $("#formTipoAcomodacao").serialize(),
+			success: function(retorno) {
+						$("#cadastrarTipoAcomodacao").data("kendoWindow").destroy();
+						$("#listaTipoAcomodacao").load(caminhoAbsoluto + "hotel/tipoAcomodacao/lista");
+					 }
+		});
+	}
+}
+
+function alterarTipoAcomodacao() {
+	validator =  $("#formAlterarTipoAcomodacao").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "hotel/tipoAcomodacao/gravar",
+			data: $("#formAlterarTipoAcomodacao").serialize(),
+			success: function(retorno) {
+						$("#consultarTipoAcomodacao").data("kendoWindow").destroy();
+						$("#conteudo").load(caminhoAbsoluto + "sistema/acomodacao/pesquisar");
+						$("#listaTipoAcomodacao").load(caminhoAbsoluto + "hotel/tipoAcomodacao/lista");
+					 }
+		});
+	}
+}

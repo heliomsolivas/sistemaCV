@@ -1,0 +1,17 @@
+package reserva.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import reserva.bean.ReservaResponsavel;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoReservaResponsavel  extends Dao<ReservaResponsavel>{
+	
+	public DaoReservaResponsavel(Session session) {
+		super(session, ReservaResponsavel.class);
+	}
+
+}

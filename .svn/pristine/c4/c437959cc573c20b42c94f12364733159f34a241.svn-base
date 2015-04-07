@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {
+	$("#historicoList").load(caminhoAbsoluto + "contabil/historico/pesquisar", {codigo: null, nomeHistorico: null});
+	
+	$("#codigoHistorico").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){
+			$("#historicoList").load(caminhoAbsoluto + "contabil/historico/pesquisar", {codigo: parametro, nomeHistorico: null});
+		} else {
+			$("#historicoList").load(caminhoAbsoluto + "contabil/historico/pesquisar", {codigo: null, nomeHistorico: null});
+		}
+	});
+	
+	$("#nomeHistorico").keyup(function(){
+		var parametro = $(this).val();
+		
+		if (parametro != ''){
+			$("#historicoList").load(caminhoAbsoluto + "contabil/historico/pesquisar", {codigo: null, nomeHistorico: parametro});
+		} else {
+			$("#historicoList").load(caminhoAbsoluto + "contabil/historico/pesquisar", {codigo: null, nomeHistorico: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarHistorico() {
+    validator =  $("#formHistorico").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/historico/gravar",
+			data: $("#formHistorico").serialize(),
+			success: function(retorno) {
+						$("#cadastrarHistorico").data("kendoWindow").destroy();
+						$("#listaHistorico").load(caminhoAbsoluto + "contabil/historico/lista");
+					 }
+		});
+	}
+}
+
+function alterarHistorico() {
+    validator =  $("#formAlterarHistorico").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "contabil/historico/gravar",
+			data: $("#formAlterarHistorico").serialize(),
+			success: function(retorno) {
+						$("#consultarHistorico").data("kendoWindow").destroy();
+						$("#listaHistorico").load(caminhoAbsoluto + "contabil/historico/lista");
+					 }
+		});
+	}
+}

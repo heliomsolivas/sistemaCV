@@ -1,0 +1,62 @@
+package financeiro.dao;
+
+import financeiro.bean.ContaPagar;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoContaPagar extends Dao<ContaPagar>  {
+
+    public DaoContaPagar(Session session) {
+		super(session, ContaPagar.class); 
+	}
+    
+    public Collection<ContaPagar> pesquisarContaPagar(String numeroDocumento, Calendar dataInicio, Calendar dataFim) {
+		Collection<ContaPagar> contaPagarList = new ArrayList<ContaPagar>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM FINANCEIRO_CONTAPAGAR WHERE 1 = 1";
+
+		if (numeroDocumento != null) {
+			consulta += " AND numeroDocumento LIKE :numeroDocumento ORDER BY id ASC";
+			parameters.put("numeroDocumento", "%" + numeroDocumento + "%");
+		} else if ((dataInicio != null) && (dataFim == null)) {
+			consulta += " AND dataVencimento >= :dataInicio ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+		} else if ((dataInicio == null) && (dataFim != null)){
+			consulta += " AND dataVencimento <= :dataFim ORDER BY id ASC";
+			parameters.put("dataFim", dataFim);
+		} else {
+			consulta += " AND dataVencimento BETWEEN :dataInicio AND :dataFim ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+			parameters.put("dataFim", dataFim);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ContaPagar item = (ContaPagar) query.list().get(x);
+			contaPagarList.add(item);
+		}
+
+		return contaPagarList;
+	}
+}

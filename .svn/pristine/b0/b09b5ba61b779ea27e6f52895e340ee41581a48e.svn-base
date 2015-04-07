@@ -1,0 +1,83 @@
+<tr style="height: 10px;">
+   				<td style="width: 195px;">
+   					<input type="hidden" value="${hospedagem.id}" name="idHospedagem"/>
+   					<select id="select" name="" style="width: 175px;">
+						<option value="Selecione">Selecione</option>
+						<option value="Produto">Produto</option>
+						<option value="Diária">Diária</option>
+						<option value="Diversos">Diversos</option>
+					</select>
+   				</td>
+   			</tr>
+   			
+	   		<form id="formAcomodacao" name="formAcomodacao" action="#">
+	   			<tr id="diaria" valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					Acomodação
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Tipo de Acomodação
+	   				</td>
+	   			</tr>
+	   			<tr id="idDiaria" style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<select id="selectAcomodacao" name="item.acomodacao.id" style="width: 370px;">
+							<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${acomodacaoList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="tipo" type="text" class="k-textbox" name="" style="width: 175px;" disabled/>
+	   				</td>
+	   			</tr>
+	   			<tr id="camposDiaria" valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					Data
+	   				</td>  				
+	   				<td style="width: 195x;">
+	   					Valor Diária
+	   				</td>
+	   			</tr>
+	   			<tr id="idCamposDiaria" style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input id="dataDiaria" type="text" name="item.data" style="width: 195px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valorDiaria" type="text" min="0" style="width: 175px;" disabled/>
+	   				</td>
+	   			</tr>
+	   		</form>
+	   		<form id="formDiversos" name="formDiversos" action="#">
+	   			<tr id="diversos" valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 565px;">
+	   					Descrição
+	   				</td>
+	   			</tr>
+	   			<tr id="idDiversos" style="height: 10px;">
+	   				<td colspan="3" style="width: 565px;">
+	   					<input class="k-textbox" type="text" name="" style="width: 545px;" />
+	   				</td>
+	   			</tr>
+	   			<tr id="camposDiversos" valign="bottom" style="height: 25px;">
+	   				<td></td>
+	   				<td></td>
+	   				<td style="width: 195x;">
+	   					Valor Total
+	   				</td>
+	   			</tr>
+	   			<tr id="idCamposDiversos" style="height: 10px;">
+	   				<td></td>
+	   				<td></td>
+	   				<td style="width: 195px;">
+	   					<input id="valorTtal2" type="text" min="0" name="" placeholder="R$ 00,00" style="width: 175px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+   				<tr style="height: 40px;">
+            		<td colspan="3" style="text-align: center;">
+	            		<button type="button" class="k-button" onclick="gravar()"><span class='k-icon k-update'></span>Cadastrar</button>
+            		</td>
+            	</tr>
+            </form>

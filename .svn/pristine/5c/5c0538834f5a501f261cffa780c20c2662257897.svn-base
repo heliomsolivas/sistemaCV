@@ -1,0 +1,56 @@
+package agenda.bean;
+
+import hotel.bean.Acomodacao;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "AGENDA_RESERVAACOMODACAO")
+@Table(name = "AGENDA_RESERVAACOMODACAO")
+public class ReservaAcomodacao implements Serializable {
+
+	private static final long serialVersionUID = -954297516756370707L;
+
+	private Long id;
+	private Reserva reserva;
+	private Acomodacao acomodacao;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_reserva", nullable = false)
+	public Reserva getReserva() {
+		return reserva;
+	}
+
+	public void setReserva(Reserva reserva) {
+		this.reserva = reserva;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_acomodacao", nullable = false)
+	public Acomodacao getAcomodacao() {
+		return acomodacao;
+	}
+
+	public void setAcomodacao(Acomodacao acomodacao) {
+		this.acomodacao = acomodacao;
+	}
+
+}

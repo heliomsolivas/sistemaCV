@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#selecionarTodos").click(function() {
+					$(".checkbox").attr('checked', true);
+				});
+		<c:choose>
+			<c:when test="${perfil.id != null}">
+				$("#botaoVoltar").click(function() {
+					randomNum = (Math.round((Math.random() * 9) + 1));
+					$("#container").load("<c:url value="/perfil/listar"/>");
+				});
+			</c:when>
+			<c:otherwise>
+				$("#botaoFechar").click(function() {
+					document.getElementById("container").innerHTML=""; 
+				});
+			</c:otherwise>
+		</c:choose>
+				$("#botaoGravar").click(function() {
+					var camposPreenchidos = true;
+					var formulario = document.formularioPerfil;
+
+					if (formulario["perfil.nome"].value == "") {
+						formulario["perfil.nome"].className = 'campoObrigatorio'; camposPreenchidos = false;
+					} else {
+						formulario["perfil.nome"].className = '';
+					}
+					if (formulario["perfil.descricao"].value == "") {
+						formulario["perfil.descricao"].className = 'campoObrigatorio'; camposPreenchidos = false;
+					} else {
+						formulario["perfil.descricao"].className = '';
+					}
+					if (camposPreenchidos) {
+						formulario["botaoGravar"].disabled = true;
+						$("#mensagem").empty().append("Aguarde...");
+						$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/perfil/gravar"/>",
+							data: $("#formularioPerfil").serialize(),
+							success: function(retorno) {$("#container").empty().append(retorno);}
+						});
+					} else
+						$("#mensagem").empty().append("<f:message key="campos_obrigatorios"/>");
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formularioPerfil" action="<c:url value="/sistema/index"/>" method="POST">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 615px;">
+				<tr style="height: 25px;" valign="bottom">
+					<td rowspan="21" style="width: 15px;"></td>
+					<td style="width: 200px;">Nome</td>
+					<td style="width: 340px;">Descrição</td>
+				</tr>
+				<tr style="height: 10px;">
+					<td style="width: 200px;">
+						<input type="text" class="k-textbox" name="perfil.nome" value="${perfil.nome}" maxlength="100" style="width: 200px;">
+					</td>
+					<td style="width: 340px;">
+						<input type="text" class="k-textbox" name="perfil.descricao" value="${perfil.descricao}" maxlength="250" style="width: 340px;">
+					</td>
+				</tr>
+				<tr style="height: 25px;" valign="bottom">
+					<td style="width: 215px;">Permissões</td>
+					<td style="width: 300px;" align="right">
+						<a id="selecionarTodos" href="#" style="margin-right: 25px;">Selecionar Todos</a>
+					</td>
+				</tr>
+				<tr style="height: 195px;">
+					<td style="width: 570px;" colspan="2">
+						<div style="height: 320px; width: 564px; border: 1px solid #C0C0C0; background-color: white; padding: 5px 5px 5px 5px; overflow-y: scroll;">
+							<table border="0" cellpadding="0" cellspacing="0" style="width: 540px;">
+							<c:forEach items="${mapFuncao}" var="funcao">
+								<tr style="height: 20px;">
+									<td align="center" style="width: 30px;">
+										<input type="checkbox" class="checkbox" name="listaIdFuncoes" value="${funcao.key.id}" style="background-color: #FFFFFF; border: 0px;" <c:if test="${funcao.value}">checked</c:if>>
+									</td>
+									<td align="left" style="width: 510px;">
+										${funcao.key.pacote} - ${funcao.key.classe} - ${funcao.key.nome}
+									</td>
+								</tr>
+							</c:forEach>
+							</table>
+						</div>
+					</td>
+				</tr>
+				<tr style="height: 30px;"></tr>
+				<tr style="height: 20px;" valign="middle">
+					<td style="text-align: center; width: 215px;" colspan="2">
+						<button id="botaoLimpar" type="reset" name="limpar"   class="k-button">Limpar
+						<span class='k-icon k-cancel'>&nbsp;</span></button>
+						<button id="botaoGravar" type="button" name="gravar"   class="k-button">Gravar
+						<span class='k-icon k-update'>&nbsp;</span></button>
+					</td>
+			    </tr>				
+			</table>
+		</form>
+	</body>
+</html>

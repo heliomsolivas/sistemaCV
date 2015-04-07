@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaHospedagem").tablesorter({
+					headers: {
+						4: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+			   		widgets: ["filter"],
+					ignoreCase: false,
+				   	widgetOptions : {
+				     	filter_childRows : false,
+				     	filter_columnFilters : true,
+				     	filter_cssFilter : ['', '', 'filterDataCheckInHospedagem'], // or []
+				     	filter_external : '',
+				     	filter_filteredRow   : 'filtered',
+				     	filter_formatter : null,
+				     	filter_hideFilters : false,
+				     	filter_ignoreCase : true,
+				     	filter_liveSearch : true,
+				     	filter_onlyAvail : 'filter-onlyAvail',
+				     	filter_reset : '#filterHospedagem',
+				     	filter_saveFilters : false,
+				     	filter_searchDelay : 300,
+				     	filter_serversideFiltering: false,
+				     	filter_startsWith : false,
+				     	filter_useParsedData : false,
+				     	filter_defaultAttrib : 'data-value',
+			     		filter_functions : {
+							3 : {
+								"Em andamento": function(e, n, f, i, $r) { return e === f; },
+								"Encerrada": function(e, n, f, i, $r) { return e === f; }
+							}
+						}
+				   }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoHospedagem"),
+					output: '{startRow} - {endRow} de {totalRows} linhas',
+					positionFixed: false,
+					removeRows: false,
+					savePages: false,
+					size: 10
+				});
+
+				$(".filterDataCheckInHospedagem").daterangepicker({
+			 	   	datepickerOptions: {
+			 	        changeMonth: true,
+			 	        changeYear: true
+			 	    },
+			 	    onClose : function(){
+			        	$("#tabelaHospedagem").trigger('search');
+			        }
+				});
+			});
+			
+			function excluirHospedagem(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.hospedagem"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#listaHospedagem").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/clientes/hospedagem/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+												$("#listaHospedagem").load("<c:url value="/clientes/hospedagem/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.hospedagem"/>', '<f:message key="erro"/>');
+  								 				$("#listaHospedagem").load("<c:url value="/clientes/hospedagem/lista"/>");
+					                		}
+		    					});
+		                    }
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+
+			function consultarHospedagem(id) {
+				consultar(null, '<f:message key="informacoes.hospedagem"/>', '925', '520', 'consultarHospedagem');
+				
+				$("#consultarHospedagem").load("<c:url value="/clientes/hospedagem/consultar/"/>" + id);
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaHospedagem">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 90px;"><f:message key="titulo.lista.codigo.hospedagem"/></th>
+						<th style="width: 330px;"><f:message key="titulo.lista.nome.hospede"/></th>
+						<th style="width: 155px;"><f:message key="titulo.lista.data.checkin"/></th>
+						<th style="width: 100px;"><f:message key="titulo.lista.situacao.hospedagem"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${hospedeHospedagemList}" var="hospedeHospedagem">
+						<tr style="height: 35px;" ondblclick="consultarHospedagem(${hospedeHospedagem.id});">
+							<td style="width: 90px; text-align:center;">${hospedeHospedagem.hospedagem.codigo}</td>
+							<td style="width: 330px; text-align:center;">${hospedeHospedagem.hospede.nome}</td>
+							<td style="width: 155px; text-align:center;"><f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy"/></td>
+							<td style="width: 100px; text-align:center;">
+								<c:choose>
+									<c:when test="${hospedeHospedagem.ativo == true}">
+										<f:message key="andamento"/>
+									</c:when>
+									<c:otherwise>
+										<f:message key="encerrada"/>
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<td style="width: 70px; text-align:center;">
+								<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/clientes/hospedagem/consultar/${hospedeHospedagem.id}"/>', '<f:message key="informacoes.hospedagem"/>', '925', '520', 'consultarHospedagem');">
+									<span class="k-icon k-edit"></span>
+								</a>
+								<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirHospedagem(${hospedeHospedagem.id})">
+									<span class="k-icon k-delete"></span>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoHospedagem" class="paginacao">
+			<div style="margin-left: 222px;">
+				<div class="first"></div>
+				<div class="prev"></div>
+				<input type="text" class="pagedisplay k-textbox" style="height: 20px;">
+				<div class="next"></div>
+				<div class="last"></div>
+			</div>
+			<a id="filterHospedagem" href="#" class="k-button k-button-icontext k-delete filterReset"> 
+				<span class="icon icon-refresh icon-darkgray"></span>
+			</a>
+		</div>
+	</body>
+</html>

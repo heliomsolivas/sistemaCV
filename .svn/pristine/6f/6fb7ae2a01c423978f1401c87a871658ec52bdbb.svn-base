@@ -1,0 +1,85 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.ItensPadraoFrigobar;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoItensPadraoFrigobar extends Dao<ItensPadraoFrigobar>{
+	
+	public DaoItensPadraoFrigobar (Session session) {
+		super(session, ItensPadraoFrigobar.class);
+	}
+	
+	public Collection<ItensPadraoFrigobar> buscaItemFrigobar(Long id) {
+		Collection<ItensPadraoFrigobar> itemList = new ArrayList<ItensPadraoFrigobar>();
+
+		String consulta = "FROM HOTEL_ITENSPADRAOFRIGOBAR WHERE fk_frigobar = :id";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("id", id);
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			ItensPadraoFrigobar item = (ItensPadraoFrigobar) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+	
+	public Collection<ItensPadraoFrigobar> listaItemAcomodacao (Long idAcomodacao) {
+		Collection<ItensPadraoFrigobar> itemList = new ArrayList<ItensPadraoFrigobar>();
+
+		String consulta = "FROM HOTEL_ITENSPADRAOFRIGOBAR WHERE fk_acomodacao = :idAcomodacao";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idAcomodacao", idAcomodacao);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItensPadraoFrigobar item = (ItensPadraoFrigobar) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+	
+	public ItensPadraoFrigobar buscaItemFrigobarProduto (Long idFrigobar, Long idProduto) {
+		ItensPadraoFrigobar itemPadrao = null;
+
+		String consulta = "FROM HOTEL_ITENSPADRAOFRIGOBAR WHERE fk_frigobar = :idFrigobar AND fk_produto = :idProduto";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idFrigobar", idFrigobar);
+		query.setParameter("idProduto", idProduto);
+
+		if (query.list().size() != 0)
+			itemPadrao = (ItensPadraoFrigobar) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return itemPadrao;
+	}
+	
+	public Collection<ItensPadraoFrigobar> pesquisarPorProduto(Long id) {
+		Collection<ItensPadraoFrigobar> itemList = new ArrayList<ItensPadraoFrigobar>();
+
+		String consulta = "FROM HOTEL_ITENSPADRAOFRIGOBAR WHERE fk_produto = :id";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("id", id);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItensPadraoFrigobar item = (ItensPadraoFrigobar) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+}

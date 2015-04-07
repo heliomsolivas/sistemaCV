@@ -1,0 +1,34 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.HospedeHospedagem;
+
+@Component
+public class DaoHospedeHospedagem extends Dao<HospedeHospedagem>{
+
+	public DaoHospedeHospedagem(Session session) {
+		super(session, HospedeHospedagem.class);
+	}
+	
+	public HospedeHospedagem buscaHospedagemAcomodacao (Long idAcomodacao) {
+		HospedeHospedagem hospedeHospedagem = null;
+
+		String consulta = "FROM CLIENTES_HOSPEDEHOSPEDAGEM WHERE hospedagem.acomodacao.id = :idAcomodacao";
+		consulta += " AND ativo = 1";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idAcomodacao", idAcomodacao);
+
+		if (query.list().size() != 0)
+			hospedeHospedagem = (HospedeHospedagem) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return hospedeHospedagem;
+	}
+}

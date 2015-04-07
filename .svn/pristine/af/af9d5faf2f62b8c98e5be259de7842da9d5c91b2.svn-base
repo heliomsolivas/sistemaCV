@@ -1,0 +1,54 @@
+package financeiro.dao;
+
+import financeiro.bean.ContaCaixa;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoContaCaixa extends Dao<ContaCaixa>  {
+
+    public DaoContaCaixa(Session session) {
+    	super(session, ContaCaixa.class); 
+    }
+    
+    public Collection<ContaCaixa> pesquisarBanco(String agencia, String banco) {
+		Collection<ContaCaixa> contaCaixaList = new ArrayList<ContaCaixa>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM FINANCEIRO_CONTACAIXA WHERE 1 = 1";
+
+		if (agencia != null) {
+			consulta += " AND agencia LIKE :agencia ORDER BY id ASC";
+			parameters.put("agencia", "%" + agencia + "%");			
+		} else {
+			consulta += " AND banco LIKE :banco OR numeroConta LIKE :banco ORDER BY id ASC";
+			parameters.put("banco", "%" + banco + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ContaCaixa item = (ContaCaixa) query.list().get(x);
+			contaCaixaList.add(item);
+		}
+
+		return contaCaixaList;
+	}
+}

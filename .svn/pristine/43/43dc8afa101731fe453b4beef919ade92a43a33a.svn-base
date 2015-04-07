@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {	
+	$("#hospedeList").load(caminhoAbsoluto + "clientes/hospede/pesquisar", {codigo: null, nomeHospede: null});
+	
+	$("#codigoHospede").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#hospedeList").load(caminhoAbsoluto + "clientes/hospede/pesquisar", {codigo: parametro, nomeHospede: null});
+		} else {
+			$("#hospedeList").load(caminhoAbsoluto + "clientes/hospede/pesquisar", {codigo: null, nomeHospede: null});
+		}
+	});
+	
+	$("#nomeHospede").keyup(function() {
+		var parametro = $(this).val();
+	 	
+		if (parametro != '') {
+			$("#hospedeList").load(caminhoAbsoluto + "clientes/hospede/pesquisar", {codigo: null, nomeHospede: parametro});
+		} else {
+			$("#hospedeList").load(caminhoAbsoluto + "clientes/hospede/pesquisar", {codigo: null, nomeHospede: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarHospede() {
+	validator =  $("#formHospede").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "clientes/hospede/gravar",
+			data: $("#formHospede").serialize(),
+			success: function (retorno) {
+						$("#cadastrarHospede").data("kendoWindow").destroy();
+						$("#listaHospede").load(caminhoAbsoluto + "clientes/hospede/lista");
+           			}
+		});
+	}
+}
+
+function alterarHospede() {
+	validator =  $("#formAlterarHospede").kendoValidator({ messages: {required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "clientes/hospede/gravar",
+			data: $("#formAlterarHospede").serialize(),
+			success: function (retorno) {
+						$("#consultarHospede").data("kendoWindow").destroy();
+						$("#listaHospede").load(caminhoAbsoluto + "clientes/hospede/lista");
+           			}
+		});
+	}
+}

@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+	 		$(document).ready(function () {
+	 			$("#saldoContaCaixa").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: true});
+	 			$("#saldoMinimoContaCaixa").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: true});
+	 			$("#saldoMaximoContaCaixa").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: true});			
+	 			$("#dataAberturaContaCaixa").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+	 			$("#dataEncerramentoContaCaixa").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+				
+	 			$("#telefoneContaCaixa").focusout(function(){
+				    var phone, element;
+				    element = $(this);
+				    element.unmask();
+				    phone = element.val().replace(/\D/g, '');
+				    if(phone.length > 10) {
+				        element.mask("(99) 99999-999?9");
+				    } else {
+				        element.mask("(99) 9999-9999?9");
+				    }
+				}).trigger('focusout');
+				
+	 			var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required': '<f:message key="campo.obrigatorio"/>' }}};
+	 			
+				$("#formContaCaixa").bValidator(options);
+   				
+   				$("#formContaCaixa").submit(function() {
+   					if($("#formContaCaixa").data("bValidator").isValid()){
+   						$("#cadastrarContaCaixa").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   					 	$.ajax({
+   							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+   							type: "POST",
+   							url: "<c:url value="/financeiro/contaCaixa/gravar"/>",
+   							data: $("#formContaCaixa").serialize(),
+   							success: function (retorno) {
+   										$("#cadastrarContaCaixa").data("kendoWindow").destroy();
+   										$("#listaContaCaixa").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   										$("#listaContaCaixa").load("<c:url value="/financeiro/contaCaixa/lista"/>");
+   				           			}
+   						});
+   					}
+   					return false;
+   				});
+	        });
+		</script>
+	</head>
+	<body class="divConteudo">
+    	<form id="formContaCaixa" name="formContaCaixa" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="14" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.banco"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.numero.banco"/>
+	   				</td>
+	   				<td rowspan="14" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" name="contaCaixa.banco" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" name="contaCaixa.numeroBanco" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;"></td>
+	   				<td style="width: 195px; text-align: right;">
+	   					<span style="margin-right: 63px;">
+	   						<f:message key="campo.agencia"/>
+	   					</span>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.numero.conta"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;"></td>
+	   				<td style="width: 195px; text-align: right;">
+						<input type="text" class="k-textbox" name="contaCaixa.agencia" style="width: 90px; margin-right: 20px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" name="contaCaixa.numeroConta" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.situacao.conta"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.data.abertura"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.data.encerramento"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<select data-bvalidator="required" name="contaCaixa.ativa" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="true"><f:message key="ativa"/></option>
+							<option value="false"><f:message key="inativa"/></option>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+   						<input id="dataAberturaContaCaixa" type="text" class="k-textbox" data-bvalidator="required" name="contaCaixa.dataAbertura" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="dataEncerramentoContaCaixa" type="text" class="k-textbox" name="contaCaixa.dataEncerramento" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.contato"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.telefone"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" name="contaCaixa.contato" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="telefoneContaCaixa" type="text" class="k-textbox" name="contaCaixa.telefone" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.caixa"/>
+	   				</td>
+	   				<td colspan="2" style="width: 375px;">
+	   					<f:message key="campo.email"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 175px;">
+	   					<select data-bvalidator="required" name="contaCaixa.caixa" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="true"><f:message key="sim"/></option>
+							<option value="false"><f:message key="nao"/></option>
+						</select>
+	   				</td>
+	   				<td colspan="2" style="width: 375px;">
+	   					<input type="text" class="k-textbox" name="contaCaixa.email" style="width: 375px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195x;">
+	   					<f:message key="campo.saldo"/>
+	   				</td>
+	   				<td style="width: 195x;">
+	   					<f:message key="campo.saldo.minimo"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.saldo.maximo"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195x;">
+	   					<input id="saldoContaCaixa" type="text" class="k-textbox" data-bvalidator="required" name="contaCaixa.saldo" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="saldoMinimoContaCaixa" type="text" class="k-textbox" data-bvalidator="required" name="contaCaixa.saldoMinimo" placeholder="R$ 0,00" min="0" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="saldoMaximoContaCaixa" type="text"class="k-textbox" data-bvalidator="required" name="contaCaixa.saldoMaximo" placeholder="R$ 0,00" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+   				<tr style="height: 30px;"></tr>
+            	<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+						<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	   					<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+            		</td>
+            	</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

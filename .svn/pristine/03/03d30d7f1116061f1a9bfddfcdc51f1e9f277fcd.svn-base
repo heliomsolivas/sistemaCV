@@ -1,0 +1,150 @@
+package contabil.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+
+import java.util.Calendar;
+
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import contabil.bean.ContaContabil;
+import contabil.bean.Historico;
+import contabil.bean.Lancamento;
+import contabil.dao.DaoContaContabil;
+import contabil.dao.DaoHistorico;
+import contabil.dao.DaoLancamento;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("contabil/")
+public class ContabilController {
+    
+	private final DaoContaContabil daoContaContabil;
+    private final DaoHistorico daoHistorico;
+    private final DaoLancamento daoLancamento;
+    private final Erro erro;
+    private final Result result;
+    
+    public ContabilController(DaoContaContabil daoContaContabil, DaoHistorico daoHistorico, DaoLancamento daoLancamento, Erro erro, Result result) {
+    	this.daoContaContabil = daoContaContabil;
+    	this.daoHistorico = daoHistorico;
+    	this.daoLancamento = daoLancamento;
+		this.erro = erro;
+		this.result = result;
+    }
+    
+    @Path("conta/cadastrar")
+    public void formContaContabil() {
+    }
+    
+    @Path("historico/cadastrar")
+    public void formHistorico() {
+    }
+    
+    @Path("lancamento/cadastrar")
+    public void formLancamento() {
+    	result.include("historicoList", daoHistorico.listarTudo());
+    	result.include("contaCreditoList", daoContaContabil.listarTudo());
+    	result.include("contaDebitoList", daoContaContabil.listarTudo());
+    }
+    
+    @Path("conta/consultar/{id}")
+    public void consultarContaContabil(Long id) {
+    	result.include("contaContabil", daoContaContabil.buscar(id));
+    }
+    
+    @Path("historico/consultar/{id}")
+    public void consultarHistorico(Long id) {
+    	result.include("historico", daoHistorico.buscar(id));
+    }
+    
+    @Path("lancamento/consultar/{id}")
+    public void consultarLancamento(Long id) {
+    	result.include("lancamento", daoLancamento.buscar(id));
+    	result.include("historicoList", daoHistorico.listarTudo());
+    	result.include("contaCreditoList", daoContaContabil.listarTudo());
+    	result.include("contaDebitoList", daoContaContabil.listarTudo());
+    }
+    
+    @Path("conta/lista")
+    public void listaContaContabil() {
+    }
+    
+    @Path("historico/lista")
+    public void listaHistorico() {
+    }
+    
+    @Path("lancamento/lista")
+    public void listaLancamento() {
+    }
+    
+    @Post("conta/pesquisar")
+	public void divListaContaContabil(Integer codigoReduzido, String parametro) {
+		if (codigoReduzido != null)
+			result.include("contaContabilList", daoContaContabil.pesquisarConta(codigoReduzido, null));
+		else if (parametro != null)
+			result.include("contaContabilList", daoContaContabil.pesquisarConta(null, parametro));
+		else
+			result.include("contaContabilList", daoContaContabil.listarTudo("id", "ASC"));
+    }
+    
+    @Post("historico/pesquisar")
+   	public void divListaHistorico(Long codigo, String nomeHistorico) {
+		if (codigo != null)
+			result.include("historicoList", daoHistorico.pesquisarHistorico(codigo, null));
+		else if (nomeHistorico != null)
+			result.include("historicoList", daoHistorico.pesquisarHistorico(null, nomeHistorico));
+		else
+			result.include("historicoList", daoHistorico.listarTudo("id", "ASC"));
+    }
+    
+    @Post("lancamento/pesquisar")
+   	public void divListaLancamento(String numeroDocumento, Calendar dataInicio, Calendar dataFim) {		
+    	if (numeroDocumento != null)
+   			result.include("lancamentoList", daoLancamento.pesquisarLancamento(numeroDocumento, null, null));
+    	else if ((dataInicio != null) && (dataFim == null))   			 
+			result.include("lancamentoList", daoLancamento.pesquisarLancamento(null, dataInicio, null));
+   		else if ((dataInicio == null) && (dataFim != null))
+   			result.include("lancamentoList", daoLancamento.pesquisarLancamento(null, null, dataFim));
+   		else if ((dataInicio != null) && (dataFim != null))
+   			result.include("lancamentoList", daoLancamento.pesquisarLancamento(null, dataInicio, dataFim));
+   		else
+   			result.include("lancamentoList", daoLancamento.listarTudo("id", "ASC"));
+   	}
+    
+    @Post("conta/gravar")
+    public void gravar(ContaContabil contaContabil){
+    	try {
+        	daoContaContabil.atualizar(contaContabil);
+		} catch (Exception e) {
+			result.include("mensagem", "contabil.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("historico/gravar")
+    public void gravar(Historico historico){
+    	try {
+        	daoHistorico.atualizar(historico);
+		} catch (Exception e) {
+			result.include("mensagem", "contabil.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+    
+    @Post("lancamento/gravar")
+    public void gravar(Lancamento lancamento){
+    	try {
+        	daoLancamento.atualizar(lancamento);
+		} catch (Exception e) {
+			result.include("mensagem", "contabil.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+    }
+}

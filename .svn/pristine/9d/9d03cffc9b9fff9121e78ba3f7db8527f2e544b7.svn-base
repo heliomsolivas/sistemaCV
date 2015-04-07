@@ -1,0 +1,369 @@
+package clientes.bean;
+
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import agenda.bean.Reserva;
+
+@Entity(name = "CLIENTES_HOSPEDE")
+@Table(name = "CLIENTES_HOSPEDE")
+public class Hospede implements Serializable {
+
+	private static final long serialVersionUID = 5024459718917822935L;
+
+	private Long id;
+	private Hotel hotel;
+	private Responsavel responsavel;
+	private String nome;
+	private String foto;
+	private String sexo;
+	private String cor;
+	private String cpf;
+	private String rg;
+	private String estadoCivil;
+	private Calendar dataNascimento;
+	private String naturalidade;
+	private String nacionalidade;
+	private String situacao;
+	private String profissao;
+	private String endereco;
+	private String bairro;
+	private String complemento;
+	private String cidade;
+	private String estado;
+	private String cep;
+	private String telefoneResidencial;
+	private String telefoneCelular;
+	private String telefoneComercial;
+	private String email;
+	private String observacoes;
+	private String proximoDestino;
+	private String ultimaProcedencia;
+	private String motivoViagem;
+	private String meioTransporte;
+	private Calendar dataCadastro;	
+	private Collection<Reserva> reservaList;
+	private Collection<HospedeHospedagem> hospedeHospedagemList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_responsavel", nullable = true)
+	public Responsavel getResponsavel() {
+		return responsavel;
+	}
+
+	public void setResponsavel(Responsavel responsavel) {
+		this.responsavel = responsavel;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "foto", nullable = true)
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	@Column(name = "sexo", nullable = false)
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+	@Column(name = "cor", nullable = false)
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+
+	@Column(name = "cpf", nullable = false)
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	@Column(name = "rg", nullable = false)
+	public String getRg() {
+		return rg;
+	}
+
+	public void setRg(String rg) {
+		this.rg = rg;
+	}
+
+	@Column(name = "estadoCivil", nullable = false)
+	public String getEstadoCivil() {
+		return estadoCivil;
+	}
+
+	public void setEstadoCivil(String estadoCivil) {
+		this.estadoCivil = estadoCivil;
+	}
+
+	@Column(name = "dataNascimento", nullable = false)
+	public Calendar getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(Calendar dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	@Column(name = "naturalidade", nullable = false)
+	public String getNaturalidade() {
+		return naturalidade;
+	}
+
+	public void setNaturalidade(String naturalidade) {
+		this.naturalidade = naturalidade;
+	}
+
+	@Column(name = "nacionalidade", nullable = false)
+	public String getNacionalidade() {
+		return nacionalidade;
+	}
+
+	public void setNacionalidade(String nacionalidade) {
+		this.nacionalidade = nacionalidade;
+	}
+
+	@Column(name = "situacao", nullable = false)
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+
+	@Column(name = "profissao", nullable = false)
+	public String getProfissao() {
+		return profissao;
+	}
+
+	public void setProfissao(String profissao) {
+		this.profissao = profissao;
+	}
+
+	@Column(name = "endereco", nullable = false)
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	@Column(name = "bairro", nullable = false)
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	@Column(name = "complemento", nullable = true)
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	@Column(name = "cidade", nullable = false)
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	@Column(name = "estado", nullable = false)
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	@Column(name = "cep", nullable = false)
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	@Column(name = "telefoneResidencial", nullable = false)
+	public String getTelefoneResidencial() {
+		return telefoneResidencial;
+	}
+
+	public void setTelefoneResidencial(String telefoneResidencial) {
+		this.telefoneResidencial = telefoneResidencial;
+	}
+
+	@Column(name = "telefoneCelular", nullable = true)
+	public String getTelefoneCelular() {
+		return telefoneCelular;
+	}
+
+	public void setTelefoneCelular(String telefoneCelular) {
+		this.telefoneCelular = telefoneCelular;
+	}
+
+	@Column(name = "telefoneComercial", nullable = true)
+	public String getTelefoneComercial() {
+		return telefoneComercial;
+	}
+
+	public void setTelefoneComercial(String telefoneComercial) {
+		this.telefoneComercial = telefoneComercial;
+	}
+
+	@Column(name = "email", nullable = true)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "observacoes", nullable = true)
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
+
+	@Column(name = "proximoDestino", nullable = true)
+	public String getProximoDestino() {
+		return proximoDestino;
+	}
+
+	public void setProximoDestino(String proximoDestino) {
+		this.proximoDestino = proximoDestino;
+	}
+
+	@Column(name = "ultimaProcedencia", nullable = true)
+	public String getUltimaProcedencia() {
+		return ultimaProcedencia;
+	}
+
+	public void setUltimaProcedencia(String ultimaProcedencia) {
+		this.ultimaProcedencia = ultimaProcedencia;
+	}
+
+	@Column(name = "motivoViagem", nullable = false)
+	public String getMotivoViagem() {
+		return motivoViagem;
+	}
+
+	public void setMotivoViagem(String motivoViagem) {
+		this.motivoViagem = motivoViagem;
+	}
+
+	@Column(name = "meioTransporte", nullable = false)
+	public String getMeioTransporte() {
+		return meioTransporte;
+	}
+
+	public void setMeioTransporte(String meioTransporte) {
+		this.meioTransporte = meioTransporte;
+	}
+
+	@Column(name = "dataCadastro", nullable = false)
+	public Calendar getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(Calendar dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}	
+
+	@OneToMany(mappedBy = "hospede", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Reserva> getReservaList() {
+		return reservaList;
+	}
+
+	public void setReservaList(Collection<Reserva> reservaList) {
+		this.reservaList = reservaList;
+	}
+
+	@OneToMany(mappedBy = "hospede", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<HospedeHospedagem> getHospedeHospedagemList() {
+		return hospedeHospedagemList;
+	}
+
+	public void setHospedeHospedagemList(Collection<HospedeHospedagem> hospedeHospedagemList) {
+		this.hospedeHospedagemList = hospedeHospedagemList;
+	}
+	
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+}

@@ -1,0 +1,17 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.ItemConsumo;
+
+@Component
+public class DaoItemConsumo extends Dao<ItemConsumo>{
+
+	public DaoItemConsumo(Session session) {
+		super(session, ItemConsumo.class);
+	}
+	
+}

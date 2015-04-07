@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script type="text/javascript" src="<c:url value="/js/funcoesValidacao.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.maskedinput-1.2.2.js"/>">></script>
+		<script type="text/javascript"></script>
+	</head>
+	<style type="text/css">
+		a:link, a:visited {
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+			color: #f00;
+		}
+		a:active {
+			text-decoration: none;
+		}
+	</style>
+	<body class="divConteudo">
+		<table border="0" cellspacing="0" cellpadding="0" style="width: 300px;">
+   			<tr valign="bottom" style="height: 100px;">
+   				<td rowspan="3" style="width: 20px;"></td>
+   				<td style="width: 100px; text-align: center;">
+   					<a class="linkSemBorda" href="#" onclick="consultar('<c:url value="/clientes/cadastrarItemDiaria/${hospedeHospedagem.id}"/>', 'Cadastrar Item Diária', 'auto', '615', '400', 'cadastrarItemDiaria');">
+						<img class="linkSemBorda" src="../imagens/icones/iconeDiaria.png"/>
+					</a>
+					</br>
+					<b>Diária</b>
+   				</td>
+   				<td style="width: 100px; text-align: center;">
+   					<a class="linkSemBorda" href="#" onclick="consultar('<c:url value="/clientes/cadastrarItemProduto/${hospedeHospedagem.id}"/>', 'Cadastrar Item Produto', 'auto', '615', '400', 'cadastrarItemProduto');">
+						<img class="linkSemBorda" src="../imagens/icones/iconeProduto.png"/>
+					</a>
+					</br>
+					<b>Produto</b>
+   				</td>
+   				<td style="width: 100px; text-align: center;">
+   					<a class="linkSemBorda" href="#" onclick="consultar('<c:url value="/clientes/cadastrarItemDiversos/${hospedeHospedagem.id}"/>', 'Cadastrar Item Diversos', 'auto', '615', '400', 'cadastrarItemDiversos');">
+						<img class="linkSemBorda" src="../imagens/icones/iconeDiversos.png"/>
+					</a>
+					</br>
+					<b>Diversos</b>
+   				</td>
+   				<td rowspan="3" style="width: 20px;"></td>
+   			</tr>
+   			<tr valign="bottom" style="height: 40px;">
+   		</table>
+	</body>
+</html>

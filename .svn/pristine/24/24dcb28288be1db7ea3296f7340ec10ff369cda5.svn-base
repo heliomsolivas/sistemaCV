@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="../css/tablesorter.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.all.js"/>"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaContaCaixa").tablesorter({
+					headers: {4: {sorter: false} }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoContaCaixa"),
+					positionFixed: false, 
+					size: 9
+				})
+				.tablesorterFilter({
+					size: 9,
+					filterColumns: ${fn:length(contaCaixaList)},
+					filterCaseSensitive: true
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaContaCaixa">
+				<thead>
+					<tr style="height: 25px;">
+						<th style="width: 180px;"><f:message key="titulo.lista.conta"/></th>
+						<th style="width: 180px;"><f:message key="titulo.lista.banco"/></th>				
+						<th style="width: 120px;"><f:message key="titulo.lista.saldo"/></th>
+						<th style="width: 90px;"><f:message key="titulo.lista.situacao"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${!empty contaCaixaList}">
+							<c:forEach items="${contaCaixaList}" var="conta">
+								<tr style="height: 35px;">
+									<td style="width: 180px; text-align:center;">${conta.agencia} - ${conta.numeroConta}</td>
+									<td style="width: 180px; text-align:center;">${conta.numeroBanco} - ${conta.banco}</td>
+									<td style="width: 120px; text-align:center;">${conta.saldoString}</td>
+									<td style="width: 90px; text-align:center;">
+										<c:choose>
+											<c:when test="${conta.ativa == true}">
+												<f:message key="ativa"/>
+											</c:when>
+											<c:otherwise>
+												<f:message key="inativa"/>
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td style="width: 70px; text-align:center;">
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/financeiro/contaCaixa/consultar/${conta.id}"/>', 'Informações da Conta Caixa', '380px', '615', '615', 'consultarContaCaixa');">
+											<span class="k-icon k-edit"></span>
+										</a>
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="excluir('<c:url value="/financeiro/contaCaixa/remover/${conta.id}"/>', '<c:url value="/financeiro/contaCaixa/lista"/>', 'listaContaCaixa');">
+											<span class="k-icon k-delete"></span>
+										</a>
+									</td>
+								</tr>								
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr class="nenhumItem">
+								<td colspan="6"><f:message key="mensagem.nenhum.item.encontrado"/></td>
+							</tr>
+						</c:otherwise>
+					</c:choose>						
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoContaCaixa" class="pager" style="margin-left: 180px;">
+			<div class="first"></div>
+			<div class="prev"></div>
+			<input type="text" class="pagedisplay"/>
+			<div class="next"></div>
+			<div class="last"></div>
+		</div>
+	</body>
+</html>

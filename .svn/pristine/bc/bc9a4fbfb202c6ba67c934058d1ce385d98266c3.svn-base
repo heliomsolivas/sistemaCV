@@ -1,0 +1,51 @@
+package agenda.controller;
+
+import estoque.dao.DaoFabricante;
+import static br.com.caelum.vraptor.view.Results.*;
+import estoque.dao.DaoFornecedor;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.dao.DaoHotel;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import clientes.bean.Hospedagem;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("agenda/")
+public class AgendaController {
+	
+	private final DaoProduto daoProduto;
+	private final DaoFabricante daoFabricante;
+	private final DaoFornecedor daoFornecedor;
+	private final DaoHotel daoHotel;
+	private final Erro erro;
+	private final Result result;
+
+	public AgendaController(DaoProduto daoProduto, DaoFabricante daoFabricante, DaoFornecedor daoFornecedor, DaoHotel daoHotel, Erro erro, Result result) {
+		this.daoProduto = daoProduto;
+		this.daoFabricante = daoFabricante;
+		this.daoFornecedor = daoFornecedor;
+		this.daoHotel = daoHotel;
+		this.erro = erro;
+		this.result = result;
+	}
+
+	@Path("consultarAgenda")
+	public void teste() {
+	}
+	
+	@Path("read")
+	public void List() {
+		Collection<Hospedagem> hospedagemList = new ArrayList<Hospedagem>();
+		result.use(json()).from(hospedagemList).serialize();
+	}
+	
+}

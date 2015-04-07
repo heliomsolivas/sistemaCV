@@ -1,0 +1,54 @@
+package financeiro.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "FINANCEIRO_CONTARECEBER_CHEQUE")
+@Table(name = "FINANCEIRO_CONTARECEBER_CHEQUE")
+public class ContaReceberCheque implements Serializable {
+
+	private static final long serialVersionUID = 3863215045369589881L;
+
+	private Long id;
+	private ContaReceber contaReceber;
+	private Cheque cheque;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_contaReceber", nullable = false)
+	public ContaReceber getContaReceber() {
+		return contaReceber;
+	}
+
+	public void setContaReceber(ContaReceber contaReceber) {
+		this.contaReceber = contaReceber;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_cheque", nullable = false)
+	public Cheque getCheque() {
+		return cheque;
+	}
+
+	public void setCheque(Cheque cheque) {
+		this.cheque = cheque;
+	}
+
+}

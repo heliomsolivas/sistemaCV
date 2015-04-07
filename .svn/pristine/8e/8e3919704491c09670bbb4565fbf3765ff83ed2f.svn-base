@@ -1,0 +1,229 @@
+// document.ready();
+$(function() {
+	$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: null, dataFim: null});
+	
+	$("#codigoReserva").keyup(function(){
+		var parametro = $(this).val();
+	 	
+		if (parametro != ''){
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: parametro, dataInicio: null, dataFim: null});
+		} else {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: null, dataFim: null});
+		}
+	});
+	
+	$("#dataInicioReserva").change(function(){
+		var parametro = $(this).val();
+		var parametro2 = $("#dataFimReserva").val();
+		
+		if ((parametro != '') && (parametro2 == '')) {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: parametro, dataFim: null});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: null, dataFim: null});
+		}
+	});
+
+	$("#dataFimReserva").change(function() {
+		var parametro = $("#dataInicioReserva").val();
+		var parametro2 = $(this).val();
+		
+		if ((parametro == '') && (parametro2 != '')) {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: null, dataFim: parametro2});
+		} else if ((parametro != '') && (parametro2 != '')) {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: parametro, dataFim: parametro2});
+		} else {
+			$("#reservaList").load(caminhoAbsoluto + "reserva/sistema/pesquisar", {codigo: null, dataInicio: null, dataFim: null});
+		}
+	});
+});
+
+// Funções
+function validateAllSteps(){
+	var isStepValid = true;
+	if(validateStep1() == false){
+		isStepValid = false;
+		$('#wizard').smartWizard('setError',{stepnum:1,iserror:true});
+	} else {
+		$('#wizard').smartWizard('setError',{stepnum:1,iserror:false});
+	}
+	if(validateStep2() == false){
+		isStepValid = false;
+		$('#wizard').smartWizard('setError',{stepnum:2,iserror:true});
+	} else {
+		$('#wizard').smartWizard('setError',{stepnum:2,iserror:false});
+	}
+	if(validateStep3() == false){
+        isStepValid = false;
+        $('#wizard').smartWizard('setError',{stepnum:3,iserror:true});
+   	} else {
+    	$('#wizard').smartWizard('setError',{stepnum:3,iserror:false});
+   	}
+   	if(!isStepValid){
+		$('#wizard').smartWizard('showMessage','<f:message key= "mensagem.preencherCampos"/>');
+	}
+	return isStepValid;
+}
+
+function validateSteps(step){
+	var isStepValid = true;
+	if(step == 1){ // validar step 1
+		if(validateStep1() == false ){
+			isStepValid = false;
+			$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+		} else {
+			$('#wizard').smartWizard('hideMessage');
+			$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});
+			
+			var checkIn = $("#checkInReserva").val();
+			var checkOut = $("#checkOutReserva").val();
+			
+			$("#acomodacaoReservaList").load(caminhoAbsoluto + "reserva/acomodacao/pesquisar", {dataCheckIn: checkIn, dataCheckOut: checkOut});
+			
+			$("#exibirCheckInReserva").val($("#checkInReserva").val());
+          	$("#exibirCheckOutReserva").val($("#checkOutReserva").val());
+		}
+	}
+	
+	if(step == 2){
+		if(validateStep2() == false ){
+			isStepValid = false;
+			$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+		} else {
+			$('#wizard').smartWizard('hideMessage');
+			$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});
+			var id = $("#acomodacaoReserva").val();
+          	
+			$.ajax({
+				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+				type: "GET",
+				url: caminhoAbsoluto + "reserva/acomodacao/atualizaDados/" + id,
+				success: function(retorno){
+							if (retorno != "") {
+								retorno = retorno.split("],[");
+								$("#exibirNomeReserva").val(retorno[0]);
+								$("#exibirNumeroReserva").val(retorno[1] + " " + " -");
+								$("#exibirValorTotalReserva").val(retorno[4]);
+							} else
+								$("#numero").empty().append("Acomodação não Encontrada");
+						 }
+			});
+		}
+	}
+	
+  	if(step == 3){ // validate step3
+        if(validateStep3() == false ){
+            isStepValid = false;
+          	$('#wizard').smartWizard('setError',{stepnum:step,iserror:true});
+        } else {
+          	$('#wizard').smartWizard('hideMessage');
+          	$('#wizard').smartWizard('setError',{stepnum:step,iserror:false});
+          	$("#exibirResponsavelReserva").val($("#nomeResponsavelReserva").val());
+        }
+  	}
+	return isStepValid;
+}
+
+function validateStep1(){
+	var isValid = true;
+	var un = $('#checkInReserva').val();
+	if (!un && un.length <= 0){ // Validate CheckIn
+		isValid = false;
+		$('#msg_checkIn').html('').show();
+	} else {
+		$('#msg_checkIn').html('').hide();
+	}
+	
+	var pw = $('#checkOutReserva').val();
+	if(!pw && pw.length <= 0){ // validate CheckOut
+		isValid = false;
+		$('#msg_checkOut').html('').show();
+	} else {
+		$('#msg_checkOut').html('').hide();
+	}
+	return isValid;
+}
+
+function validateStep2(){
+	var isValid = true; 
+	var un = $('#acomodacaoReserva').val();
+	if(!un && un.length <= 0){ // Validate Acomodacao
+		isValid = false;
+		$('#msg_acomodacao').html('').show();
+	} else {
+		$('#msg_acomodacao').html('').hide();
+	}
+	return isValid;
+}
+
+function validateStep3(){
+  	var isValid = true;
+	var un = $('#nomeResponsavelReserva').val();
+	if (!un && un.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+
+	var un2 = $('#sexoReserva').val();
+	if (!un2 && un2.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+	
+	var un3 = $('#rgReserva').val();
+	if (!un3 && un3.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+	
+	var un4 = $('#cpfReserva').val();
+	if (!un4 && un4.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+	
+	var un5 = $('#telefoneReserva').val();
+	if (!un5 && un5.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+	
+	var un6 = $('#emailReserva').val();
+	if (!un6 && un6.length <= 0){ // Validate Responsavel
+		isValid = false;
+		$('#msg_responsavel').html('').show();
+	} else {
+		$('#msg_responsavel').html('').hide();
+	}
+  	return isValid;
+}
+
+function maisInfoAcomodacao2 () {
+	var w = $("<div id='" + this.id + "'></div>").appendTo("#container");
+	w.kendoWindow({
+	  	modal: true,
+        position: {
+    		top: 200,
+    		left: 500,
+	  	},
+        resizable: false,
+        visible: false,
+    //    content: url,
+        actions: ["Close"],
+        close: function() {
+			w.data("kendoWindow").destroy();
+        }
+    });
+    w.data("kendoWindow").open();
+}

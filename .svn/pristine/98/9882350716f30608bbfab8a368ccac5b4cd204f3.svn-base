@@ -1,0 +1,154 @@
+// FUNÇÕES JANELA KENDO UI //
+function exibe(url, title, height, width, id) {
+	if (document.getElementById(id) == null) {
+		var w = $("<div id='" + id + "'></div>").appendTo("#container");
+		
+		w.kendoWindow({
+			minHeight: 0,
+			minWidth: 300,
+			maxHeight: 520,
+			pinned: true,
+			width: width,
+			height: height,
+		 	position: {
+				top: 150,
+				left: 480,
+		  	},
+			resizable: false,
+			visible: false,
+			content: url,
+			title: title,
+			actions: ["Minimize", "Close"],
+			close: function() {
+				w.data("kendoWindow").destroy();
+			}
+		});
+		w.data("kendoWindow").open();
+	} else {
+		$("#" + id).data("kendoWindow").toFront();
+		$("#" + id).data("kendoWindow").restore();
+	}
+}
+
+function consultar(url, title, x, width, height, id) {
+	if (document.getElementById(id) == null) {
+		var w = $("<div id='" + id + "'></div>").appendTo("#container");
+		
+		LeftPosition = (screen.width) ? (screen.width-width)/2 : 0;
+		TopPosition = (screen.height) ? (screen.height-height)/2 : 0;
+		
+		w.kendoWindow({
+			modal: true,
+			height: x,
+			width: width,
+			position: {
+				top: TopPosition,
+				left: LeftPosition,
+			},
+			resizable: false,
+			visible: false,
+			content: url,
+			title: title,
+			actions: ["Close"],
+			close: function() {
+				w.data("kendoWindow").destroy();
+			}
+		});
+		w.data("kendoWindow").open();
+	} else {
+		$("#" + id).data("kendoWindow").toFront();
+		$("#" + id).data("kendoWindow").restore();
+	}
+}
+
+function excluir (url, x, width, height, id) {
+	if (document.getElementById(id) == null) {
+		var w = $("<div id='" + id + "'></div>").appendTo("#container");
+		
+		LeftPosition = (screen.width) ? (screen.width-width)/2 : 0;
+		TopPosition = (screen.height) ? (screen.height-height)/2 : 0;
+		
+		w.kendoWindow({
+			modal: true,
+			height: x,
+			width: width,
+			position: {
+				top: TopPosition,
+				left: LeftPosition,
+			},
+			resizable: false,
+			visible: false,
+			content: url,
+			actions: ["Close"],
+			close: function() {
+				w.data("kendoWindow").destroy();
+			}
+		});
+		w.data("kendoWindow").open();
+	} else {
+		$("#" + id).data("kendoWindow").toFront();
+		$("#" + id).data("kendoWindow").restore();
+	}
+}
+
+// FUNÇÕES GRAVAR //
+
+//CLIENTES
+function gravarItemDiaria() {
+ 	$.ajax({
+	contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	type: "POST",
+	url: caminhoAbsoluto + "clientes/itemConsumo/gravar",
+	data: $("#formItemDiaria").serialize(),
+	success: function(retorno) {
+				$("#cadastrarItemDiaria").data("kendoWindow").destroy();
+				$("#cadastrarItemConsumo").data("kendoWindow").destroy();
+				$("#divConsumo").load(caminhoAbsoluto + "clientes/consumo/divLista/${hospedeHospedagem.id}");
+				$("#divResumo").load(caminhoAbsoluto + "clientes/resumoLancamento/divLista/${hospedeHospedagem.id}");
+			 }
+	});
+}
+
+function gravarItemDiversos() {
+ 	$.ajax({
+	contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	type: "POST",
+	url: caminhoAbsoluto + "clientes/itemConsumo/gravar",
+	data: $("#formItemDiversos").serialize(),
+	success: function(retorno) {
+				$("#cadastrarItemDiversos").data("kendoWindow").destroy();
+				$("#cadastrarItemConsumo").data("kendoWindow").destroy();
+				$("#divConsumo").load(caminhoAbsoluto + "clientes/consumo/divLista/${hospedeHospedagem.id}");
+				$("#divResumo").load(caminhoAbsoluto + "clientes/resumoLancamento/divLista/${hospedeHospedagem.id}");
+			 }
+	});
+}
+
+function gravarItemProduto() {
+ 	$.ajax({
+	contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	type: "POST",
+	url: caminhoAbsoluto + "clientes/itemConsumo/gravar",
+	data: $("#formItemProduto").serialize(),
+	success: function(retorno) {
+				$("#cadastrarItemProduto").data("kendoWindow").destroy();
+				$("#cadastrarItemConsumo").data("kendoWindow").destroy();
+				$("#divConsumo").load(caminhoAbsoluto + "clientes/consumo/divLista/${hospedeHospedagem.id}");
+				$("#divResumo").load(caminhoAbsoluto + "clientes/resumoLancamento/divLista/${hospedeHospedagem.id}");
+			 }
+	});
+}
+
+function gravarConsumo() {
+ 	$.ajax({
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		type: "POST",
+		url: caminhoAbsoluto + "clientes/frigobar/consumo/gravar",
+		data: $("#formFrigobarConsumo").serialize(),
+		success: function(retorno) {
+					$("#cadastrarItemAcomodacao").data("kendoWindow").destroy();
+					$("#divItemAcomodacao").load(caminhoAbsoluto + "hotel/itemAcomodacao/divLista/${item.acomodacao.id}");
+					$("#listaProduto").load(caminhoAbsoluto + "estoque/produto/lista");
+				 }
+	});
+}

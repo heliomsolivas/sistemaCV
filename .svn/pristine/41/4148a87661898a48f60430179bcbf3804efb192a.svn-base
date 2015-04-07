@@ -1,0 +1,153 @@
+package clientes.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "CLIENTES_ITEMCONSUMO")
+@Table(name = "CLIENTES_ITEMCONSUMO")
+public class ItemConsumo implements Serializable {
+
+	private static final long serialVersionUID = -7490984665066482184L;
+
+	private Long id;
+	private Categoria categoria;
+	private Consumo consumo;
+	private Calendar data;
+	private String acomodacao;
+	private String produto;
+	private String diversos;
+	private String localConsumo;
+	private Integer quantidade;
+	private Double valorUnitario;
+	private Double valorTotal;	
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public Categoria getCategoria() {
+		return categoria;
+	}
+	
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_consumo", nullable = true)
+	public Consumo getConsumo() {
+		return consumo;
+	}
+
+	public void setConsumo(Consumo consumo) {
+		this.consumo = consumo;
+	}
+	
+	@Column(name = "data", nullable = true)
+	public Calendar getData() {
+		return data;
+	}
+
+	public void setData(Calendar data) {
+		this.data = data;
+	}	
+	
+	@Column(name = "acomodacao", nullable = true)
+	public String getAcomodacao() {
+		return acomodacao;
+	}
+
+	public void setAcomodacao(String acomodacao) {
+		this.acomodacao = acomodacao;
+	}
+	
+	@Column(name = "produto", nullable = true)
+	public String getProduto() {
+		return produto;
+	}
+	
+	public void setProduto(String produto) {
+		this.produto = produto;
+	}
+	
+	@Column(name = "diversos", nullable = true)
+	public String getDiversos() {
+		return diversos;
+	}
+
+	public void setDiversos(String diversos) {
+		this.diversos = diversos;
+	}
+
+	@Column(name = "localConsumo", nullable = true)
+	public String getLocalConsumo() {
+		return localConsumo;
+	}
+
+	public void setLocalConsumo(String localConsumo) {
+		this.localConsumo = localConsumo;
+	}
+
+	@Column(name = "quantidade", nullable = true)
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+	
+	@Column(name = "valorUnitario", nullable = true)
+	public Double getValorUnitario() {
+		return valorUnitario;
+	}
+
+	@Convert(Double.class)
+	public void setValorUnitario(Double valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	@Column(name = "valorTotal", nullable = true)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	@Convert(Double.class)
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	@Transient
+	public String getValorUnitarioString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorUnitario);
+	}
+	
+	@Transient
+	public String getValorTotalString() {
+		DecimalFormat formatador = new DecimalFormat("#,##0.00");
+		return formatador.format(valorTotal);
+	}
+}

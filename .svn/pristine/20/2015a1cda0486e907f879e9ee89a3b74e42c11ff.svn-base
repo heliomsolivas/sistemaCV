@@ -1,0 +1,68 @@
+package administrativo.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import administrativo.bean.Usuario;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoUsuario extends Dao<Usuario> {
+
+	public DaoUsuario(Session session) {
+		super(session, Usuario.class);
+	}
+
+	public Usuario buscar(String username) {
+		Usuario usuario = null;
+		String consulta = "FROM ADMINISTRATIVO_USUARIO WHERE username = :username AND ativo = true";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("username", username);
+
+		if (query.list().size() != 0 )
+			usuario = (Usuario) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return usuario;
+	}
+	
+	public Collection<Usuario> pesquisarUsuario (String nome) {
+		Collection<Usuario> usuarioList = new ArrayList<Usuario>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM ADMINISTRATIVO_USUARIO WHERE 1 = 1";
+
+		if (nome != null) {
+			consulta += " AND nome LIKE :nome ORDER BY id ASC";
+			parameters.put("nome", "%" + nome + "%");
+		} else
+			consulta += " ORDER BY id ASC";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Usuario item = (Usuario) query.list().get(x);
+			usuarioList.add(item);
+		}
+
+		return usuarioList;
+	}
+
+}

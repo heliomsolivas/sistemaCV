@@ -1,0 +1,186 @@
+package financeiro.controller;
+
+ 
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import financeiro.bean.ContaCaixa;
+import financeiro.bean.ContaPagar;
+import financeiro.bean.ContaReceber;
+import financeiro.bean.Movimentacao;
+import financeiro.dao.DaoContaBancaria;
+import financeiro.dao.DaoContaPagar;
+import financeiro.dao.DaoContaReceber;
+import financeiro.dao.DaoMovimentacao;
+
+// @LogonRequired
+// @PerfilRequired
+@Resource
+public class FinanceiroController {
+
+     
+    private final Result result;
+    private final DaoContaBancaria daoContaBancaria;
+    private final DaoContaPagar daoContaPagar;
+    private final DaoContaReceber daoContaReceber;
+    private final DaoMovimentacao daoMovimentacao;
+
+    public FinanceiroController(Result result, DaoContaBancaria	daoContaBancaria, DaoContaPagar daoContaPagar, DaoContaReceber daoContaReceber, DaoMovimentacao daoMovimentacao) {
+    	this.daoContaBancaria = daoContaBancaria;
+		this.daoContaPagar = daoContaPagar;
+		this.daoContaReceber = daoContaReceber;
+		this.daoMovimentacao = daoMovimentacao;
+		this.result = result;
+    }
+
+    // cadastro de conta bancária
+    @Post("/financeiro/gravar/contaBancaria")
+    public void salvarContaBancaria(ContaCaixa contaBancaria) {  
+     daoContaBancaria.atualizar(contaBancaria);
+     result.redirectTo(this).formularioContaBancaria();
+    }
+
+    @Path("/financeiro/contaBancaria/novo")
+    public void formularioContaBancaria() {
+    	// chama o form cadastrar
+    }
+
+    @Path("/financeiro/contaBancaria/{id}")
+    public void formularioContaBancaria(Long id) {
+	// chama o form cadastrar para edicao
+    	this.result.include("contaBancaria", daoContaBancaria.buscar(id));  
+    }
+   
+    @Post
+    @Path("/financeiro/contaBancaria/remove/{id}")
+    public void remove(ContaCaixa contaBancaria, Long id) {
+	contaBancaria = daoContaBancaria.buscar(id);
+	daoContaBancaria.remover(contaBancaria);
+	result.redirectTo(this).listaContaBancaria();
+    }
+    
+    @Path("/financeiro/contaBancaria/lista")
+    public void listaContaBancaria() {
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    }
+    
+    
+    /// cad contas a pagar
+    
+    @Post("/financeiro/gravar/contaPagar")
+    public void salvarContaPagar(ContaPagar contaPagar) {  
+     daoContaPagar.atualizar(contaPagar);
+     result.redirectTo(this).listaContaPagar();
+    }
+    
+    
+    @Path("/financeiro/contaPagar/lista")
+    public void listaContaPagar() {
+    	result.include("contaPagarList", daoContaPagar.listarTudo());
+    }
+    
+    @Path("/financeiro/contaPagar/novo")
+    public void formularioContaPagar() {
+	// chama o form cadastrar
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("especieList", daoEspecie.listarTudo()); ALTERAR PARA FORMA PAGAMENTO
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    }
+    
+    @Path("/financeiro/contaPagar/{id}")
+    public void formularioContaPagar(Long id) {
+	// chama o form cadastrar para edicao
+    	this.result.include("contaPagar", daoContaPagar.buscar(id));  
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("especieList", daoEspecie.listarTudo()); ALTERAR PARA FORMA PAGAMENTO
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    }
+
+    @Post
+    @Path("/financeiro/contaPagar/remove/{id}")
+    public void remove(ContaPagar contaPagar, Long id) {
+		contaPagar = daoContaPagar.buscar(id);
+		daoContaPagar.remover(contaPagar);
+		result.redirectTo(this).listaContaPagar();
+    }
+    
+  /// cad contas a receber
+    
+    @Post("/financeiro/gravar/contaReceber")
+    public void salvarContaReceber(ContaReceber contaReceber) {  
+     daoContaReceber.atualizar(contaReceber);
+     result.redirectTo(this).listaContaReceber();
+    }
+    
+    
+    @Path("/financeiro/contaReceber/lista")
+    public void listaContaReceber() {
+    	result.include("contaReceberList", daoContaReceber.listarTudo());
+    }
+    
+    @Path("/financeiro/contaReceber/novo")
+    public void formularioContaReceber() {
+	// chama o form cadastrar
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("especieList", daoEspecie.listarTudo()); ALTERAR PARA FORMA PAGAMENTO
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    }
+    
+    @Path("/financeiro/contaReceber/{id}")
+    public void formularioContaReceber(Long id) {
+	// chama o form cadastrar para edicao
+    	this.result.include("contaReceber", daoContaReceber.buscar(id));  
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("especieList", daoEspecie.listarTudo()); ALTERAR PARA FORMA PAGAMENTO
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    }
+
+    @Post
+    @Path("/financeiro/contaReceber/remove/{id}")
+    public void remove(ContaReceber contaReceber, Long id) {
+		contaReceber = daoContaReceber.buscar(id);
+		daoContaReceber.remover(contaReceber);
+		result.redirectTo(this).listaContaReceber();
+    }
+    
+    /// cad movimentacao
+    @Post("/financeiro/gravar/movimentacao")
+    public void salvarMovimentacao(Movimentacao movimentacao) {  
+     daoMovimentacao.atualizar(movimentacao);
+     result.redirectTo(this).listaMovimentacao();
+    }
+    
+    
+    @Path("/financeiro/movimentacao/lista")
+    public void listaMovimentacao() {
+    	result.include("movimentacaoList", daoMovimentacao.listarTudo());
+    }
+    
+    @Path("/financeiro/movimentacao/novo")
+    public void formularioMovimentacao() {
+	// chama o form cadastrar
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    	//result.include("tipoMovimentacaoList", daoTipoMovimentacao.listarTudo()); ALTERAR PARA TIPO MOVIMENTACAO
+    	 
+    }
+    
+    @Path("/financeiro/movimentacao/{id}")
+    public void formularioMovimentacao(Long id) {
+	// chama o form cadastrar para edicao
+    	this.result.include("movimentacao", daoMovimentacao.buscar(id));  
+    	result.include("contaBancariaList", daoContaBancaria.listarTudo());
+    	//result.include("categoriaList", daoCategoria.listarTudo()); ALTERAR PARA TIPO DOCUMENTO
+    	//result.include("tipoMovimentacaoList", daoTipoMovimentacao.listarTudo()); ALTERAR PARA TIPO MOVIMENTACAO
+    }
+
+    @Post
+    @Path("/financeiro/movimentacao/remove/{id}")
+    public void remove(Movimentacao movimentacao, Long id) {
+		movimentacao = daoMovimentacao.buscar(id);
+		daoMovimentacao.remover(movimentacao);
+		result.redirectTo(this).listaMovimentacao();
+    }
+   
+}

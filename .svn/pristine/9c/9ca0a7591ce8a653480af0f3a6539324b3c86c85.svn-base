@@ -1,0 +1,125 @@
+package clientes.controller;
+
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Blowfish;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.bean.Acomodacao;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import administrativo.dao.DaoPerfil;
+import administrativo.dao.DaoUsuario;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.core.Localization;
+import clientes.bean.Hospedagem;
+import clientes.bean.Hospede;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospede;
+import clientes.dao.DaoHospedeHospedagem;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("clientes/")
+public class ClientesController {
+	
+	private final Blowfish blowfish;
+	private final DaoPerfil daoPerfil;
+	private final DaoHotel daoHotel;
+	private final DaoHospede daoHospede;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoUsuario daoUsuario;
+	private final DaoAcomodacao daoAcomodacao;
+	private final Erro erro;
+	private final Localization localization;
+	private final Result result;
+	private final UserSession userSession; 
+	
+	
+	public ClientesController(Blowfish blowfish, DaoPerfil daoPerfil, DaoHotel daoHotel, DaoHospede daoHospede, DaoHospedeHospedagem daoHospedeHospedagem, 
+			DaoHospedagem daoHospedagem, DaoUsuario daoUsuario, DaoAcomodacao daoAcomodacao, Erro erro, Localization localization, Result result, UserSession userSession) {
+			this.blowfish = blowfish;
+			this.daoPerfil = daoPerfil;
+			this.daoHotel = daoHotel;
+			this.daoHospede = daoHospede;
+			this.daoHospedeHospedagem = daoHospedeHospedagem;
+			this.daoHospedagem = daoHospedagem;
+			this.daoUsuario = daoUsuario;
+			this.daoAcomodacao = daoAcomodacao;
+			this.erro = erro;
+			this.localization = localization;
+			this.result = result;
+			this.userSession = userSession;
+		}
+	
+	@Path("cadastrarHospede")
+	public void formHospede() {
+	}
+	
+	@Path("cadastrarHospedagem")
+	public void formHospedagem() {
+		result.include("acomodacaoList", daoAcomodacao.listarAtivos());
+	}
+	
+	@Path("exibirInfoAcomodacao/{id}")
+	public void exibirInfoAcomodacao (Long id) {
+		result.include("acomodacao", daoAcomodacao.buscar(id));
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscaHospedagemAcomodacao(id)); 
+	}
+	
+	@Post("gravar")
+	public void gravar(Hospede hospede) {
+		try {
+			hospede.setHotel(daoHotel.busca());
+			hospede.setDataCadastro(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR")));
+			daoHospede.atualizar(hospede);
+			result.include("mensagem", "usuario.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarHospedagem")
+	public void gravarHospedagem (Hospedagem hospedagem) {
+		try {
+			//daoHospedeHospedagem.adicionarHospedeHospedagem(hospedagem.getId());
+			daoHospedagem.atualizar(hospedagem);
+			result.include("mensagem", "usuario.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "usuario.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("atualizaDadosAcomodacao")
+	public void atualizaDadosAcomodacao(Long id, HttpServletResponse response) throws ServletException, IOException {
+		Acomodacao acomodacao = daoAcomodacao.buscar(id);
+		PrintWriter out = response.getWriter();
+
+		if (acomodacao != null)
+			out.print(acomodacao.getNumero() + "],[" + acomodacao.getMaximoHospedes() + "],[" + acomodacao.getNumeroCamas() + "],[" + acomodacao.getValorDiariaString());
+		
+		result.nothing();
+	}
+
+
+}

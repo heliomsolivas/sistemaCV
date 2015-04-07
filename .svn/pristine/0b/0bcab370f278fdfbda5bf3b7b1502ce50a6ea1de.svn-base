@@ -1,0 +1,53 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.ItemAcomodacao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoItemAcomodacao extends Dao<ItemAcomodacao>{
+	
+	public DaoItemAcomodacao (Session session) {
+		super(session, ItemAcomodacao.class);
+	}
+	
+	public Collection<ItemAcomodacao> listaItemAcomodacao (Long idAcomodacao) {
+		Collection<ItemAcomodacao> itemList = new ArrayList<ItemAcomodacao>();
+
+		String consulta = "FROM HOTEL_ITEMACOMODACAO WHERE fk_acomodacao = :idAcomodacao";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idAcomodacao", idAcomodacao);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItemAcomodacao item = (ItemAcomodacao) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+	
+	public ItemAcomodacao buscaItemAcomodacaoProduto (Long idAcomodacao, Long idProduto) {
+		ItemAcomodacao item = null;
+
+		String consulta = "FROM HOTEL_ITEMACOMODACAO WHERE fk_acomodacao = :idAcomodacao AND fk_produto = :idProduto";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idAcomodacao", idAcomodacao);
+		query.setParameter("idProduto", idProduto);
+
+		if (query.list().size() != 0)
+			item = (ItemAcomodacao) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return item;
+	}
+}

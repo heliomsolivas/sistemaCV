@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/smartpaginator.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/smartpaginator.js"/>"></script>
+		
+		<script type="text/javascript">
+ 		 	$(document).ready(function () {
+	 		 	$("#reservaAberta").hide();
+	 		 	
+	 		 	$("#paginatorDivAcomodacao").smartpaginator({
+					totalrecords: ${fn:length(acomodacaoList)},
+					recordsperpage: 4,
+					length: 3,
+					datacontainer: 'tabelaDivAcomodacao',
+					dataelement: 'tr',
+					initval: 0,
+					next: 'Proximo',
+					prev: 'Anterior',
+					first: 'Primeiro',
+					last: 'Último',
+					theme: 'green',
+					controlsalways: true
+				});
+        	});
+			
+ 		 	function checkOut(idAcomodacao, idHospedeHospedagem) {
+				$.confirm({
+		            'title': '<f:message key="checkOut"/>',
+		            'message': '<f:message key="mensagem.checkOut.hospedagem"/>',
+		            'buttons': {
+		                'Sim': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#conteudo").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/clientes/hospedagem/checkOut"/>",
+		    						data: {idAcomodacao: idAcomodacao, idHospedeHospedagem: idHospedeHospedagem},
+		    						success: function(retorno) {
+				    							$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>");
+				    							$("#listaHospedagem").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+			 		 							$("#listaHospedagem").load("<c:url value="/clientes/hospedagem/lista"/>");
+			 		 							$("#listaAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+			 		 							$("#listaAcomodacao").load("<c:url value="/hotel/acomodacao/lista"/>");
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.item"/>', '<f:message key="erro"/>');
+  								 				$("#conteudo").load("<c:url value="/sistema/acomodacao/pesquisar"/>");
+					                		}
+		    					});
+		                    }
+		                },
+		                'Não': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+ 		 	
+	        function abrirAba() {
+			 	$("#reservaFechada").hide();
+			 	$("#reservaAberta").show();
+	    	}
+	    	
+	    	function fecharAba() {
+			 	$("#reservaAberta").hide();
+			 	$("#reservaFechada").show();
+	    	}
+			
+	    	window.setInterval(function(){
+	    		$("#alertaReserva").fadeOut();
+	    		$("#alertaReserva").fadeIn();
+	    	},1);
+		</script>
+		<style type="text/css">
+			.pager .btn	{
+			    font-weight: bold !important;
+			    color: #999 !important;
+			}
+			.pager.green .btn {
+			    border: 0px solid #ffffff !important;
+				background-color: transparent !important;
+			}
+			.pager .disabled {
+			    color: #999 !important;
+			}
+			.pager span {
+			   	color: #999 !important;
+			}
+		</style>
+	</head>
+	<body class="divConteudo">
+		<div class="divListaAcomodacao">
+			<table id="tabelaDivAcomodacao" border="0" cellspacing="0" cellpadding="0">
+				<c:forEach items="${hospedeHospedagemList}" var="hospedeHospedagem">
+					<c:choose>
+						<c:when test="${hospedeHospedagem.ativo == true}">
+							<tr class="caixa">
+								<td id="divCaixa">
+									<input type="hidden" value="${hospedeHospedagem.id}" name="idHospedeHospedagem"/>
+									<input type="hidden" value="${hospedeHospedagem.hospedagem.acomodacao.id}" name="idAcomodacao"/>
+									<div style="float: left; width: 25%; height: 100%">
+										<span class="spanNumeroAcomodacao">
+									 		${hospedeHospedagem.hospedagem.acomodacao.numero}
+									 	</span>
+										<img class="linkSemBorda" src="<c:url value="/imagens/iconePorta.png"/>" style="float: left;"/>
+									</div>
+									<div class="divConteudoCaixa">
+										<div class="conteudoCaixa">
+									 		<span class="spanNomeAcomodacao">
+									 			${hospedeHospedagem.hospedagem.acomodacao.nome}
+									 		</span>
+									 		<span class="spanCheckin">
+									 			<f:message key="in"/>
+												<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm"/>
+									 		</span>
+									 		<span class="spanCheckout">
+									 			<f:message key="out"/>
+												<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm"/>
+									 		</span>
+									 		<span class="spanLinhaPontilhada">
+									 			---------------------
+									 		</span>
+									 		<span class="spanIcones">
+									 			<a href="#" title="<f:message key="consultar.hospedagem"/>" onclick="consultar('<c:url value="/clientes/hospedagem/consultar/${hospedeHospedagem.id}"/>', '<f:message key="informacoes.hospedagem"/>', '655px', '920', '820', 'consultarHospedagem');">
+									 				<span class="icon icon-compose icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="conferencia.consumo"/>" onclick="consultar('<c:url value="/clientes/conferenciaConsumo/consultar/${hospedeHospedagem.hospedagem.acomodacao.id}"/>', '<f:message key="conferencia.consumo"/>', '400px', '815', '615', 'consultarConferenciaConsumo');">
+									 				<span class="icon icon-cart icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="consultar.frigobar"/>" onclick="consultar('<c:url value="/hotel/acomodacao/frigobar/consultar/${hospedeHospedagem.hospedagem.acomodacao.id}"/>', '<f:message key="consultar.frigobar"/>', '500px', '515', '615', 'cadastrarAcomodacaoFrigobar');">
+									 				<span class="icon icon-inbox icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="consultar.acomodacao"/>" onclick="consultar('<c:url value="/hotel/acomodacao/consultar/${hospedeHospedagem.hospedagem.acomodacao.id}"/>', '<f:message key="informacoes.acomodacao"/>', '650px', '820', '815', 'consultarAcomodacao');">								 			
+						   							<span class="icon icon-tag icon-darkgray"></span>
+						   						</a>
+						   						<a href="#" title="<f:message key="efetuar.checkout"/>" onclick="checkOut(${hospedeHospedagem.hospedagem.acomodacao.id}, ${hospedeHospedagem.id})">
+							   						<span class="icon icon-cancel icon-darkgray"></span>
+							   					</a>
+									 		</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:when>
+					</c:choose>
+				</c:forEach>
+				<c:forEach items="${acomodacaoList}" var="acomodacao">
+					<c:choose>
+						<c:when test="${acomodacao.status == 'LIVRE'}">
+							<tr style="float: left; width: 260px; height: 100px;">
+								<td id="divCaixa">
+									<div style="float: left; width: 25%; height: 100%">
+										<span class="spanNumeroAcomodacao">
+									 		${acomodacao.numero}
+									 	</span>
+										<img class="linkSemBorda" src="<c:url value="/imagens/iconePorta.png"/>" style="float: left;"/>
+									</div>
+									<div class="divConteudoCaixa">
+										<div class="conteudoCaixa">
+									 		<span class="spanNomeAcomodacao">
+									 			${acomodacao.nome}
+									 		</span>
+									 		<span class="spanCheckinLivre">
+									 			<f:message key="in"/>
+									 		</span>
+									 		<span class="spanCheckoutLivre">
+									 			<f:message key="out"/>
+									 		</span>
+									 		<span class="spanLinhaPontilhada">
+									 			---------------------
+									 		</span>
+									 		<span class="spanIcones">
+									 			<a href="#" title="<f:message key="efetuar.hospedagem"/>" onclick="exibe('<c:url value="/clientes/hospedagem/cadastrar/${acomodacao.id}"/>', '<f:message key="cadastrar.hospedagem"/>', 'auto', 'auto', 'cadastrarHospedagem');">
+						   							<span class="icon icon-check icon-darkgray"></span>
+						   						</a>
+									 			<a href="#" title="<f:message key="consultar.frigobar"/>" onclick="consultar('<c:url value="/hotel/acomodacao/frigobar/consultar/${acomodacao.id}"/>', '<f:message key="consultar.frigobar"/>', '500px', '515', '615', 'cadastrarAcomodacaoFrigobar');">
+									 				<span class="icon icon-inbox icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="consultar.acomodacao"/>" onclick="consultar('<c:url value="/hotel/acomodacao/consultar/${acomodacao.id}"/>', '<f:message key="informacoes.acomodacao"/>', '650px', '820', '815', 'consultarAcomodacao');">
+									 				<span class="icon icon-tag icon-darkgray"></span>
+									 			</a>
+									 		</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:when>
+						<c:when test="${acomodacao.status == 'MANUTENCAO'}">
+							<tr style="float: left; width: 260px; height: 100px;">
+								<td id="divCaixa">
+									<div style="float: left; width: 25%; height: 100%">
+										<span class="spanNumeroAcomodacao">
+									 		${acomodacao.numero}
+									 	</span>
+										<img class="linkSemBorda" src="<c:url value="/imagens/iconePorta.png"/>" style="float: left;"/>
+									</div>
+									<div class="divConteudoCaixa">
+										<div class="conteudoCaixa">
+									 		<span class="spanNomeAcomodacao">
+									 			${acomodacao.nome}
+									 		</span>
+									 		<span class="spanStatusAcomodacao">
+									 			<f:message key="manutencao"/>
+									 		</span>
+									 		<span class="spanLinhaPontilhada">
+									 			---------------------
+									 		</span>
+									 		<span class="spanIcones">
+									 			<a href="#" title="<f:message key="consultar.frigobar"/>" onclick="consultar('<c:url value="/hotel/acomodacao/frigobar/consultar/${acomodacao.id}"/>', '<f:message key="consultar.frigobar"/>', '500px', '515', '615', 'cadastrarAcomodacaoFrigobar');">
+									 				<span class="icon icon-inbox icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="consultar.acomodacao"/>" onclick="consultar('<c:url value="/hotel/acomodacao/consultar/${acomodacao.id}"/>', '<f:message key="informacoes.acomodacao"/>', '650px', '820', '815', 'consultarAcomodacao');">
+									 				<span class="icon icon-tag icon-darkgray"></span>
+									 			</a>
+									 		</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:when>
+						<c:when test="${acomodacao.status == 'LIMPEZA'}">
+							<tr style="float: left; width: 260px; height: 100px;">
+								<td id="divCaixa">
+									<div style="float: left; width: 25%; height: 100%">
+										<span class="spanNumeroAcomodacao">
+									 		${acomodacao.numero}
+									 	</span>
+										<img class="linkSemBorda" src="<c:url value="/imagens/iconePorta.png"/>" style="float: left;"/>
+									</div>
+									<div class="divConteudoCaixa">
+										<div class="conteudoCaixa">
+									 		<span class="spanNomeAcomodacao">
+									 			${acomodacao.nome}
+									 		</span>
+									 		<span class="spanStatusAcomodacao">
+									 			<f:message key="limpeza"/>
+									 		</span>
+									 		<span class="spanLinhaPontilhada">
+									 			---------------------
+									 		</span>
+									 		<span class="spanIcones">
+									 			<a href="#" title="<f:message key="consultar.frigobar"/>" onclick="consultar('<c:url value="/hotel/acomodacao/frigobar/consultar/${acomodacao.id}"/>', '<f:message key="consultar.frigobar"/>', '500px', '515', '615', 'cadastrarAcomodacaoFrigobar');">
+									 				<span class="icon icon-inbox icon-darkgray"></span>
+									 			</a>
+									 			<a href="#" title="<f:message key="consultar.acomodacao"/>" onclick="consultar('<c:url value="/hotel/acomodacao/consultar/${acomodacao.id}"/>', '<f:message key="informacoes.acomodacao"/>o', '650px', '820', '815', 'consultarAcomodacao');">
+									 				<span class="icon icon-tag icon-darkgray"></span>
+									 			</a>
+									 		</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:when>
+					</c:choose>
+				</c:forEach>
+			</table>
+		</div>
+		<div id="paginatorDivAcomodacao"></div>
+		<c:choose>
+			<c:when test="${!empty reservaList}">
+				<div id="reservaFechada">
+					<a href="#" onclick="abrirAba();">
+						<h3>
+							<span id="alertaReserva" class="icon icon-book icon-darkgray"></span> <f:message key="reservas"/></div>
+						</h3>
+					</a>
+				</div>
+			</c:when>
+		</c:choose>
+		<div id="reservaAberta">
+			<a href="#" onclick="fecharAba();">
+				<h3>
+					<span class="icon icon-book icon-darkgray"></span> <f:message key="reservas"/>
+				</h3>
+			</a>
+			<div style="width: 100%; max-height: 570px; overflow-x: auto;">
+				<c:forEach items="${reservaList}" var="reserva" varStatus="contador">
+					<div id="boxReserva">
+						<a href="#" onclick="consultar('<c:url value="/reserva/sistema/consultar/${reserva.id}"/>', '<f:message key="informacoes.reserva"/>', '490px', '615', '650', 'consultarReserva');">
+							<img class="linkSemBorda" src="<c:url value="/imagens/reserva.png"/>" style="float: left; margin-left: 10px; margin-top: 2px; margin-right: 0px;"/>
+							<p>
+								<b> ${reserva.codigo} </b> - ${reserva.responsavel.nome}
+							</p>
+							<p>
+								<b> <f:message key="situacao"/> </b> <i> ${reserva.situacao.nome} </i>
+							</p>
+						</a>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+	</body>
+</html>

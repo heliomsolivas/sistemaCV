@@ -1,0 +1,36 @@
+package clientes.dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import generic.dao.Dao;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.ItemConsumo;
+
+@Component
+public class DaoItemConsumo extends Dao<ItemConsumo>{
+
+	public DaoItemConsumo(Session session) {
+		super(session, ItemConsumo.class);
+	}
+	
+	public Collection<ItemConsumo> listaItemConsumo (Long idConsumo) {
+		Collection<ItemConsumo> itemList = new ArrayList<ItemConsumo>();
+
+		String consulta = "FROM CLIENTES_ITEMCONSUMO WHERE fk_consumo = :idConsumo";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idConsumo", idConsumo);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			ItemConsumo item = (ItemConsumo) query.list().get(x);
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+}

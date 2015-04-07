@@ -1,0 +1,59 @@
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+select {
+ 	height: 2.17em;
+	padding: 3px;	
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #C0C0C0;
+	background-color: #FFFFFF;	
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+	-moz-box-sizing: border-box;
+}
+A:link {
+	text-decoration:none;
+	color: #000;
+}
+A:visited {
+	text-decoration:none;
+	color: #000;
+}
+A:active {
+	text-decoration:none;
+	color: #000;
+}
+A:hover {
+	text-decoration:none;
+	color: #000;
+}
+.tabelaConsumo {
+	float: left; 
+	width: 880px; 
+	font-family: arial;
+	margin-left: 15px;
+}
+.verticalLine {
+	float: left;   
+    height: 330px;
+    margin-top: 5px;
+    border-left: 1px solid #000;
+    box-shadow: 0 2px 1px 0 rgba(0,0,0,0.3);
+    -moz-box-shadow: 0 2px 1px 0 rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0 2px 1px 0 rgba(0,0,0,0.3);
+}
+.textoMaiusculo {
+	text-transform: uppercase;
+}
+.total {
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
+    width: 360px;
+}
+.titulo {
+	font-weight: bold;
+}

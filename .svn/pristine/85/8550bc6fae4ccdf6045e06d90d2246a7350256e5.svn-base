@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="../css/tablesorter.css"/>">
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.tablesorter.all.js"/>"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaContaPagar").tablesorter({
+					headers: {4: {sorter: false} }
+				})
+				.tablesorterPager({
+					container: $("#paginacaoContaPagar"),
+					positionFixed: false, 
+					size: 9
+				})
+				.tablesorterFilter({
+					size: 9,
+					filterColumns: ${fn:length(contaPagarList)},
+					filterCaseSensitive: true
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista">
+			<table class="tabela" id="tabelaContaPagar">
+				<thead>
+					<tr style="height: 25px;">
+						<th style="width: 240px;"><f:message key="titulo.lista.documento"/></th>						
+						<th style="width: 105px;"><f:message key="titulo.lista.data.vencimento"/></th>
+						<th style="width: 105px;"><f:message key="titulo.lista.data.pagamento"/></th>
+						<th style="width: 120px;"><f:message key="titulo.lista.valor.total"/></th>
+						<th style="width: 70px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${!empty contaPagarList}">
+							<c:forEach items="${contaPagarList}" var="contaPagar">						
+								<tr style="height: 35px;">
+									<td style="width: 240px; text-align:center;">${contaPagar.numeroDocumento} - ${contaPagar.tipoDocumento.nome}</td>
+									<td style="width: 100px; text-align:center;"><f:formatDate value="${contaPagar.dataVencimento.time}" pattern="dd/MM/yyyy"/></td>
+									<td style="width: 100px; text-align:center;"><f:formatDate value="${contaPagar.dataPagamento.time}" pattern="dd/MM/yyyy"/></td>
+									<td style="width: 120px; text-align:center;">${contaPagar.valorTotalString}</td>
+									<td style="width: 70px; text-align:center;">
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="consultar('<c:url value="/financeiro/contaPagar/consultar/${contaPagar.id}"/>', 'Informações da Conta a Pagar', '470px', '615', '615', 'consultarContaPagar');">
+											<span class="k-icon k-edit"></span>
+										</a>
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px;" onclick="excluir('<c:url value="/financeiro/contaPagar/remover/${contaPagar.id}"/>', '105px', '400', '400', 'removerContaPagar');">
+											<span class="k-icon k-delete"></span>
+										</a>
+									</td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr class="nenhumItem">
+								<td colspan="5"><f:message key="mensagem.nenhum.item.encontrado"/></td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+		<div id="paginacaoContaPagar" class="pager" style="margin-left: 180px;">
+			<div class="first"></div>
+			<div class="prev"></div>
+			<input type="text" class="pagedisplay"/>
+			<div class="next"></div>
+			<div class="last"></div>
+		</div>
+	</body>
+</html>

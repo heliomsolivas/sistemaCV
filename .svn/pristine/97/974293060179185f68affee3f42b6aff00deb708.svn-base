@@ -1,0 +1,27 @@
+package hotel.bean;
+
+public class Acomodacao {
+
+	private Long id;
+	private Hotel hotel;
+	private TipoAcomodacao tipo;
+	private String numero;
+	private String nome;
+	private String observacoes;
+	private Integer maximoHospedes;
+	private Integer numeroCamas;
+	private Boolean arCondicionado;
+	private Boolean camaBox;
+	private Boolean cofre;
+	private Boolean dvd;
+	private Boolean fogao;
+	private Boolean frigobar;
+	private Boolean microondas;
+	private Boolean secadorCabelo;
+	private Boolean tvTubo;
+	private Boolean tvLCD;
+	private Boolean utensiliosCozinha;
+	private Boolean ventilador;
+	private Double valorDiaria;
+
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/displaytag.css"/>">	
+	</head>
+	<style scoped>
+		.textoMaiusculo{
+			text-transform: uppercase;
+		}
+		.titulo{
+			font-weight: bold;
+		}
+	</style>
+	<body class="divConteudo">
+		<table border="0" cellspacing="0" cellpadding="0" style="width: 900px;">
+			<tr valign="bottom" style="height: 0px;">
+				<td rowspan="15" style="width: 15px;"></td>
+				<td colspan="9" style="text-align: right;"></td>
+				<td rowspan="15" style="width: 15px;"></td>
+			</tr>
+			<tr style="height: 20px;">
+				<td class="titulo" style="width: 90px;">
+					Hospedagem:
+				</td>
+				<td colspan="4" class="textoMaiusculo" style="width: 500px;">
+					
+					${hospedeHospedagem.hospedagem.codigo}
+				</td>
+				<td class="titulo" style="width: 100px;">
+					Reserva:
+				</td>
+				<td colspan="3" class="textoMaiusculo" style="width: 200px;">
+					${hospedeHospedagem.hospedagem.reserva.codigo}
+				</td>
+			</tr>
+			<tr style="height: 20px;">
+				<td class="titulo" style="width: 90px;">
+					Acomodação:
+				</td>
+				<td colspan="4" class="textoMaiusculo" style="width: 500px;">
+					${hospedeHospedagem.hospedagem.acomodacao.numero} - ${hospedeHospedagem.hospedagem.acomodacao.nome}
+				</td>
+				<td class="titulo" style="width: 100px;">
+					Data:
+				</td>
+				<td colspan="3" class="textoMaiusculo" style="width: 200px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.reserva.dataReserva.time}" pattern="dd/MM/yyyy HH:mm:ss"/>					
+				</td>
+			</tr>
+			<tr style="height: 20px;">
+				<td class="titulo" style="width: 90px;">
+					Hóspede:
+				</td>
+				<td colspan="4" class="textoMaiusculo" style="width: 500px;">
+					${hospedeHospedagem.hospede.codigo} - ${hospedeHospedagem.hospede.nome}
+				</td>
+				<td class="titulo" style="width: 100px;">
+					Check In:
+				</td>
+				<td colspan="3" class="textoMaiusculo" style="width: 200px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckIn.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</td>
+			</tr>
+			<tr style="height: 20px;">
+				<td class="titulo" style="width: 90px;">
+					Situação:
+				</td>
+				<td colspan="4" class="textoMaiusculo" style="width: 500px;">
+					<c:choose>
+						<c:when test="${hospedeHospedagem.ativo == true}">
+							Ativa
+						</c:when>
+						<c:otherwise>
+							Desativada
+						</c:otherwise>
+					</c:choose>		
+				</td>
+				<td class="titulo" style="width: 100px;">
+					Check Out*:
+				</td>
+				<td colspan="3" class="textoMaiusculo" style="width: 200px;">
+					<f:formatDate value="${hospedeHospedagem.hospedagem.dataCheckOut.time}" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</td>
+			</tr>				
+			<tr valign="bottom" style="height: 10px;">
+				<td colspan="9" style="width: 870px;">
+		    		<hr width="870" color="black" size="1" style="margin-left: 0px;">
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="9" style="width: 870px; text-align: right;">
+					<button type="button" class="k-button" onclick="consultar('<c:url value="/clientes/exibirInfoHospedagem/${hospedeHospedagem.id}"/>', '', '530px', '615', '730', 'exibirInfoHospedagem');">
+						<span class="k-icon k-i-pencil"></span> Alterar
+					</button>
+					<button type="button" class="k-button" onclick="consultar('<c:url value="/clientes/cadastrarItemConsumo/${hospedeHospedagem.hospedagem.id}"/>', 'Selecione uma Categoria', 'auto', '310', '400', 'cadastrarItemCompra');">
+						<span class="k-icon k-i-plus"></span> Cadastrar
+					</button>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

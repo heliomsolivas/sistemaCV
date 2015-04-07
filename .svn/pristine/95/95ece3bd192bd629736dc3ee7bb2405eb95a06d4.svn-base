@@ -1,0 +1,33 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.Hotel;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoHotel extends Dao<Hotel>{
+	
+	public DaoHotel(Session session) {
+		super(session, Hotel.class);
+	}
+	
+	public Hotel busca() {
+		Hotel hotel = null;
+		
+		String consulta = "FROM HOTEL";
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		if (query.list().size() != 0 )
+			hotel = (Hotel) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return hotel;
+	}
+}
+

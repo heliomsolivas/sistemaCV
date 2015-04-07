@@ -1,0 +1,134 @@
+package estoque.bean;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "ESTOQUE_ITEMESTOQUE")
+@Table(name = "ESTOQUE_ITEMESTOQUE")
+public class ItemEstoque implements Serializable {
+
+	private static final long serialVersionUID = -4845021437908682656L;
+
+	private Long id;
+	private Estoque estoque;
+	private TipoProduto tipo;
+	private Integer minimo;
+	private Integer maximo;
+	private String nome;
+	private String grupo;
+	private String nomeQuimico;
+	private String bula;
+	private String principioAtivo;
+	private String descricao;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_estoque", nullable = false)
+	public Estoque getEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(Estoque estoque) {
+		this.estoque = estoque;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_tipo", nullable = false)
+	public TipoProduto getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoProduto tipo) {
+		this.tipo = tipo;
+	}
+
+	@Column(name = "minimo", nullable = false)
+	public Integer getMinimo() {
+		return minimo;
+	}
+
+	public void setMinimo(Integer minimo) {
+		this.minimo = minimo;
+	}
+
+	@Column(name = "maximo", nullable = false)
+	public Integer getMaximo() {
+		return maximo;
+	}
+
+	public void setMaximo(Integer maximo) {
+		this.maximo = maximo;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "grupo", nullable = false)
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
+
+	@Column(name = "nomeQuimico", nullable = true)
+	public String getNomeQuimico() {
+		return nomeQuimico;
+	}
+
+	public void setNomeQuimico(String nomeQuimico) {
+		this.nomeQuimico = nomeQuimico;
+	}
+
+	@Column(name = "bula", nullable = true)
+	public String getBula() {
+		return bula;
+	}
+
+	public void setBula(String bula) {
+		this.bula = bula;
+	}
+
+	@Column(name = "principioAtivo", nullable = true)
+	public String getPrincipioAtivo() {
+		return principioAtivo;
+	}
+
+	public void setPrincipioAtivo(String principioAtivo) {
+		this.principioAtivo = principioAtivo;
+	}
+
+	@Column(name = "descricao", length = 5000, nullable = true)
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+}

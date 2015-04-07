@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#total").maskMoney({symbol:'R$ ', showSymbol:true, thousands:'.', decimal:',', symbolStay: true});
+				$("#quant").kendoNumericTextBox({
+					format : "#"
+				});
+				
+				$("#quant").change(
+					function(){
+						if ($("#quant").val() != "") {
+							var valorTotal = ($("#quant").val() * $("#diaria").val());
+							var valorTotalString = ($("#quant").val() * $("#diaria").val());
+							
+							$("#total").val(valorTotalString);
+							$("#valorTtal3").val(valorTotal);
+						}
+					}
+				);
+			});
+			
+			function gravarItemDiaria() {
+			 	$.ajax({
+				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+				type: "POST",
+				url: "<c:url value="/clientes/gravarItemConsumo"/>",
+				data: $("#formItemDiaria").serialize(),
+				success: function(retorno) {
+							$("#cadastrarItemDiaria").data("kendoWindow").destroy();
+							$("#cadastrarItemCompra").data("kendoWindow").destroy();
+							$("#divConsumo").load("<c:url value="/clientes/divConsumoList/${hospedeHospedagem.id}"/>");
+							$("#divResumo").load("<c:url value="/clientes/divResumoLancamento/${hospedeHospedagem.id}"/>");
+						 }
+				});
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formItemDiaria" name="formItemDiaria" action="#">
+			<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+				<tr valign="bottom" style="height: 0px;">
+	   				<td rowspan="8" style="width: 15px;"></td>
+	   				<td style="width: 195x;">
+	   					Quantidade
+	   				</td>
+	   				<td style="width: 195x;">
+	   					Valor Diária
+	   				</td>
+	   				<td style="width: 175px;">
+	   					Valor Total
+	   				</td>
+	   				<td rowspan="8" style="width: 15px;"></td>
+				</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195x;">
+	   					<input type="hidden" value="${hospedeHospedagem.hospedagem.id}" name="idHospedagem">
+	   					<input type="hidden" value="Diaria" name="item.categoria">
+	   					<input id="quant" type="text" min="0" name="item.quantidade" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="diaria" type="hidden" value="${hospedeHospedagem.hospedagem.valorDiaria}" name="item.valorUnitario">
+	   					<input type="text" class="k-textbox" value="${hospedeHospedagem.hospedagem.valorDiariaString}" style="width: 175px;" disabled>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<input id="valorTtal3" type="hidden" name="item.valorTotal">
+	   					<input id="total" type="text" class="k-textbox" placeholder="R$ 00,00" style="width: 175px;">
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+	   			<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+            			<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span><f:message key="limpar"/></button>
+	            		<button type="button" class="k-button" onclick="gravarItemDiaria()"><span class='k-icon k-update'></span><f:message key="gravar"/></button>
+            		</td>
+            	</tr>
+	   		</form>
+	   	</table>
+	</body>
+</html>

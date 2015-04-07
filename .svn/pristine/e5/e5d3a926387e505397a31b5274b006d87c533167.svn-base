@@ -1,0 +1,117 @@
+package financeiro.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "FINANCEIRO_MOVIMENTACAO")
+@Table(name = "FINANCEIRO_MOVIMENTACAO")
+public class Movimentacao implements Serializable {
+
+	private static final long serialVersionUID = -3697012239136260256L;
+
+	private Long id;
+	private ContaCaixa contaCaixa;
+	private TipoDocumento tipoDocumento;
+	private TipoMovimentacao tipoMovimentacao;
+	private String numeroDocumento;
+	private String observacao;
+	private Calendar data;
+	private Double valor;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_contaCaixa", nullable = false)
+	public ContaCaixa getContaCaixa() {
+		return contaCaixa;
+	}
+
+	public void setContaCaixa(ContaCaixa contaCaixa) {
+		this.contaCaixa = contaCaixa;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public TipoMovimentacao getTipoMovimentacao() {
+		return tipoMovimentacao;
+	}
+
+	public void setTipoMovimentacao(TipoMovimentacao tipoMovimentacao) {
+		this.tipoMovimentacao = tipoMovimentacao;
+	}
+
+	@Column(name = "numeroDocumento", nullable = true)
+	public String getNumeroDocumento() {
+		return numeroDocumento;
+	}
+
+	public void setNumeroDocumento(String numeroDocumento) {
+		this.numeroDocumento = numeroDocumento;
+	}
+
+	@Column(name = "observacao", length = 5000, nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	@Column(name = "data", nullable = false)
+	public Calendar getData() {
+		return data;
+	}
+
+	public void setData(Calendar data) {
+		this.data = data;
+	}
+
+	@Column(name = "valor", nullable = false)
+	public Double getValor() {
+		return valor;
+	}
+
+	@Convert(Double.class)
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+	
+	@Transient
+	public String getValorString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valor);
+	}
+
+}

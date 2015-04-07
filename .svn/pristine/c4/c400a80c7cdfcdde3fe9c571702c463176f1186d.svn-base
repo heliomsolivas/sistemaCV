@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#-telefoneHotel").mask("(99)9999-9999");
+				$("#-cnpjHotel").mask("99.999.999/9999-99");
+				$("#-cepHotel").mask("99.999-999");				
+				$("#-padraoCheckInHotel").datetimepicker({lang:'pt', datepicker: false, format:'H:i', mask: true});
+				$("#-padraoCheckOutHotel").datetimepicker({lang:'pt', datepicker: false, format:'H:i', mask: true});
+				$("#-padraoCheckOutEstendidoHotel").datetimepicker({lang:'pt', datepicker: false, format:'H:i', mask: true});
+				
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required':   '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formAlterarHotel").bValidator(options);
+				
+				$("#formAlterarHotel").submit(function() {
+					if($("#formAlterarHotel").data("bValidator").isValid()){
+						$("#consultarHotel").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/hotel/gravar"/>",
+							data: $("#formAlterarHotel").serialize(),
+							success: function (retorno) {
+										$("#consultarHotel").data("kendoWindow").destroy();
+										window.location.reload();
+				           			}
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+	   	<form id="formAlterarHotel" name="formAlterarHotel" action="#">
+	   		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="21" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.hotel"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.cnpj"/>
+	   				</td>
+	   				<td rowspan="21" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="hidden" value="${hotel.id}" name="hotel.id"/>
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.nome}" name="hotel.nome" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<input id="-cnpjHotel" type="text" class="k-textbox" data-bvalidator="required" value="${hotel.cnpj}" name="hotel.cnpj" style="width: 175px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.endereco"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.bairro"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.endereco}" name="hotel.endereco" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.bairro}" name="hotel.bairro" style="width: 175px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.complemento"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.cidade"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<f:message key="campo.estado"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.complemento}" name="hotel.complemento" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.cidade}" name="hotel.cidade" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<select data-bvalidator="required" name="hotel.uf" style="width: 175px;">
+							<option value=""><f:message key="selecione"/></option>
+							<option value="São Paulo" <c:if test="${hotel.uf == 'São Paulo'}">selected</c:if>>São Paulo</option>
+							<option value="Rio de Janeiro" <c:if test="${hotel.uf == 'Rio de Janeiro'}">selected</c:if>>Rio de Janeiro</option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.cep"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.telefone"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<input id="-cepHotel" type="text" class="k-textbox" data-bvalidator="required" value="${hotel.cep}" name="hotel.cep" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="-telefoneHotel" type="text" class="k-textbox" data-bvalidator="required" value="${hotel.telefone}" name="hotel.telefone" style="width: 175px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.email"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.email}" name="hotel.email" style="width: 370px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<f:message key="campo.site"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" value="${hotel.site}" name="hotel.site" style="width: 570px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<f:message key="campo.padrao.checkIn"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<div class="k-textbox k-space-right" style="width: 170px;">
+			            	<input id="-padraoCheckInHotel" type="text" class="k-textbox" data-bvalidator="required" value="<f:formatDate value="${hotel.padraoCheckIn.time}" pattern="HH:mm"/>" name="padraoCheckIn"/>
+			                <span class="k-icon k-i-clock"></span>
+			            </div>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<f:message key="campo.padrao.checkOut"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<div class="k-textbox k-space-right" style="width: 170px;">
+			            	<input id="-padraoCheckOutHotel" type="text" class="k-textbox" data-bvalidator="required" value="<f:formatDate value="${hotel.padraoCheckOut.time}" pattern="HH:mm"/>" name="padraoCheckOut" />
+			                <span class="k-icon k-i-clock"></span>
+			            </div>	   					
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<f:message key="campo.padrao.checkOut.estendido"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<div class="k-textbox k-space-right" style="width: 170px;">
+			            	<input id="-padraoCheckOutEstendidoHotel" type="text" class="k-textbox" data-bvalidator="required" value="<f:formatDate value="${hotel.padraoCheckOutEstendido.time}" pattern="HH:mm"/>" name="padraoCheckOutEstendido" />
+			                <span class="k-icon k-i-clock"></span>
+			            </div>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 30px;">
+	   				<td colspan="2" style="width: 250px;">
+	   					<f:message key="campo.permite.meia.diaria.checkOut.estendido"/>
+						<span style="margin-left: 20px;">
+		   					<f:message key="sim"/> <input type="radio" <c:if test="${hotel.permiteMeiaDiariaCheckOutEstendido == true}">checked</c:if> value="true" name="hotel.permiteMeiaDiariaCheckOutEstendido"/>
+	        				<f:message key="nao"/> <input type="radio" <c:if test="${hotel.permiteMeiaDiariaCheckOutEstendido == false}">checked</c:if> value="false" name="hotel.permiteMeiaDiariaCheckOutEstendido"/>
+	        			</span>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 30px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<f:message key="campo.selecione.logo"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 200px;">
+	   					<input type="file" name="hotel.logo"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 20px;"></tr>
+	   			<tr style="height: 20px;">
+	   				<td colspan="4" style="width: 570px; text-align: center;">
+	   					<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="alterar"/></button>
+	   				</td>
+	   			</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

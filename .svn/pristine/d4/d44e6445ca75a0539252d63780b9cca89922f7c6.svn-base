@@ -1,0 +1,106 @@
+package contabil.bean;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity(name = "CONTABIL_LANCAMENTO")
+@Table(name = "CONTABIL_LANCAMENTO")
+public class Lancamento implements Serializable {
+
+	private static final long serialVersionUID = 6915053009448578618L;
+
+	private Long id;
+	private ContaContabil contaDebito;
+	private ContaContabil contaCredito;
+	private Historico historico;
+	private Calendar data;
+	private Double valor;
+	private String complemento;
+	private String numeroDocumento;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_contaDebito", nullable = false)
+	public ContaContabil getContaDebito() {
+		return contaDebito;
+	}
+
+	public void setContaDebito(ContaContabil contaDebito) {
+		this.contaDebito = contaDebito;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_contaCredito", nullable = false)
+	public ContaContabil getContaCredito() {
+		return contaCredito;
+	}
+
+	public void setContaCredito(ContaContabil contaCredito) {
+		this.contaCredito = contaCredito;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_historico", nullable = true)
+	public Historico getHistorico() {
+		return historico;
+	}
+
+	public void setHistorico(Historico historico) {
+		this.historico = historico;
+	}
+
+	@Column(name = "complemento", nullable = false)
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	@Column(name = "numeroDocumento", nullable = false)
+	public String getNumeroDocumento() {
+		return numeroDocumento;
+	}
+
+	public void setNumeroDocumento(String numeroDocumento) {
+		this.numeroDocumento = numeroDocumento;
+	}
+
+	@Column(name = "data", nullable = false)
+	public Calendar getData() {
+		return data;
+	}
+
+	public void setData(Calendar data) {
+		this.data = data;
+	}
+
+	@Column(name = "valor", nullable = false)
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
+
+}

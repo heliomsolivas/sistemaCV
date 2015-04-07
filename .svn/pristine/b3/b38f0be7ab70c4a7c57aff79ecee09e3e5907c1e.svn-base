@@ -1,0 +1,123 @@
+package estoque.bean;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import br.com.caelum.vraptor.Convert;
+
+@Entity(name = "ESTOQUE_PRODUTO")
+@Table(name = "ESTOQUE_PRODUTO")
+public class Produto implements Serializable {
+
+	private static final long serialVersionUID = 6678291971765969030L;
+
+	private Long id;
+	private Fabricante fabricante;
+	private String nome;
+	private String categoria;
+	private Integer quantidade;
+	private Double valorUnitario;
+	private Boolean ativo;
+	private Collection<ProdutoFornecedor> produtoFornecedorList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_fabricante", nullable = false)
+	public Fabricante getFabricante() {
+		return fabricante;
+	}
+
+	public void setFabricante(Fabricante fabricante) {
+		this.fabricante = fabricante;
+	}
+
+	@Column(name = "nome", nullable = false)
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	@Column(name = "categoria", nullable = false)
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	@Column(name = "quantidade", nullable = false)
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+
+	@Column(name = "valorUnitario", nullable = false)
+	public Double getValorUnitario() {
+		return valorUnitario;
+	}
+
+	@Convert(Double.class)
+	public void setValorUnitario(Double valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	@Column(name = "ativo", nullable = false)
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ProdutoFornecedor> getProdutoFornecedorList() {
+		return produtoFornecedorList;
+	}
+
+	public void setProdutoFornecedorList(Collection<ProdutoFornecedor> produtoFornecedorList) {
+		this.produtoFornecedorList = produtoFornecedorList;
+	}
+	
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+	
+	@Transient
+	public String getValorUnitarioString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(valorUnitario);
+	}
+
+}

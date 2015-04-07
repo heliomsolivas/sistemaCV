@@ -1,0 +1,26 @@
+// document.ready();
+$(function() {
+	$("#usuarioList").load(caminhoAbsoluto + "usuario/pesquisar", {codigo: null, nomeUsuario: null});
+	
+	$("#codigoUsuario").keyup(function() {
+		var parametro = $(this).val();
+		        		 	
+		if (parametro != ''){
+			$("#usuarioList").load(caminhoAbsoluto + "usuario/pesquisar", {codigo: parametro, nomeUsuario: null});
+		} else {
+			$("#usuarioList").load(caminhoAbsoluto + "usuario/pesquisar", {codigo: null, nomeUsuario: null});
+		}
+	});
+	
+	$("#nomeUsuario").keyup(function(){
+		var parametro = $(this).val();
+				
+		if (parametro != ''){						
+			$("#usuarioList").load(caminhoAbsoluto + "usuario/pesquisar", {codigo: null, nomeUsuario: parametro});
+		} else {
+			$("#usuarioList").load(caminhoAbsoluto + "usuario/pesquisar", {codigo: null, nomeUsuario: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+	 		$(document).ready(function () {
+	 			$("#dataLancamentoContaPagar").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+	 			$("#dataVencimentoContaPagar").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+	 			$("#dataAgendamentoContaPagar").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+	 			$("#dataPagamentoContaPagar").datetimepicker({lang:'pt', format:'d/m/Y H:i'});
+	 			$("#valorContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+	 			$("#descontoContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+	 			$("#multaContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+	 			$("#jurosContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+	 			$("#valorTotalContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+	 			$("#valorPagamentoContaPagar").maskMoney({allowZero: true, showSymbol: true, symbol:"R$ ", decimal:",", thousands:"."});
+				
+	 			var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required':   '<f:message key="campo.obrigatorio"/>' }}};
+   			    
+				$("#formContaPagar").bValidator(options);
+   				
+   				$("#formContaPagar").submit(function() {
+   					if($("#formContaPagar").data("bValidator").isValid()){
+   						$("#cadastrarContaPagar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   					 	$.ajax({
+   							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+   							type: "POST",
+   							url: "<c:url value="/financeiro/contaPagar/gravar"/>",
+   							data: $("#formContaPagar").serialize(),
+   							success: function (retorno) {
+   										$("#cadastrarContaPagar").data("kendoWindow").destroy();
+   										$("#listaContaPagar").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+   										$("#listaContaPagar").load("<c:url value="/financeiro/contaPagar/lista"/>");
+   				           			}
+   						});
+   					}
+   					return false;
+   				});
+	        });
+		</script>
+	</head>
+	<body class="divConteudo">
+    	<form id="formContaPagar" name="formContaPagar" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+    			<tr valign="bottom" style="height: 25px;">
+    				<td rowspan="16" style="width: 15px;"></td>
+    				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.numero.documento"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.tipo.documento"/>
+	   				</td>
+	   				<td rowspan="16" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" name="contaPagar.numeroDocumento" style="width: 370px;"/>
+	   				</td>	   				
+	   				<td style="width: 180px;">
+	   					<select data-bvalidator="required" name="contaPagar.tipoDocumento" style="width: 180px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${tipoDocumentoList}" var="item">
+							<option value="${item}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.forma.pagamento"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.documento.cancelado"/>
+	   				</td>  				
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.conta.caixa"/>
+	   				</td>   				
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<select data-bvalidator="required" name="contaPagar.formaPagamento" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${formaPagamentoList}" var="item">
+							<option value="${item}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 175px;">
+	   					<select data-bvalidator="required" name="contaPagar.cancelado" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="true"><f:message key="sim"/></option>
+							<option value="false"><f:message key="nao"/></option>
+						</select>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<select data-bvalidator="required" name="contaPagar.contaCaixa.id" style="width: 180px;">
+	   						<option value=""><f:message key="selecione"/></option>				
+							<c:forEach items="${contaCaixaList}" var="item">
+							<option value="${item.id}">${item.agencia} / ${item.numeroConta}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.historico"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.data.lancamento"/>
+	   				</td>   					
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" name="contaPagar.historico" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="dataLancamentoContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.dataLancamento" style="width: 180px;"/>
+	   				</td>	   				
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.data.vencimento"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.data.agendamento"/>
+	   				</td>
+   					<td style="width: 180px;">
+	   					<f:message key="campo.data.pagamento"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<input id="dataVencimentoContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.dataVencimento" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="dataAgendamentoContaPagar" type="text" class="k-textbox" name="contaPagar.dataAgendamento" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="dataPagamentoContaPagar" type="text" class="k-textbox" name="contaPagar.dataPagamento" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.valor"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.desconto"/>
+	   				</td>
+   					<td style="width: 180px;">
+	   					<f:message key="campo.multa"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<input id="valorContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.valor" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="descontoContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.desconto" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="multaContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.multa" placeholder="R$ 0,00" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.juros"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<f:message key="campo.valor.total"/>
+	   				</td>
+   					<td style="width: 180px;">
+	   					<f:message key="campo.valor.pagamento"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<input id="jurosContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.juros" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valorTotalContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.valorTotal" placeholder="R$ 0,00" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="valorPagamentoContaPagar" type="text" class="k-textbox" data-bvalidator="required" name="contaPagar.valorPagamento" placeholder="R$ 0,00" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<f:message key="campo.descricao"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<textarea class="k-textbox" name="contaPagar.descricao" style="width: 570px; height: 60px;"></textarea>
+	   				</td>
+	   			</tr>
+            	<tr style="height: 30px;"></tr>
+            	<tr style="height: 20px;">
+            		<td colspan="3" style="text-align: center;">
+						<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	   					<button type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+            		</td>
+            	</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

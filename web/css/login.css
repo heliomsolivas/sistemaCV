@@ -1,0 +1,117 @@
+h1 {
+	font: 25px "arial black", Helvetica, sans-serif;
+	margin-top: 0px;
+	color: #2e2e2e;
+}
+.k-window-title {
+   font-weight: bold;
+   padding: 1px;
+   font-size: 14px;
+   color: #2e2e2e;
+}
+A:link {
+	text-decoration: underline;
+	color: #11462B;
+}
+A:visited {
+	text-decoration: underline;
+	color: #11462B;
+}
+A:active {
+	text-decoration: underline;
+	color: #11462B;
+}
+A:hover {
+	text-decoration: underline;
+	color: #11462B;
+}
+.textoAdvertenciaNormal {
+	color:  #11462B;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+}
+#divLogoLedware {
+	float: left;
+	background: url(../imagens/ledware.png) 0 0 no-repeat;
+	margin-top: 3%;
+	margin-left: 5%;
+	height: 175px;
+	width: 120px;
+}
+.btn {
+	background: #11462b;
+  	background-image: -webkit-linear-gradient(top, #11462b, #568c6b);
+  	background-image: -moz-linear-gradient(top, #11462b, #568c6b);
+	background-image: -ms-linear-gradient(top, #11462b, #568c6b);
+  	background-image: -o-linear-gradient(top, #11462b, #568c6b);
+ 	background-image: linear-gradient(to bottom, #11462b, #568c6b);
+  	border: 0px solid #0b3520;
+  	-webkit-border-radius: 24;
+ 	-moz-border-radius: 24;
+  	border-radius: 8px;
+  	font-family: Arial;
+  	color: #ffffff;
+  	font-size: 16px;
+  	padding: 3px;
+  	text-decoration: none;
+  	font-weight: bold;
+  	cursor: pointer;
+  	float: right;
+	width: 100px; 
+	margin-right: 35px; 
+	margin-bottom: 15px;
+}			
+.btn:hover {
+ 	background: #11462b;
+  	border: 0px solid #0b3520;
+  	font-weight: bold;
+  	text-decoration: none;
+}
+.componente {
+	height: 28px !important; 
+	text-align: center !important; 
+	border-radius: 4px 0px 0px 4px !important;
+	border-right: 1px solid #c5c5c5 !important;
+}
+#user {
+	width: 250px;
+	height: 30px;
+	margin-bottom: 20px;
+}
+#senha {
+	width: 250px;
+	height: 30px;
+	margin-bottom: 20px;
+}
+#esqueceuSenha {
+	float: left;
+	margin-left: 35px;
+	margin-top: 10px;
+}
+#formLogin {
+	float: left;
+	width: 320px;
+	text-align: center;
+	font-family: inherit;
+	font-size: 13px;
+	margin-left: 10px;
+}
+#mensagem {
+	float: right;
+	width: 320px;
+	text-align: center;
+}
+#abrirLogin {
+ 	text-align: center;
+   	position: absolute;
+   	white-space: nowrap;
+   	padding: 1em;
+   	cursor: pointer;
+   	font-family: inherit;
+   	margin: 20% 45%;
+}
+#abrirLogin:hover {
+ 	background: none !important;
+ 	border: 1px solid #c5c5c5 !important;
+}

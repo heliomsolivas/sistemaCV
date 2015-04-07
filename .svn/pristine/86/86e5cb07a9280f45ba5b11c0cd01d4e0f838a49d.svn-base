@@ -1,0 +1,547 @@
+body {
+	margin: 0;
+	padding: 0;
+	height: auto;
+	width: 100%;
+}
+
+select {
+ 	height: 2.17em;
+	padding: 3px;	
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #C0C0C0;
+	background-color: #FFFFFF;	
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+		-moz-box-sizing: border-box;
+}
+.campoTexto {
+	height: 2.17em;
+	padding: 3px;	
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #C0C0C0;
+	background-color: #FFFFFF;
+	color: #515967;
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+		-moz-box-sizing: border-box;
+       
+}
+#main {
+	margin: 1em auto;
+	width: 99%;
+	background: #dddddd;
+	height: auto;
+	position: relative;
+
+}
+#header {
+	background: #F6F6F6;
+	height: 15%;
+	overflow-x: hidden;
+	overflow:auto;
+	overflow-y: hidden;
+	margin-bottom: 5px;
+}
+#mainnav {
+    height: 36px;
+    background: #F6F6F6;
+}
+#menu2 {
+	background: #F6F6F6;
+	border: 0px;
+}
+#menuDireita  {
+	float: right;
+	width: 9%;
+	background: #F6F6F6;
+	height: 500px;
+	margin-top: 4px;
+	position: relative;
+	overflow:auto;
+	overflow-x: hidden;
+}
+#container  {
+	float: left;
+	width: 100%;
+	height: 100%;
+	position: relative;
+	overflow: auto;
+}
+#divMenuUsuario  {
+	background: #F6F6F6;
+	float: right;
+	margin-top: 35px;
+	height: 70px;
+	width: auto;
+}
+#divSaudacao  {
+   	margin-top: 30px;
+   	float: left;
+   	width: auto;
+   	margin-right:30px;
+}
+#divBotoesUsuario  {
+	width: 200px;
+  	float: right;
+  	margin-right: 15px;
+}
+#conteudo  {
+	float: left;
+	width: 100%;
+	background: #F6F6F6;
+	height: 620px;
+	margin-top: 4px;
+	position: relative;
+}
+#acoes  {
+	float: left;
+	width: 100%;
+	background: #F6F6F6;
+	height: 30px;
+	margin-top: 4px;
+	position: relative;
+}
+#footer  {
+	float: left;
+	background: #F6F6F6;
+	height: 50px;
+	margin-top: 4px;
+   	position: relative;
+	bottom: 0;
+ 	width: 100%;
+}
+#PainelTopoLogin  {
+   height: 200px;
+}
+#PainelLogin  {
+ 	background: #F6F6F6;
+	box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.3);
+ 	width: 100%;
+  	height:	130px;
+  	top:40%;
+  	position: absolute;
+}
+#divCarregando  {
+ 	background: #BEBEBE;
+ 	width: 38px;
+  	height:38 px;
+	left:50%;
+	top:50%;
+	margin:-19px 0 0 -19px;
+	position: absolute;
+}
+/*css global tabela*/
+.full_table_list { 
+    border-collapse: collapse;
+    border: 2px solid #ffffff;
+			padding: 0px 10px 0px 10px;
+			border-collapse: collapse; 
+}
+/* CSS Tabelas       */
+/*colocando bordas nao titulo da tabela*/
+full_table_list td {
+	border: 2px solid #ffffff;
+}
+/*colocando bordas nas celulas */
+.full_table_list th {
+	border: 2px solid #ffffff;
+	color:#ffffff;
+	background: #708090;
+	border-radius: 8px;
+}
+/*Definido cor das linhas pares*/
+.full_table_list tr: nth-child(even) {
+	background: #F5F5F5;
+}
+/*Definindo cor das Linhas impáres*/
+.full_table_list tr: nth-child(odd) {
+	background: #DDDDDD;
+}
+.divLog  {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 10px;
+} 
+.campoObrigatorio {
+	height: 2.17em;	
+	padding: 3px;
+	font-family: Tahoma, Arial;
+	font-size: 12px;
+	border: 1px solid #FF4040;
+	border-radius: 4px 4px 4px 4px;
+	outline: 0 none;
+		-moz-box-sizing: border-box;	
+}
+.divCampoFile {
+    background: url(../imagens/formularios/botaoProcurar.png) 0 0 no-repeat;
+	height: 20px;
+	width: 60px;
+    border:none;
+    overflow:hidden;
+}
+.campoFile {
+    margin-left:-145px;
+    opacity:0.0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+}
+/*BOTAO*/
+.botao {
+	cursor: pointer;
+	border: 0px;
+}
+.botaoLogon {
+	background: url(../imagens/botoes/botaoLogon.png) ;
+	border: 0px;
+	cursor: pointer;
+	height: 18px;
+	width: 32px;
+}
+
+.botaoLogin {
+	background: url(../imagens/icones/login.png) no-repeat;
+	border: 0px;
+	cursor: pointer;
+	height: 35px;
+	width: 35px;
+	margin-top: 13px;
+}
+.botaoAtualizar {
+	background: url(../imagens/formularios/botaoAtualizar.png);
+	border: 0px;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoCancelar {
+	background: url(../imagens/formularios/botaoCancelar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoConfirmar {
+	background: url(../imagens/formularios/botaoConfirmar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoDesfazer {
+	background: url(../imagens/formularios/botaoDesfazer.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoFechar {
+	background: url(../imagens/formularios/botaoFechar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoGravar {
+	background: url(../imagens/formularios/botaoGravar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoImprimir {
+	background: url(../imagens/formularios/botaoImprimir.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoLimpar {
+	background: url(../imagens/formularios/botaoLimpar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoNova {
+	background: url(../imagens/formularios/botaoNova.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoNovo {
+	background: url(../imagens/formularios/botaoNovo.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoOk {
+	background: url(../imagens/formularios/botaoOk.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoPesquisar {
+	background: url(../imagens/formularios/botaoPesquisar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoProcurar {
+	background: url(../imagens/formularios/botaoProcurar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoRelatorio {
+	background: url(../imagens/formularios/botaoRelatorio.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoRemover {
+	background: url(../imagens/formularios/botaoRemover.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+.botaoVoltar {
+	background: url(../imagens/formularios/botaoVoltar.png);
+	border: 0;
+	cursor: pointer;
+	height: 20px;
+	width: 60px;
+}
+/*LAYOUT DAS PAGINAS*/
+.divConteudo {
+	height: 100%;
+	position: absolute;
+	top: 12px;
+	width: 100%;
+	z-index: 4;
+}
+.divConteudo #tituloPagina {
+	color: #696969;
+	font-family: Arial;
+	font-size: 18px;
+	font-weight: bold;
+	height: 30px;
+	margin-left: 10px;
+	width: 100%;
+}
+.divConteudo #conteudoPagina {
+	background-color: #F7F7F7;
+	border: 3px solid #E3E3E3;
+	height: 415px;
+	margin: auto;
+	padding: 10px 10px 10px 10px;
+	width: 960px;
+}
+.divConteudo #conteudoPagina .conteudo {
+	background-color: #F7F7F7;
+	border: 2px solid #E6E6E6;
+	height: 360px;
+	padding: 10px 10px 10px 10px;
+	width: 800px;
+} 
+.divConteudo #conteudoPagina .botoes {
+	height: 24px;
+	line-height: 24px;
+	margin-top: 10px;
+	width: 280px;
+}
+.divConteudo #conteudoPagina .mensagem {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+	float: right;
+	height: 30px;
+	line-height: 30px;
+	margin-top: -29px;
+	margin-left: 285px;
+	width: 675px;
+}
+.divConteudo #conteudoPrincipal {
+	height: 415px;
+	margin: auto;
+	padding: 10px 10px 10px 10px;
+	width: 960px;
+}
+.divConteudo #conteudoPrincipal .item {
+	background-color: #F7F7F7;
+	border: 3px solid #E3E3E3;
+	padding: 10px 10px 10px 10px;
+}
+.divConteudo #conteudoPrincipal .item .imagemItem {
+	display: block;
+	width: 100%;
+	text-align: center;
+	margin-top: 5px;
+}
+.divConteudo #conteudoPrincipal .item .tituloItem {
+	color: #696969;
+	display: block;
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 10px;
+	width: 100%;
+	text-align: center;
+}
+.divConteudo #conteudoPrincipal .item .nenhumResultado {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 30px;
+	margin-left: 10px;
+}
+.divConteudo #conteudoPrincipal .botoesPesquisa {
+	height: 24px;
+	line-height: 24px;
+	margin-top: 10px;
+	width: 135px;
+}
+.divConteudo #conteudoPrincipal .item .mensagemPesquisa {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+	float: right;
+	height: 30px;
+	line-height: 30px;
+	position: absolute;
+	margin-top: -29px;
+	margin-left: 140px;
+	width: 648px;
+}
+.divConteudo #conteudoPrincipal .item .mensagem {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+	height: 30px;
+	line-height: 30px;
+	position: absolute;
+	right: 10px;
+	top: 375px;
+	width: 793px;
+}
+/*DIV INTERNA*/
+.divResultadosPesquisa {
+	background-color: #FFFFFF;
+	border: 1px solid #C0C0C0;
+	padding: 5px 5px; 5px; 5px;
+	width: 950px;
+}
+.divResultadosPesquisa span {
+	font-family: Arial;
+	font-size: 11px;
+}
+.divListas {
+	background-color: #FFFFFF;
+	border: 1px solid #C0C0C0; 
+	overflow-y: scroll;
+	padding: 5px 5px 5px 5px;
+}
+/*TABELA*/
+.colunaComBorda {
+	border: 1px solid #C0C0C0;
+	padding: 10px 10px 10px 10px;
+}
+/*TITULO*/
+.tituloPequeno {
+	color: #696969;
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: bold;
+}
+/*TEXTOS*/
+.textoPequeno {
+	color: #313131;
+	font-family: Arial;
+	font-size: 10px;
+}
+.textoNormal {
+	color: #313131;
+	font-family: Arial;
+	font-size: 11px;
+}
+.textoGrande {
+	color: #313131;
+	font-family: Arial;
+	font-size: 12px;
+}
+.textoDestaqueNormal {
+	color: #ED3237;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+}
+.textoAdvertenciaNormal {
+	color:  #FF0000;
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+}
+.linkSemBorda {
+	border:0px;
+}
+/*VALIDATOR*/
+
+/*TOOLTIP*/
+.dairy-photos {
+    list-style-type: none;
+    margin: 15px 0 15px 10px;
+    padding: 0;
+}
+
+.dairy-photos li {
+    display: inline-block;
+    margin: 5px;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.dairy-photos a {
+    display: block;
+    width: 30px;
+    height: 30px;
+    padding: 0 0 0 10px;
+    font-size: .9em;
+    line-height: 1.2em;
+    text-transform: uppercase;
+    color: #777;
+    -moz-box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+}
+
+.dairy-photos a img {
+    margin: 0 0 5px -10px;
+}
+
+.k-tooltip-content {
+    vertical-align: middle;
+}
+
+.k-tooltip-content img,
+.k-tooltip-content p {
+    float: left;
+}
+
+.k-tooltip-content p {
+    font-size: 1.4em;
+    padding: 20px;
+    width: 40px;
+    text-align: left;
+}

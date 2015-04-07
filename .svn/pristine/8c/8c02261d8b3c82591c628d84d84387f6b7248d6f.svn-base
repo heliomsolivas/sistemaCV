@@ -1,0 +1,62 @@
+package estoque.dao;
+
+import estoque.bean.Produto;
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoProduto extends Dao<Produto>{
+
+	public DaoProduto(Session session) {
+		super(session, Produto.class);
+	}
+
+	public Collection<Produto> listarAtivos() {
+		Collection<Produto> produtoList = new ArrayList<Produto>();
+
+		String consulta = "FROM ESTOQUE_PRODUTO WHERE ativo = 1";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		for(int x = 0; x < query.list().size(); x++) {
+			Produto produto = (Produto) query.list().get(x);
+			produtoList.add(produto);
+		}
+
+		return produtoList;
+	}
+	
+	public Produto pesquisarPorNome(String nomeProduto) {
+		Produto produto = null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM ESTOQUE_PRODUTO WHERE nome LIKE :nomeProduto";
+		parameters.put("nomeProduto", "%" + nomeProduto + "%");
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		if (query.list().size() != 0)
+			produto = (Produto) query.list().get(0);
+		
+		query.setCacheable(true);
+		
+		return produto;
+	}
+}

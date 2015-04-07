@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="aplicativo"/></title>
+		
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<link rel="shortcut icon" href="<c:url value="/imagens/logo.ico"/>">
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.common.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.default.min.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/kendo.examples-offline.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/jquery.waitMe.css"/>"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/login.css"/>">
+		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/css/opa-icons.css"/>"/>
+		
+		<script type="text/javascript" src="<c:url value="/js/jquery.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/kendo.web.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.waitMe.js"/>"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var window = $("#login"),
+               	undo = $("#abrirLogin").bind("click", function() { window.data("kendoWindow").center(); window.data("kendoWindow").open(); undo.hide(); });
+				
+             	var onClose = function() { undo.show(); }
+				
+				if (!window.data("kendoWindow")) {
+       	 			window.kendoWindow({
+              			width: "490px",
+	              		height: "230px",
+	                  	title: "<f:message key="login"/>",
+	                  	modal: false,
+	          			pinned: true,
+	          			draggable: false,
+	          			resizable: false,
+	          			visible: false,
+	          			actions: ["Close"],
+	          			close: onClose
+               		});
+          	 		window.data("kendoWindow").center();
+          	 		window.data("kendoWindow").open();
+             	}
+			});
+			
+			function validarFormularioLogon() {
+				$("#login").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+				
+				if (($("#username").val() == "") || ($("#password").val() == "")) {
+					$("#mensagem").empty().append("<f:message key="digite.usuario.senha"/>");
+					$("#login").waitMe("hide");
+					
+					return false;
+				} else
+					return true;
+			}
+		</script>
+	</head>
+	<body>
+		<div id="login">
+			<div id="divLogoLedware"></div>
+			
+			<div id="formLogin">
+				<h1><f:message key="aplicativo"/></h1>
+				
+				<form action="<c:url value="/sistema/logon"/>" method="POST" onsubmit="return validarFormularioLogon();">
+					<div id="user" class="k-textbox k-space-right">
+						<input id="username" type="text" class="k-textbox componente" name="username">
+		                <span class="k-icon icon icon-user icon-darkgray"></span>
+		            </div>
+		            
+		            <div id="senha" class="k-textbox k-space-right">
+						<input id="password" type="password" class="k-textbox componente" name="password">
+		                <span class="k-icon icon icon-key icon-darkgray"></span>
+		            </div>
+	        		
+	        		<a href="#" id="esqueceuSenha"><f:message key="logon.esqueceuSenha"/></a>
+					<input type="submit" name="botaoLogon" class="btn" value="<f:message key="entrar"/>">
+				</form>				
+			</div>
+			
+			<span id="mensagem" class="textoAdvertenciaNormal">
+				<c:if test="${mensagem != null}">
+					<f:message key="${mensagem}"/>
+				</c:if>
+				<c:forEach var="error" items="${errors}">
+					${error.message}
+				</c:forEach>
+			</span>			
+		</div>
+				
+		<span id="abrirLogin" style="display:none" class="k-button"><f:message key="botao.abrir.janela.login"/></span>
+		
+	</body>
+</html>

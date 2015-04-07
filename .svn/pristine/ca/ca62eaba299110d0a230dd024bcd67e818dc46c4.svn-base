@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function() {			 	
+ 				$("#selecionarReserva").hide();
+ 				$("#selectReserva").hide();
+ 				$("#botaoContinuar").hide();
+
+ 				var options = {offset: {x:5, y:-2}, position: {x:'right', y:'center'}, template: '<div class="{errMsgClass}">{message}</div>', showCloseIcon: false, validateOn: 'keyup'};
+
+				$("#formReservaHospedagem").bValidator(options);
+				
+ 				$("#select").change(
+					function(){
+						if ($("#select").val() == 1) {
+							$("#selecionarReserva").show();
+			 				$("#selectReserva").show();
+			 				$("#botaoContinuar").show();
+						} else if ($("#select").val() == 2) {
+							$("#selecionarReserva").hide();
+			 				$("#selectReserva").hide();
+			 				$("#mensagem").hide();
+			 				$("#botaoContinuar").show();
+			 				$("#formReservaHospedagem").data("bValidators").first.removeMsg($("#selectReserva"));
+						} else {
+							$("#selecionarReserva").hide();
+			 				$("#selectReserva").hide();
+			 				$("#mensagem").hide();
+			 				$("#botaoContinuar").hide();
+			 				$("#formReservaHospedagem").data("bValidators").first.removeMsg($("#selectReserva"));
+						}
+					}
+				);
+			});
+			
+			function buscarReserva() {
+				if ($("#select").val() == 2){
+					$("#modalReserva").data("kendoWindow").destroy();
+					
+					exibe('<c:url value="/clientes/hospedagem/cadastrar/"/>', '<f:message key="cadastrar.hospedagem"/>', '660', '420', 'cadastrarHospedagem');
+					
+				} else if (($("#select").val() == 1) && ($("#idReserva").val() != '')){
+					var idReserva = $("#idReserva").val();
+					
+					$("#modalReserva").data("kendoWindow").destroy();
+					
+					exibe(null, '<f:message key="cadastrar.hospedagem"/>', '660', '420', 'cadastrarHospedagem');
+					
+					$("#cadastrarHospedagem").load("<c:url value="/clientes/hospedagem/cadastrar"/>", {idReserva: idReserva});
+				} else {
+					if ($("#idReserva").val() == "") {
+						$("#formReservaHospedagem").data("bValidators").first.showMsg($("#selectReserva"), '<f:message key="mensagem.selecione.reserva.hospedagem"/>');
+					} else {
+						$("#formReservaHospedagem").data("bValidators").first.removeMsg($("#selectReserva"));
+					}
+				}
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+		<form id="formReservaHospedagem" name="formReservaHospedagem" action="#">
+	    	<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	    		<tr style="height: 10px;"></tr>
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="33" style="width: 15px;"></td>
+	   				<td colspan="3" style="width: 570px; font-size: 14px;">
+	   					<span style="padding: 3px;">
+	   						<f:message key="mensagem.existe.reserva.hospedagem"/>
+	   					</span>
+	   					<select id="select" style="width: 100px; margin-left: 15px;">
+	   						<option value="0"><f:message key="selecione"/></option>
+							<option value="1"><f:message key="sim"/></option>
+							<option value="2"><f:message key="nao"/></option>
+						</select>
+	   				</td>
+	   				<td rowspan="33" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;"></tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td id="selecionarReserva" style="width: 350px; font-size: 14px;">
+	   					<f:message key="campo.selecione.reserva.hospedagem"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 30px;">
+	   				<td id="selectReserva" style="width: 350px;">
+	   					<select id="idReserva" style="width: 350px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<c:forEach items="${reservaList}" var="item">
+							<option value="${item.id}">Data: <f:formatDate value="${item.dataReserva.time}" pattern="dd/MM/yyyy HH:mm"/> --- ${item.codigo} - ${item.responsavel.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 30px;"></tr>
+	   			<tr style="height: 20px;">
+	   				<td id="botaoContinuar" colspan="3" style="width: 570px; text-align: center;">
+	   					<button type="button" class="k-button" onclick="buscarReserva()"><span class='k-icon k-i-seek-e'></span> <f:message key="continuar"/></button>
+	   				</td>
+	   			</tr>
+			</table>
+		</form>
+	</body>
+</html>

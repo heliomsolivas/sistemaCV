@@ -1,0 +1,35 @@
+package administrativo.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import administrativo.bean.Permissao;
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoPermissao extends Dao<Permissao> {
+
+	public DaoPermissao(Session session) {
+		super(session, Permissao.class);
+	}
+
+	public Permissao buscar(Long idPerfil, Long idFuncao) {
+		Permissao permissao = null;
+
+		String consulta = "FROM ADMINISTRATIVO_PERMISSAO WHERE perfil.id = :idPerfil AND funcao.id = :idFuncao";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idPerfil", idPerfil);
+		query.setParameter("idFuncao", idFuncao);
+
+		if (query.list().size() > 0)
+			permissao = (Permissao) query.list().get(0);
+		
+		query.setCacheable(true);
+
+		return permissao;
+	}
+
+}

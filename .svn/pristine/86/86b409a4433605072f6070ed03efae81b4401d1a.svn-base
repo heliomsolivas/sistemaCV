@@ -1,0 +1,240 @@
+package financeiro.bean;
+
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity(name = "FINANCEIRO_CONTACAIXA")
+@Table(name = "FINANCEIRO_CONTACAIXA")
+public class ContaCaixa implements Serializable {
+
+	private static final long serialVersionUID = -1871213812601438625L;
+
+	private Long id;
+	private Hotel hotel;
+	private Boolean caixa;
+	private String banco;
+	private String numeroBanco;
+	private String agencia;
+	private String numeroConta;
+	private String contato;
+	private String telefone;
+	private String email;
+	private Boolean ativa;
+	private Calendar dataAbertura;
+	private Calendar dataEncerramento;
+	private Double saldo;
+	private Double saldoMinimo;
+	private Double saldoMaximo;
+	private Collection<ContaPagar> contaPagarList;
+	private Collection<ContaReceber> contaReceberList;
+	private Collection<Movimentacao> movimentacaoList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+
+	@Column(name = "caixa", nullable = false)
+	public Boolean getCaixa() {
+		return caixa;
+	}
+
+	public void setCaixa(Boolean caixa) {
+		this.caixa = caixa;
+	}
+
+	@Column(name = "banco", nullable = true)
+	public String getBanco() {
+		return banco;
+	}
+
+	public void setBanco(String banco) {
+		this.banco = banco;
+	}
+
+	@Column(name = "numeroBanco", nullable = true)
+	public String getNumeroBanco() {
+		return numeroBanco;
+	}
+
+	public void setNumeroBanco(String numeroBanco) {
+		this.numeroBanco = numeroBanco;
+	}
+
+	@Column(name = "agencia", nullable = true)
+	public String getAgencia() {
+		return agencia;
+	}
+
+	public void setAgencia(String agencia) {
+		this.agencia = agencia;
+	}
+
+	@Column(name = "numeroConta", nullable = true)
+	public String getNumeroConta() {
+		return numeroConta;
+	}
+
+	public void setNumeroConta(String numeroConta) {
+		this.numeroConta = numeroConta;
+	}
+
+	@Column(name = "contato", nullable = true)
+	public String getContato() {
+		return contato;
+	}
+
+	public void setContato(String contato) {
+		this.contato = contato;
+	}
+
+	@Column(name = "telefone", nullable = true)
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	@Column(name = "email", nullable = true)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "ativa", nullable = false)
+	public Boolean getAtiva() {
+		return ativa;
+	}
+
+	public void setAtiva(Boolean ativa) {
+		this.ativa = ativa;
+	}
+	
+	@Column(name = "dataAbertura", nullable = false)
+	public Calendar getDataAbertura() {
+		return dataAbertura;
+	}
+	
+	public void setDataAbertura(Calendar dataAbertura) {
+		this.dataAbertura = dataAbertura;
+	}
+
+	@Column(name = "dataEncerramento", nullable = true)
+	public Calendar getDataEncerramento() {
+		return dataEncerramento;
+	}
+
+	public void setDataEncerramento(Calendar dataEncerramento) {
+		this.dataEncerramento = dataEncerramento;
+	}
+
+	@Column(name = "saldo", nullable = false)
+	public Double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(Double saldo) {
+		this.saldo = saldo;
+	}
+
+	@Column(name = "saldoMinimo", nullable = false)
+	public Double getSaldoMinimo() {
+		return saldoMinimo;
+	}
+
+	public void setSaldoMinimo(Double saldoMinimo) {
+		this.saldoMinimo = saldoMinimo;
+	}
+
+	@Column(name = "saldoMaximo", nullable = true)
+	public Double getSaldoMaximo() {
+		return saldoMaximo;
+	}
+
+	public void setSaldoMaximo(Double saldoMaximo) {
+		this.saldoMaximo = saldoMaximo;
+	}
+
+	@OneToMany(mappedBy = "contaCaixa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ContaPagar> getContaPagarList() {
+		return contaPagarList;
+	}
+
+	public void setContaPagarList(Collection<ContaPagar> contaPagarList) {
+		this.contaPagarList = contaPagarList;
+	}
+
+	@OneToMany(mappedBy = "contaCaixa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ContaReceber> getContaReceberList() {
+		return contaReceberList;
+	}
+
+	public void setContaReceberList(Collection<ContaReceber> contaReceberList) {
+		this.contaReceberList = contaReceberList;
+	}
+
+	@OneToMany(mappedBy = "contaCaixa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<Movimentacao> getMovimentacaoList() {
+		return movimentacaoList;
+	}
+
+	public void setMovimentacaoList(Collection<Movimentacao> movimentacaoList) {
+		this.movimentacaoList = movimentacaoList;
+	}
+	
+	@Transient
+	public String getSaldoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(saldo);
+	}
+	
+	@Transient
+	public String getSaldoMaximoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(saldoMaximo);
+	}
+	
+	@Transient
+	public String getSaldoMinimoString() {
+		DecimalFormat formatador = new DecimalFormat("R$ #,##0.00");
+		return formatador.format(saldoMinimo);
+	}
+
+}

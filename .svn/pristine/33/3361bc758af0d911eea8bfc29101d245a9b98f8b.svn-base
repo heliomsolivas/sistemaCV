@@ -1,0 +1,267 @@
+package estoque.controller;
+
+import estoque.bean.Fabricante;
+import estoque.bean.Fornecedor;
+import estoque.bean.Produto;
+import estoque.dao.DaoFabricante;
+import estoque.dao.DaoFornecedor;
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import hotel.dao.DaoHotel;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("estoque/")
+public class EstoqueController {
+	
+	private final DaoProduto daoProduto;
+	private final DaoFabricante daoFabricante;
+	private final DaoFornecedor daoFornecedor;
+	private final DaoHotel daoHotel;
+	private final Erro erro;
+	private final Result result;
+
+	public EstoqueController(DaoProduto daoProduto, DaoFabricante daoFabricante, DaoFornecedor daoFornecedor, DaoHotel daoHotel, Erro erro, Result result) {
+		this.daoProduto = daoProduto;
+		this.daoFabricante = daoFabricante;
+		this.daoFornecedor = daoFornecedor;
+		this.daoHotel = daoHotel;
+		this.erro = erro;
+		this.result = result;
+	}
+
+	@Path("consultarFabricante/{id}")
+	public void consultarFabricante(Long id) {
+		result.include("fabricante", daoFabricante.buscar(id));
+	}
+	
+	@Path("consultarFornecedor/{id}")
+	public void consultarFornecedor(Long id) {
+		result.include("fornecedor", daoFornecedor.buscar(id));
+	}
+	
+	@Path("consultarProduto/{id}")
+	public void consultarProduto(Long id) {
+		result.include("produto", daoProduto.buscar(id));
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("divListaFabricante/{parametro}")
+	public void divListaFabricante(String parametro) {
+		if (parametro.equals("1"))
+			result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+		else
+			result.include("fabricanteList", daoFabricante.pesquisarFabricante(parametro));
+	}
+	
+	@Path("divListaFornecedor/{parametro}")
+	public void divListaFornecedor(String parametro) {
+		if (parametro.equals("1"))
+			result.include("fornecedorList", daoFornecedor.listarTudo("id", "ASC"));
+		else
+			result.include("fornecedorList", daoFornecedor.pesquisarFornecedor(parametro));
+	}
+	
+	@Path("divListaProduto/{parametro}")
+	public void divListaProduto(String parametro) {
+		if (parametro.equals("1"))
+			result.include("produtoList", daoProduto.listarTudo("id", "ASC"));
+		else
+			result.include("produtoList", daoProduto.pesquisarProduto(parametro));
+	}
+	
+	@Path("cadastrarFabricante")
+	public void formFabricante() {
+	}
+	
+	@Path("cadastrarFornecedor")
+	public void formFornecedor() {
+		result.include("hotel", daoHotel.busca());
+	}
+	
+	@Path("cadastrarProduto")
+	public void formProduto() {
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listaFabricante")
+	public void listaFabricante() {
+		result.include("fabricanteList", daoFabricante.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listaFornecedor")
+	public void listaFornecedor() {
+		result.include("fornecedorList", daoFornecedor.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listaProduto")
+	public void listaProduto() {
+		result.include("produtoList", daoProduto.listarTudo("id", "ASC"));
+	}
+	
+	@Post("gravarFabricante")
+	public void gravarFabricante(Fabricante fabricante) {
+		try {
+			daoFabricante.adicionar(fabricante);
+			
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarFabricante")
+	public void alterarFabricante(Fabricante fabricante) {
+		try {
+			Fabricante fabricante2 = daoFabricante.buscar(fabricante.getId());
+			
+			fabricante2.setNome(fabricante.getNome());
+			
+			daoFabricante.atualizar(fabricante2);
+
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerFabricante/{id}")
+	public void removerFabricante (Long id) {
+		try {
+			Fabricante fabricante = daoFabricante.buscar(id);
+			
+			daoFabricante.remover(fabricante);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarFornecedor")
+	public void gravarFornecedor(Fornecedor fornecedor) {
+		try {
+			daoFornecedor.adicionar(fornecedor);
+			
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarFornecedor")
+	public void alterarFornecedor(Fornecedor fornecedor) {
+		try {
+			Fornecedor fornecedor2 = daoFornecedor.buscar(fornecedor.getId());
+			
+			fornecedor2.setBairro(fornecedor.getBairro());
+			fornecedor2.setCep(fornecedor.getCep());
+			fornecedor2.setCidade(fornecedor.getCidade());
+			fornecedor2.setCnpj(fornecedor.getCnpj());
+			fornecedor2.setComplemento(fornecedor.getComplemento());
+			fornecedor2.setContatoVendas(fornecedor.getContatoVendas());
+			fornecedor2.setEndereco(fornecedor.getEndereco());
+			fornecedor2.setInscricaoEstadual(fornecedor.getInscricaoEstadual());
+			fornecedor2.setNome(fornecedor.getNome());
+			fornecedor2.setTelefoneComercial(fornecedor.getTelefoneComercial());
+			fornecedor2.setTelefoneContato(fornecedor.getTelefoneContato());
+			fornecedor2.setUf(fornecedor.getUf());
+			
+			daoFornecedor.atualizar(fornecedor2);
+
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerFornecedor/{id}")
+	public void removerFornecedor (Long id) {
+		try {
+			Fornecedor fornecedor = daoFornecedor.buscar(id);
+			
+			daoFornecedor.remover(fornecedor);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarProduto")
+	public void gravarProduto(Produto produto) {
+		try {
+			if (produto.getQuantidade() >= 1)
+				produto.setAtivo(true);
+			else
+				produto.setAtivo(false);
+			
+			daoProduto.adicionar(produto);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarProduto")
+	public void alterarProduto(Produto produto) {
+		try {
+			Produto produto2 = daoProduto.buscar(produto.getId());
+			Fabricante fabricante = daoFabricante.buscar(produto.getFabricante().getId());
+			
+			produto2.setQuantidade(produto.getQuantidade());
+			if (produto.getQuantidade() == 0)
+				produto2.setAtivo(false);
+			else
+				produto2.setAtivo(true);
+			produto2.setCategoria(produto.getCategoria());
+			produto2.setFabricante(fabricante);
+			produto2.setValorUnitario(produto.getValorUnitario());
+			produto2.setNome(produto.getNome());
+			
+			daoProduto.atualizar(produto2);
+
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerProduto/{id}")
+	public void removerProduto (Long id) {
+		try {
+			Produto produto = daoProduto.buscar(id);
+			
+			daoProduto.remover(produto);
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("atualizaDadosProduto/{id}")
+	public void atualizaDadosProduto(Long id) {
+		Produto produto = daoProduto.buscar(id);
+		result.use(Results.http()).body(produto.getCategoria() + "],[" + produto.getValorUnitarioString() + "],[" + produto.getValorUnitario());
+	}
+}

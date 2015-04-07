@@ -1,0 +1,17 @@
+package compras.dao;
+
+import generic.dao.Dao;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+import compras.bean.ItemOrdemCompra;
+
+@Component
+public class DaoItemOrdemCompra extends Dao<ItemOrdemCompra>{
+
+	public DaoItemOrdemCompra(Session session) {
+		super(session, ItemOrdemCompra.class);
+	}
+}

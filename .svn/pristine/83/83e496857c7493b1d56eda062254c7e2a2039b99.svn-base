@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<style type="text/css">
+			.verticalLine {
+				float: left;
+				margin-top: 0px;
+			    border-left: 1px solid #000;
+			    height: 130px;
+			}
+		</style>
+	</head>
+	<body class="divConteudo">
+		<table border="0" cellspacing="0" cellpadding="0" style="width: 900px;">
+			<tr valign="bottom" style="height: 0px;">
+				<td rowspan="11" style="width: 15px;"></td>
+				<td colspan="9" style="width: 870px;"></td>
+				<td rowspan="11" style="width: 15px;"></td>
+			</tr>
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="9" style="width: 870px; text-align: right;">
+					<button type="button" class="k-button" onclick="consultar('<c:url value="/clientes/itemConsumo/cadastrar/${hospedeHospedagem.hospedagem.id}"/>', 'Selecione uma Categoria', 'auto', '450', '400', 'cadastrarItemConsumo');">
+						<span class="k-icon k-i-search"></span> <f:message key="campo.resumo.financeiro"/>
+					</button>
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 0px;">
+				<td colspan="4" style="width: 510;">
+					<hr width="510" color="black" size="1" style="margin-left: 0px;">
+				</td>
+				<td rowspan="10" style="width: 1px;">
+					<div class="verticalLine"></div>
+				</td>
+				<td colspan="4" style="width: 360px;">
+					<hr width="360" color="black" size="1" style="margin-left: 0px;">
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 0px;">
+				<td colspan="4" class="titulo textoMaiusculo" style="width: 510px;">
+					<f:message key="campo.resumo.hospedes"/>
+				</td>		
+				<td colspan="4" class="titulo textoMaiusculo" style="width: 360px;">
+					<span style="margin-left: 10px;">
+						<f:message key="campo.resumo.lancamentos"/>
+					</span>
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 0px;">
+				<td colspan="9" style="width: 870px;">
+					<hr width="870" color="black" size="1" style="margin-left: 0px;">
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 10px;">
+				<td colspan="4" class="titulo textoMaiusculo" style="width: 510px;">
+					${hospedeHospedagem.hospede.nome}
+				</td>
+				<td colspan="5" style="width: 360px;">
+					<span class="titulo" style="margin-left: 10px;">
+						<f:message key="campo.resumo.consumo"/> ${hospedeHospedagem.hospedagem.valorTotalConsumoString}
+					</span>
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="4" class="textoMaiusculo" style="width: 510px;">
+					<f:message key="campo.resumo.nome.hospede1"/>
+				</td>
+				<td colspan="5" style="width: 360px;">
+					<span class="titulo" style="margin-left: 10px;">
+						<f:message key="campo.resumo.diverso"/> ${hospedeHospedagem.hospedagem.valorTotalDiversosString}
+					</span>
+				</td>
+			</tr>		
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="4" class="textoMaiusculo" style="width: 510px;">
+					<f:message key="campo.resumo.nome.hospede2"/>
+				</td>
+				<td colspan="5" style="width: 360px;">
+					<span class="titulo" style="margin-left: 10px;">
+						<f:message key="campo.resumo.diaria"/> ${hospedeHospedagem.hospedagem.valorTotalDiariaString}
+					</span>
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="4" class="textoMaiusculo" style="width: 510px;">
+					<f:message key="campo.resumo.nome.hospede3"/>
+				</td>
+				<td colspan="5" style="width: 360px;">
+					<span class="titulo" style="margin-left: 10px;"></span>
+				</td>
+			</tr>
+			<tr valign="bottom" style="height: 20px;">
+				<td colspan="4" class="textoMaiusculo" style="width: 510px;"></td>
+				<td colspan="5" style="width: 360px;">
+					<div class="total">
+						<span class="titulo" style="margin-left: 10px;">
+							<f:message key="campo.resumo.valor.total"/> ${hospedeHospedagem.hospedagem.valorTotalString}
+						</span>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {    
+	$("#chequeList").load(caminhoAbsoluto + "financeiro/cheque/pesquisar", {numeroCheque: null, nomeTitular: null});
+	
+	$("#numeroCheque").keyup(function() {
+		var parametro = $(this).val();
+		        		 	
+		if (parametro != ''){
+			$("#chequeList").load(caminhoAbsoluto + "financeiro/cheque/pesquisar", {numeroCheque: parametro, nomeTitular: null});
+		} else {
+			$("#chequeList").load(caminhoAbsoluto + "financeiro/cheque/pesquisar", {numeroCheque: null, nomeTitular: null});
+		}
+	});
+	
+	$("#nomeTitular").keyup(function(){
+		var parametro = $(this).val();
+				
+		if (parametro != ''){						
+			$("#chequeList").load(caminhoAbsoluto + "financeiro/cheque/pesquisar", {numeroCheque: null, nomeTitular: parametro});
+		} else {
+			$("#chequeList").load(caminhoAbsoluto + "financeiro/cheque/pesquisar", {numeroCheque: null, nomeTitular: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarCheque() {
+    validator =  $("#formCheque").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/cheque/gravar",
+			data: $("#formCheque").serialize(),
+			success: function(retorno) {
+						$("#cadastrarCheque").data("kendoWindow").destroy();
+						$("#listaCheque").load(caminhoAbsoluto + "financeiro/cheque/lista");
+					 }
+		});
+	}
+}
+
+function alterarCheque() {
+    validator =  $("#formAlterarCheque").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/cheque/gravar",
+			data: $("#formAlterarCheque").serialize(),
+			success: function(retorno) {						
+						$("#consultarCheque").data("kendoWindow").destroy();
+						$("#listaCheque").load(caminhoAbsoluto + "financeiro/cheque/lista");
+					 }
+		});
+	}
+}

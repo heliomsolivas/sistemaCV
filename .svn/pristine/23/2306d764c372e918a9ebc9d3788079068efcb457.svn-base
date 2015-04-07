@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<html lang="pt-br">
+	<head>		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabelaItemAcomodacao").tablesorter({
+					headers: {
+						4: {sorter: false, filter: false}
+					},
+			   		widthFixed : true,
+					ignoreCase: false,
+					showProcessing: true,
+					widgets: ["filter", "scroller"],
+				   	widgetOptions : {
+				   	 	scroller_height : 300,
+			     	 	scroller_barWidth : 16,
+				      	scroller_upAfterSort: true,
+				      	scroller_jumpToHeader: true,
+				      	scroller_idPrefix : ''
+				   }
+				});
+			});
+			
+			function excluirItemAcomodacao(id) {
+				$.confirm({
+		            'title': '<f:message key="excluir"/>',
+		            'message': '<f:message key="mensagem.excluir.item"/>',
+		            'buttons': {
+		                '<f:message key="sim"/>': {
+		                    'class'	: 'confirm',
+		                    'action': function(){
+		                    	$("#divItemAcomodacao").waitMe({effect :'ios', text :'', bg :'rgba(255,255,255,0.5)', color :'#000', sizeW :'', sizeH :''});
+		                    	$.ajax({
+		    						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    						type: "POST",
+		    						url: "<c:url value="/hotel/item/acomodacao/remover"/>",
+		    						data: {id: id},
+		    						success: function(retorno) {
+		    									$("#divItemAcomodacao").load("<c:url value="/hotel/item/acomodacao/pesquisar"/>", {id: ${acomodacao.id}});
+		    								},
+    								  error: function(retorno) {
+  								 				jAlert('<f:message key="mensagem.erro.excluir.item"/>', '<f:message key="erro"/>');
+  								 				$("#divItemAcomodacao").load("<c:url value="/hotel/item/acomodacao/pesquisar"/>", {id: ${acomodacao.id}});
+					                		}
+		    					});
+		                    }
+		                },
+		                '<f:message key="nao"/>': {
+		                    'class'	: 'cancel',
+		                    'action': function(){}
+		                }
+		            }
+		        });
+			}
+		</script>
+		<style type="text/css">
+			.tablesorter-scroller-table {
+			    min-height: 233px;
+			    overflow-x: hidden;
+			}
+			.tablesorter-scroller-table .tablesorter-filter-row {
+				height: 0px !important;
+				display: none !important;
+			}
+			.tablesorter-scroller-table table.tablesorter thead tr.tablesorter-headerRow {
+				height: 0px !important;
+			}
+			.divLista{
+				border-bottom: 1px solid #C0C0C0;
+			}
+		</style>
+	</head>
+	<body class="divConteudo">
+		<div class="divLista" style="width: 570px; height: 295px; margin: 0px;">
+			<table class="tabela" id="tabelaItemAcomodacao">
+				<thead>
+					<tr style="height: 30px;">
+						<th style="width: 200px;"><f:message key="campo.nome.produto"/></th>
+						<th style="width: 90px;"><f:message key="campo.categoria"/></th>
+						<th style="width: 75px;"><f:message key="titulo.lista.quantidade"/></th>
+						<th style="width: 85px;"><f:message key="titulo.lista.valor.unitario"/></th>
+						<th style="width: 80px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${!empty itensFrigobarList}">
+							<c:forEach items="${itensFrigobarList}" var="item">
+								<tr style="height: 35px;">
+									<td style="width: 200px; text-align:center;">${item.produto.nome}</td>
+									<td style="width: 90px; text-align:center;">${item.produto.categoria}</td>
+									<td style="width: 75px; text-align:center;">${item.quantidade}</td>
+									<td style="width: 85px; text-align:center;">${item.produto.valorUnitarioString}</td>
+									<td style="width: 80px; text-align:left;">
+										<a href="#" class="k-button k-button-icontext k-edit" style="width: 25px; margin-left: 10px;" onclick="consultar('<c:url value="/hotel/item/acomodacao/consultar/${item.id}"/>', '', '130px', '615', '615', 'consultarItemAcomodacao');">
+											<span class="k-icon k-edit"></span>
+										</a>
+										<a href="#" class="k-button k-button-icontext k-delete" style="width: 25px;" onclick="excluirItemAcomodacao(${item.id})">
+											<span class="k-icon k-delete"></span>
+										</a>
+									</td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr style="height: 100px;"></tr>
+							<tr style="height: 25px; text-align: center;">
+								<td colspan="5"><f:message key="mensagem.frigobar.nao.cadastrado"/></td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

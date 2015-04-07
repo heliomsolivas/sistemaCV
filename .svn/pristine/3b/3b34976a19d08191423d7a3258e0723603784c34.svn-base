@@ -1,0 +1,84 @@
+package clientes.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import clientes.bean.HospedeHospedagem;
+
+@Component
+public class DaoHospedeHospedagem extends Dao<HospedeHospedagem>{
+
+	public DaoHospedeHospedagem(Session session) {
+		super(session, HospedeHospedagem.class);
+	}
+	
+	public HospedeHospedagem buscaHospedagemAcomodacao (Long idAcomodacao) {
+		HospedeHospedagem hospedeHospedagem = null;
+
+		String consulta = "FROM CLIENTES_HOSPEDEHOSPEDAGEM WHERE hospedagem.acomodacao.id = :idAcomodacao";
+		consulta += " AND ativo = 1";
+
+		Query query = super.getSession().createQuery(consulta);
+		query.setParameter("idAcomodacao", idAcomodacao);
+
+		if (query.list().size() != 0)
+			hospedeHospedagem = (HospedeHospedagem) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return hospedeHospedagem;
+	}
+	
+	public HospedeHospedagem buscaHospedagemAtiva () {
+		HospedeHospedagem hospedeHospedagem = null;
+
+		String consulta = "FROM CLIENTES_HOSPEDEHOSPEDAGEM WHERE ativo = 1";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		if (query.list().size() != 0)
+			hospedeHospedagem = (HospedeHospedagem) query.list().get(0);
+
+		query.setCacheable(true);
+
+		return hospedeHospedagem;
+	}
+	
+	public Collection<HospedeHospedagem> pesquisarHospedagem (String nome) {
+		Collection<HospedeHospedagem> hospedeHospedagemList = new ArrayList<HospedeHospedagem>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		String consulta = "FROM CLIENTES_HOSPEDEHOSPEDAGEM WHERE 1 = 1";
+
+		if (nome != null) {
+			consulta += " AND hospede.nome LIKE :nome OR hospedagem.acomodacao.nome LIKE :nome";
+			parameters.put("nome", "%" + nome + "%");
+		} else
+			consulta += " ORDER BY id ASC";
+
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			HospedeHospedagem item = (HospedeHospedagem) query.list().get(x);
+			hospedeHospedagemList.add(item);
+		}
+
+		return hospedeHospedagemList;
+	}
+}

@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$("#dataNascimentoHospede").datetimepicker({lang:'pt', timepicker: false, format:'d/m/Y'});
+				$("#telefoneCelularHospede").mask("(99) 99999-9999");
+				$("#telefoneResidencialHospede").mask("(99) 9999-9999");
+				$("#telefoneComercialHospede").focusout(function(){
+				    var phone, element;
+				    element = $(this);
+				    element.unmask();
+				    phone = element.val().replace(/\D/g, '');
+				    if(phone.length > 10) {
+				        element.mask("(99) 99999-999?9");
+				    } else {
+				        element.mask("(99) 9999-9999?9");
+				    }
+				}).trigger('focusout');
+				$("#rgHospede").mask("99.999.999-9");
+				$("#cpfHospede").mask("999.999.999-99");
+				$("#cepHospede").mask("99.999-999");
+				
+				var options = {position: {x:'center', y:'top'}, lang: 'hr', errorMessages: {hr: {'required':   '<f:message key="campo.obrigatorio"/>' }}};
+			    
+				$("#formHospede").bValidator(options);
+				
+				$("#formHospede").submit(function() {
+					if($("#formHospede").data("bValidator").isValid()){
+						$("#botaoGravarHospede").get(0).disabled = true;
+					 	$.ajax({
+							contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+							type: "POST",
+							url: "<c:url value="/clientes/hospede/gravar"/>",
+							data: $("#formHospede").serialize(),
+							success: function (retorno) {
+										$("#cadastrarHospede").data("kendoWindow").destroy();
+										$("#listaHospede").load("<c:url value="/clientes/hospede/lista"/>");
+										$("#hospedeHospedagemList").load("<c:url value="/clientes/hospedeHospedagem/pesquisar"/>", {codigo: null, nomeHospede: null});
+				           			}
+						});
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body class="divConteudo">
+	    <form id="formHospede" name="formHospede" action="#">
+	    	<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+	   			<tr valign="bottom" style="height: 20px;">
+	   				<td rowspan="33" style="width: 15px;"></td>
+	   				<td colspan="2" style="width: 390px;">
+	   					<f:message key="campo.nome.hospede"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.sexo"/>
+	   				</td>
+	   				<td rowspan="33" style="width: 15px;"></td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.nome" style="width: 370px;">
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<select data-bvalidator="required" name="hospede.sexo" style="width: 180px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="Masculino"><f:message key="masculino"/></option>
+							<option value="Feminino"><f:message key="feminino"/></option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.cor"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<f:message key="campo.data.nascimento"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.estado.civil"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<select data-bvalidator="required" name="hospede.cor" style="width: 175px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="Branca"><f:message key="cor.branca"/></option>
+							<option value="Amarela"><f:message key="cor.amarela"/></option>
+							<option value="Negra"><f:message key="cor.negra"/></option>
+							<option value="Parda"><f:message key="cor.parda"/></option>
+							<option value="Indigena"><f:message key="cor.indigena"/></option>
+						</select>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<div class="k-textbox k-space-right" style="width: 175px;">
+			            	<input id="dataNascimentoHospede" type="text" data-bvalidator="required" name="hospede.dataNascimento">
+			                <span class="k-icon k-i-calendar"></span>
+			            </div>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<select data-bvalidator="required" name="hospede.estadoCivil" style="width: 180px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="Solteiro(a)"><f:message key="solteiro"/></option>
+							<option value="Casado(a)"><f:message key="casado"/></option>
+							<option value="Divorciado(a)"><f:message key="divorciado"/></option>
+							<option value="Viuvo(a)"><f:message key="viuvo"/></option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.rg"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<f:message key="campo.cpf"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.naturalidade"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<input id="rgHospede" type="text" class="k-textbox" data-bvalidator="required" name="hospede.rg" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<input id="cpfHospede" type="text" class="k-textbox" data-bvalidator="required" name="hospede.cpf" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.naturalidade" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.nacionalidade"/>
+	   				</td>
+	   				
+	   				<td colspan="2" style="width: 375px;">
+	   					<f:message key="campo.email"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.nacionalidade" style="width: 175px;"/>
+	   				</td>
+	   				<td colspan="2" style="width: 375px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.email" style="width: 375px;" />
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.telefone.residencial"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<f:message key="campo.telefone.celular"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.telefone.comercial"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<input id="telefoneResidencialHospede" type="text" class="k-textbox" data-bvalidator="required" name="hospede.telefoneResidencial" style="width: 175px;"/> 
+	   				</td>
+	   				<td style="width: 195px">
+	   					<input id="telefoneCelularHospede" type="text" class="k-textbox" name="hospede.telefoneCelular" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input id="telefoneComercialHospede" type="text" class="k-textbox" data-bvalidator="required" name="hospede.telefoneComercial" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.cep"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<input id="cepHospede" type="text" class="k-textbox" data-bvalidator="required" name="hospede.cep" style="width: 175px;"/>
+	   				</td>	   				
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px">
+	   					<f:message key="campo.endereco"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.bairro"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.endereco" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.bairro" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px">
+	   					<f:message key="campo.complemento"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<f:message key="campo.cidade"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.estado"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px">
+	   					<input type="text" class="k-textbox" name="hospede.complemento" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.cidade" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<select data-bvalidator="required" name="hospede.estado" style="width: 180px;">
+	   						<option value=""><f:message key="selecione"/></option>
+							<option value="São Paulo">São Paulo</option>
+							<option value="Rio de Janeiro">Rio de Janeiro</option>
+						</select>
+	   				</td>
+	   			</tr>	   			
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px">
+	   					<f:message key="campo.profissao"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<f:message key="campo.situacao"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.profissao" style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 180px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.situacao" style="width: 180px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<f:message key="campo.ultima.procedencia"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<input type="text" class="k-textbox" name="hospede.ultimaProcedencia" style="width: 265px;"/> 
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 285px">
+	   					<f:message key="campo.proximo.destino"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<input type="text" class="k-textbox" name="hospede.proximoDestino" style="width: 265px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<f:message key="campo.motivo.viagem"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.motivoViagem" style="width: 265px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<f:message key="campo.meio.transporte"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 285px;">
+	   					<input type="text" class="k-textbox" data-bvalidator="required" name="hospede.meioTransporte" style="width: 265px;"/>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<f:message key="campo.observacoes"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 570px;">
+	   					<textarea class="k-textbox" name="hospede.observacoes" style="width: 570px; height:90px;"></textarea>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2">
+	   					<f:message key="campo.selecione.foto"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2">
+	   					<input type="file" name="hospede.foto"/>
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 80px;">
+	   				<td colspan="3" style="width: 570px; text-align: center;">
+						<button type="reset" name="limpar" class="k-button"><span class='k-icon k-cancel'></span> <f:message key="limpar"/></button>
+	   					<button id="botaoGravarHospede"type="submit" class="k-button"><span class='k-icon k-update'></span> <f:message key="gravar"/></button>
+	   				</td>
+	   			</tr>
+            </table>
+	    </form>
+	</body>
+</html>

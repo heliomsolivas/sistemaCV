@@ -1,0 +1,454 @@
+package clientes.controller;
+
+import estoque.dao.DaoProduto;
+import generic.annotation.LogonRequired;
+import generic.annotation.PerfilRequired;
+import generic.component.Erro;
+import generic.component.UserSession;
+import hotel.bean.Acomodacao;
+import hotel.bean.Status;
+import hotel.dao.DaoAcomodacao;
+import hotel.dao.DaoHotel;
+import hotel.dao.DaoStatus;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
+import clientes.bean.Consumo;
+import clientes.bean.Hospedagem;
+import clientes.bean.Hospede;
+import clientes.bean.HospedeHospedagem;
+import clientes.bean.ItemConsumo;
+import clientes.dao.DaoConsumo;
+import clientes.dao.DaoHospedagem;
+import clientes.dao.DaoHospede;
+import clientes.dao.DaoHospedeHospedagem;
+import clientes.dao.DaoItemConsumo;
+
+@LogonRequired @PerfilRequired
+@Resource
+@Path("clientes/")
+public class ClientesController {
+	
+	private final DaoHotel daoHotel;
+	private final DaoHospede daoHospede;
+	private final DaoProduto daoProduto;
+	private final DaoConsumo daoConsumo;
+	private final DaoItemConsumo daoItemConsumo;
+	private final DaoHospedeHospedagem daoHospedeHospedagem;
+	private final DaoStatus daoStatus;
+	private final DaoHospedagem daoHospedagem;
+	private final DaoAcomodacao daoAcomodacao;
+	private final UserSession userSession;
+	private final Erro erro;
+	private final Result result;	
+	
+	public ClientesController(DaoHotel daoHotel, DaoHospede daoHospede, DaoProduto daoProduto, DaoConsumo daoConsumo, 
+		DaoItemConsumo daoItemConsumo, DaoHospedeHospedagem daoHospedeHospedagem,DaoStatus daoStatus, DaoHospedagem daoHospedagem, 
+		DaoAcomodacao daoAcomodacao, UserSession userSession, Erro erro, Result result) {
+		this.daoHotel = daoHotel;
+		this.daoHospede = daoHospede;
+		this.daoProduto = daoProduto;
+		this.daoConsumo = daoConsumo;
+		this.daoItemConsumo = daoItemConsumo;
+		this.daoHospedeHospedagem = daoHospedeHospedagem;
+		this.daoStatus = daoStatus;
+		this.daoHospedagem = daoHospedagem;
+		this.daoAcomodacao = daoAcomodacao;
+		this.userSession = userSession;
+		this.erro = erro;
+		this.result = result;
+	}
+	
+	@Path("cadastrarItemConsumo/{id}")
+	public void cadastrarItemConsumo(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("cadastrarItemDiaria/{id}")
+	public void cadastrarItemDiaria(Long id) {		
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("cadastrarItemDiversos/{id}")
+	public void cadastrarItemDiversos(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("cadastrarItemProduto/{id}")
+	public void cadastrarItemProduto(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+		result.include("produtoList", daoProduto.listarAtivos());
+	}
+	
+	@Path("consultarHospedagem/{id}")
+	public void consultarHospedagem(Long id) {		
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("consultarHospede/{id}")
+	public void consultarHospede(Long id) {
+		result.include("hospede", daoHospede.buscar(id));
+	}
+	
+	@Path("divConsultarHospedagem/{id}")
+	public void divConsultarHospedagem(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("divConsumoList/{id}")
+	public void divConsumoList(Long id) {
+		HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+		
+		result.include("itemConsumoList", daoConsumo.buscaItemConsumo(hospedeHospedagem.getHospedagem().getId()));
+	}
+	
+	@Path("divListaHospedagem/{parametro}")
+	public void divListaHospedagem(String parametro) {
+		if (parametro.equals("1"))
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.listarTudo("id", "ASC"));
+		else
+			result.include("hospedeHospedagemList", daoHospedeHospedagem.pesquisarHospedagem(parametro));
+	}
+	
+	@Path({"divListaHospede/a/{parametro}", "divListaHospede/b/{parametro2}"})
+	public void divListaHospede(Integer parametro, String parametro2) {
+		if (parametro2 != null){
+			if (parametro2.equals("0"))
+				result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+			else
+				result.include("hospedeList", daoHospede.pesquisarHospede(null, parametro2));
+		} else if (parametro != null) 
+			result.include("hospedeList", daoHospede.pesquisarHospede(parametro, null));
+		else
+			result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Path({"divListaHospede2/a/{parametro}", "divListaHospede2/b/{parametro2}"})
+	public void divListaHospede2(Integer parametro, String parametro2) {
+		if (parametro2 != null){
+			if (parametro2.equals("0"))
+				result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+			else
+				result.include("hospedeList", daoHospede.pesquisarHospede(null, parametro2));
+		} else if (parametro != null) 
+			result.include("hospedeList", daoHospede.pesquisarHospede(parametro, null));
+		else
+			result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Path("divResumoLancamento/{id}")
+	public void divResumoLancamento(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+	}
+	
+	@Path("exibirInfoHospedagem/{id}")
+	public void exibirInfoHospedagem(Long id) {
+		result.include("hospedeHospedagem", daoHospedeHospedagem.buscar(id));
+		result.include("acomodacaoList", daoAcomodacao.listarAtivos());
+	}
+	
+	@Path("formCheckIn/{id}")
+	public void formCheckIn (Long id) {
+		result.include("acomodacao", daoAcomodacao.buscar(id));
+		result.include("hotel", daoHotel.busca());
+		result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarHospedagem")
+	public void formHospedagem() {
+		result.include("acomodacaoList", daoAcomodacao.listarAtivos());
+		result.include("hotel", daoHotel.busca());
+		result.include("hospedeList", daoHospede.listarTudo("id", "ASC"));
+	}
+	
+	@Path("cadastrarHospede")
+	public void formHospede() {
+	}
+	
+	@Path("listaHospedagem")
+	public void listaHospedagem() {
+		result.include("hospedeHospedagemList", daoHospedeHospedagem.listarTudo("id", "ASC"));
+	}
+	
+	@Path("listaHospede")
+	public void listaHospede() {
+	}
+	
+	@Post("gravarHospedagem")
+	public void gravarHospedagem (Hospedagem hospedagem, Long idHospede, HospedeHospedagem hospedeHospedagem) {
+		try {
+			String observacao = "";
+			
+			if(hospedagem.getObservacao() != null){
+				observacao = hospedagem.getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			Hospede hospede = daoHospede.buscar(idHospede);
+			Acomodacao acomodacao = daoAcomodacao.buscar(hospedagem.getAcomodacao().getId());
+			Calendar data = new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR"));
+			
+			acomodacao.setStatus(daoStatus.buscar(2L));
+			hospedagem.setValorDiaria(acomodacao.getValorDiaria());
+			hospedagem.setValorTotalConsumo(00.0);
+			hospedagem.setValorTotalDiaria(00.0);
+			hospedagem.setValorTotalDiversos(00.0);
+			hospedagem.setObservacao(observacao);
+			hospedagem.setDataCheckIn(data);
+			
+			if (hospedagem.getDataCheckOut() != null) {
+				Integer numeroDiarias = hospedagem.getDataCheckOut().get(Calendar.DAY_OF_MONTH) - data.get(Calendar.DAY_OF_MONTH);
+				
+				hospedagem.setNumeroDiarias(numeroDiarias);
+				hospedagem.setValorTotal(acomodacao.getValorDiaria() * numeroDiarias);
+				hospedagem.setValorTotalDiaria(acomodacao.getValorDiaria() * numeroDiarias);
+			}
+			
+			daoHospedagem.adicionar(hospedagem);
+			
+			Hospedagem hospedagem2 = daoHospedagem.buscar(hospedagem.getId());
+			
+			hospedeHospedagem.setHospede(hospede);
+			hospedeHospedagem.setHospedagem(hospedagem2);
+			hospedeHospedagem.setAtivo(true);
+			
+			daoHospedeHospedagem.adicionar(hospedeHospedagem);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarHospede")
+	public void gravarHospede(Hospede hospede) {
+		try {
+			String observacoes = hospede.getObservacoes();
+			observacoes = observacoes.replaceAll("\\<.*?\\>", "");
+			observacoes = observacoes.replaceAll("\n", "<br/>");
+			
+			hospede.setHotel(daoHotel.busca());
+			hospede.setDataCadastro(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR")));
+			hospede.setObservacoes(observacoes);
+			
+			daoHospede.adicionar(hospede);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("gravarItemConsumo")
+	public void gravarItemConsumo(ItemConsumo item, Long idHospedagem, Consumo consumo) {
+		try {
+			item.setData(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt","BR")));
+			Hospedagem hospedagem2 = daoHospedagem.buscar(idHospedagem);
+			
+			Double valorTotalItem = item.getValorTotal();
+			Double valorTotal = valorTotalItem +  hospedagem2.getValorTotal();
+			
+			if (item.getCategoria().equals("Produto"))
+				hospedagem2.setValorTotalConsumo(valorTotalItem);
+			
+			if (item.getCategoria().equals("Diária")) {
+				Integer quantidade = item.getQuantidade();
+				
+				hospedagem2.setValorTotalDiaria(hospedagem2.getValorDiaria() + valorTotalItem);
+				hospedagem2.setNumeroDiarias(hospedagem2.getNumeroDiarias() + quantidade);
+			}
+			
+			if (item.getCategoria().equals("Diversos"))
+				hospedagem2.setValorTotalDiversos(valorTotalItem);
+			
+			hospedagem2.setValorTotal(valorTotal);
+			
+			daoItemConsumo.adicionar(item);
+			daoHospedagem.atualizar(hospedagem2);
+			
+			ItemConsumo item2 = daoItemConsumo.buscar(item.getId());
+			
+			consumo.setHospedagem(hospedagem2);
+			consumo.setItem(item2);
+			consumo.setUsuario(this.userSession.getUsuario());
+			
+			daoConsumo.adicionar(consumo);
+			result.include("mensagem", "estoque.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "estoque.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarHospedagem")
+	public void alterarHospedagem(HospedeHospedagem hospedeHospedagem) {
+		try {
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			HospedeHospedagem hospedeHospedagem2 = daoHospedeHospedagem.buscar(hospedeHospedagem.getId());
+			Acomodacao acomodacao2 = daoAcomodacao.buscar(hospedagem.getAcomodacao().getId());
+			Acomodacao acomodacao = daoAcomodacao.buscar(hospedeHospedagem.getHospedagem().getAcomodacao().getId());
+			
+			String observacao = "";
+			
+			if(hospedeHospedagem.getHospedagem().getObservacao() != null){
+				observacao = hospedeHospedagem.getHospedagem().getObservacao();
+				observacao = observacao.replaceAll("\\<.*?\\>", "");
+				observacao = observacao.replaceAll("\n", "<br/>");
+			}
+			
+			Status statusLivre = daoStatus.buscar(1l);
+			Status statusOcupado = daoStatus.buscar(2l);
+			
+			if (hospedeHospedagem.getAtivo() != hospedeHospedagem2.getAtivo()) {
+				if ((hospedeHospedagem.getAtivo() == true) && (acomodacao.getStatus().getTitulo().equals("Ocupado"))) {
+					hospedeHospedagem2.setAtivo(false);
+				} else if ((hospedeHospedagem.getAtivo() == true) && (acomodacao.getStatus().getTitulo().equals("Livre"))){
+					hospedeHospedagem2.setAtivo(true);
+					acomodacao2.setStatus(statusLivre);
+					acomodacao.setStatus(statusOcupado);
+				} else if (hospedeHospedagem.getAtivo() == false){
+					hospedeHospedagem2.setAtivo(false);
+					acomodacao.setStatus(statusLivre);
+				}
+			} else {
+				if (hospedeHospedagem.getAtivo() == true) {
+					acomodacao2.setStatus(statusLivre);
+					acomodacao.setStatus(statusOcupado);
+				}
+			}
+			
+			hospedagem.setAcomodacao(acomodacao);
+			hospedagem.setDataCheckIn(hospedeHospedagem.getHospedagem().getDataCheckIn());
+			hospedagem.setDataCheckOut(hospedeHospedagem.getHospedagem().getDataCheckOut());
+			hospedagem.setCheckOutEstendidoGratuito(hospedeHospedagem.getHospedagem().getCheckOutEstendidoGratuito());
+			hospedagem.setObservacao(observacao);
+			
+			daoHospedagem.atualizar(hospedagem);
+			
+			hospedeHospedagem2.setHospedagem(hospedagem);
+			
+			daoHospedeHospedagem.atualizar(hospedeHospedagem2);
+			
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("alterarHospede")
+	public void alterarHospede(Hospede hospede) {
+		try {
+			String observacoes = hospede.getObservacoes();
+			observacoes = observacoes.replaceAll("\\<.*?\\>", "");
+			observacoes = observacoes.replaceAll("\n", "<br/>");
+			
+			Hospede hospede2 = daoHospede.buscar(hospede.getId());
+			
+			hospede2.setBairro(hospede.getBairro());
+			hospede2.setCep(hospede.getCep());
+			hospede2.setCidade(hospede.getCidade());
+			hospede2.setComplemento(hospede.getComplemento());
+			hospede2.setCor(hospede.getCor());
+			hospede2.setCpf(hospede.getCpf());
+			hospede2.setDataNascimento(hospede.getDataNascimento());
+			hospede2.setEmail(hospede.getEmail());
+			hospede2.setEndereco(hospede.getEndereco());
+			hospede2.setEstado(hospede.getEstado());
+			hospede2.setEstadoCivil(hospede.getEstadoCivil());
+			hospede2.setFoto(hospede.getFoto());
+			hospede2.setMeioTransporte(hospede.getMeioTransporte());
+			hospede2.setMotivoViagem(hospede.getMotivoViagem());
+			hospede2.setNacionalidade(hospede.getNacionalidade());
+			hospede2.setNaturalidade(hospede.getNaturalidade());
+			hospede2.setNome(hospede.getNome());
+			hospede2.setObservacoes(observacoes);
+			hospede2.setProfissao(hospede.getProfissao());
+			hospede2.setProximoDestino(hospede.getProximoDestino());
+			hospede2.setRg(hospede.getRg());
+			hospede2.setSexo(hospede.getSexo());
+			hospede2.setSituacao(hospede.getSituacao());
+			hospede2.setTelefoneCelular(hospede.getTelefoneCelular());
+			hospede2.setTelefoneComercial(hospede.getTelefoneComercial());
+			hospede2.setTelefoneResidencial(hospede.getTelefoneResidencial());
+			hospede2.setUltimaProcedencia(hospede.getUltimaProcedencia());
+			
+			daoHospede.atualizar(hospede2);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerHospedagem/{id}")
+	public void removerHospedeHospedagem (Long id) {
+		try {
+			HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(id);
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			
+			daoHospedeHospedagem.remover(hospedeHospedagem);
+			daoHospedagem.remover(hospedagem);
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("removerHospede/{id}")
+	public void removerHospede (Long id) {
+		try {
+			Hospede hospede = daoHospede.buscar(id);
+			
+			daoHospede.remover(hospede);
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Post("checkOut")
+	public void checkOut (Long idAcomodacao, Long idHospedeHospedagem) {
+		try {
+			Acomodacao acomodacao = daoAcomodacao.buscar(idAcomodacao);
+			HospedeHospedagem hospedeHospedagem = daoHospedeHospedagem.buscar(idHospedeHospedagem);
+			Hospedagem hospedagem = daoHospedagem.buscar(hospedeHospedagem.getHospedagem().getId());
+			Status status = daoStatus.buscar(1l);
+			
+			acomodacao.setStatus(status);
+			hospedagem.setDataCheckOut(new GregorianCalendar(TimeZone.getTimeZone("GMT-3"), new Locale("pt", "BR")));
+			hospedeHospedagem.setAtivo(false);
+			
+			daoAcomodacao.atualizar(acomodacao);
+			daoHospedeHospedagem.atualizar(hospedeHospedagem);
+			result.include("mensagem", "clientes.gravar.sucesso");
+		} catch (Exception e) {
+			result.include("mensagem", "clientes.gravar.erro");
+			erro.imprimir(this.getClass().getName(), "gravar" ,e);
+		}
+		result.nothing();
+	}
+	
+	@Get("atualizaDadosHospede/{id}")
+	public void atualizaDadosAcomodacao(Long id) {
+		Hospede hospede = daoHospede.buscar(id);
+		result.use(Results.http()).body(hospede.getCodigo() + "],[" + hospede.getNome() + "],[" + hospede.getDataNascimento().getTime() + "],[" + hospede.getCpf());
+	}
+}

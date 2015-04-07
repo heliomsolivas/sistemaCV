@@ -1,0 +1,83 @@
+package contabil.dao;
+
+import generic.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+import contabil.bean.Lancamento;
+
+@Component
+public class DaoLancamento extends Dao<Lancamento> {
+	
+	public DaoLancamento(Session session) {
+    	super(session, Lancamento.class);
+    }
+	
+	public Collection<Lancamento> pesquisarLancamento(Calendar dataInicio, Calendar dataFim) {
+		Collection<Lancamento> lancamentoList = new ArrayList<Lancamento>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+	
+		String consulta = "FROM CONTABIL_LANCAMENTO WHERE 1 = 1";
+	
+		if ((dataInicio != null) && (dataFim == null)) {
+			consulta += " AND data >= :dataInicio ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+		} else if ((dataInicio == null) && (dataFim != null)){
+			consulta += " AND data <= :dataFim ORDER BY id ASC";
+			parameters.put("dataFim", dataFim);
+		} else {
+			consulta += " AND data BETWEEN :dataInicio AND :dataFim ORDER BY id ASC";
+			parameters.put("dataInicio", dataInicio);
+			parameters.put("dataFim", dataFim);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+	
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+	
+		for(int x = 0; x < query.list().size(); x++) {
+			Lancamento item = (Lancamento) query.list().get(x);
+			lancamentoList.add(item);
+		}
+	
+		return lancamentoList;
+	}
+	
+	public Collection<Lancamento> pesquisarPorHistorico(Long idHistorico) {
+		Collection<Lancamento> lancamentoList = new ArrayList<Lancamento>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+	
+		String consulta = "FROM CONTABIL_LANCAMENTO WHERE fk_historico = :idHistorico";
+		parameters.put("idHistorico", idHistorico);
+		
+		Query query = super.getSession().createQuery(consulta);
+	
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+	
+		for(int x = 0; x < query.list().size(); x++) {
+			Lancamento item = (Lancamento) query.list().get(x);
+			lancamentoList.add(item);
+		}
+	
+		return lancamentoList;
+	}
+ }

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+
+<table id="divConteudo" border="0" cellspacing="0" cellpadding="0" style="width: 900px;">
+	<tr valign="bottom" style="height: 0px;">
+		<td rowspan="15" style="width: 15px;"></td>
+		<td colspan="9" style="width: 870px;"></td>
+		<td rowspan="15" style="width: 5px;"></td>
+	</tr>
+	<tr valign="bottom" style="height: 10px;">
+		<td colspan="9" style="width: 870px;">
+			<hr width="870" color="black" size="1" style="margin-left: 0px;">
+		</td>
+	</tr>
+	<tr style="height: 10px;">
+		<td class="titulo" style="width: 90px;">
+			Data
+		</td>
+		<td class="titulo" style="width: 300px;">
+			Descrição
+		</td>
+		<td class="titulo" style="width: 50px; text-align: center;">
+			Quant.
+		</td>
+		<td class="titulo" style="width: 70px; text-align: center;">
+			Vlr Unit.
+		</td>
+		<td class="titulo" style="width: 70px; text-align: center;">
+			Vlr Total
+		</td>
+		<td class="titulo" style="width: 90px; text-align: center;">
+			Saldo
+		</td>
+		<td class="titulo" style="width: 50px; text-align: center;">
+			D/C
+		</td>
+		<td class="titulo" style="width: 65px; text-align: center;">
+			PDV
+		</td>
+		<td class="titulo" style="width: 95px; text-align: center;">
+			Usuário
+		</td>
+	</tr>
+	<tr valign="bottom" style="height: 10px;">
+		<td colspan="9" style="width: 870px;">
+			<hr width="870" color="black" size="1" style="margin-left: 0px;">
+		</td>
+	</tr>
+</table>
+<div style="margin-left: 15px; float: left; height: 305px; width: 870px; overflow-x: scroll; font-family: arial;">
+	<table id="divConteudo" border="0" cellspacing="0" cellpadding="0" style="width: 880px;">	
+		<c:forEach items="${itemConsumoList}" var="item">
+			<tr style="height: 20px;">
+				<td style="width: 90px;">
+					<f:formatDate value="${item.item.data.time}" pattern="dd/MM/yyyy"/>   					
+				</td>
+				<td class="textoMaiusculo" style="width: 300px;">
+					<c:choose>
+						<c:when test="${item.item.categoria == 'Produto'}">
+							${item.item.categoria}: <i>${item.item.produto.nome}</i>
+						</c:when>
+						<c:when test="${item.item.categoria == 'Diária'}">
+							${item.item.categoria}: <i>${item.hospedagem.acomodacao.nome} / ${item.hospedagem.acomodacao.numero}</i>
+						</c:when>
+						<c:otherwise>
+							${item.item.categoria}: <i>${item.item.descricao}</i>
+						</c:otherwise>
+					</c:choose>
+				</td>
+				<td style="width: 50px; text-align: center; ">
+					${item.item.quantidade}
+				</td>
+				<td style="width: 70px; text-align: center;">
+					${item.item.valorUnitarioString}
+				</td>
+				<td style="width: 70px; text-align: center;">
+					${item.item.valorTotalString}
+				</td>
+				<td style="width: 90px; text-align: center;">
+					Saldo
+				</td>
+				<td style="width: 50px; text-align: center;">
+					D/C
+				</td>
+				<td style="width: 65px; text-align: center;">
+					PDV
+				</td>
+				<td style="width: 95px; text-align: center;">
+					${item.usuario.username}
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
+</div>

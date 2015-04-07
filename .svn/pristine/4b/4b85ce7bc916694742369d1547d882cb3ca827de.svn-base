@@ -1,0 +1,194 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.Acomodacao;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoAcomodacao extends Dao<Acomodacao> {
+	
+	public DaoAcomodacao(Session session) {
+		super(session, Acomodacao.class);
+	}
+	
+	public Collection<Acomodacao> listarAtivos() {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE status = 'LIVRE'";
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao acomodacao = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(acomodacao);
+		}
+		
+		return acomodacaoList;
+	}
+	
+	public Collection<Acomodacao> listarAtivas(Calendar checkIn, Calendar checkOut) {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE status = 'LIVRE'";
+		
+		if ((checkIn != null) && (checkOut != null)) {
+			consulta += " AND id NOT IN (SELECT acomodacao FROM RESERVA WHERE situacao = 'APROVADA' AND (dataPrevisaoCheckIn >= :checkIn AND dataPrevisaoCheckIn <= :checkOut)"
+					  + " OR (dataPrevisaoCheckOut >= :checkIn AND dataPrevisaoCheckOut <= :checkOut))";
+			parameters.put("checkIn", checkIn);
+			parameters.put("checkOut", checkOut);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao item = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(item);
+		}
+		
+		return acomodacaoList;
+	}
+	
+	public Collection<Acomodacao> pesquisarAcomodacaoHospedagem (Calendar checkIn, Calendar checkOut, Long idAcomodacao) {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE status = 'LIVRE'";
+		
+		if ((checkIn != null) && (checkOut != null)) {
+			if(idAcomodacao != null)
+				consulta += " AND id = :idAcomodacao";
+			
+			consulta += " AND id NOT IN (SELECT acomodacao FROM RESERVA WHERE situacao = 'APROVADA' AND (dataPrevisaoCheckIn >= :checkIn AND dataPrevisaoCheckIn <= :checkOut)"
+			          + " OR (dataPrevisaoCheckOut >= :checkIn AND dataPrevisaoCheckOut <= :checkOut))";			
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		if(idAcomodacao != null)
+			query.setParameter("idAcomodacao", idAcomodacao);
+		
+		query.setParameter("checkIn", checkIn);
+		query.setParameter("checkOut", checkOut);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao item = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(item);
+		}
+		
+		return acomodacaoList;
+	}
+	
+	public Collection<Acomodacao> listarAtivasReserva(Calendar checkIn, Calendar checkOut) {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE status <> 'MANUTENCAO'";
+		
+		if ((checkIn != null) && (checkOut != null)) {
+			consulta += " AND id NOT IN (SELECT acomodacao FROM CLIENTES_HOSPEDAGEM WHERE (dataCheckOut >= :checkIn AND dataCheckIn <= :checkOut))"
+					  + " AND id NOT IN (SELECT acomodacao FROM RESERVA WHERE situacao = 'APROVADA' AND (dataPrevisaoCheckIn >= :checkIn AND dataPrevisaoCheckIn <= :checkOut)"
+					  + " OR (dataPrevisaoCheckOut >= :checkIn AND dataPrevisaoCheckOut <= :checkOut))";
+			parameters.put("checkIn", checkIn);
+			parameters.put("checkOut", checkOut);
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao item = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(item);
+		}
+		
+		return acomodacaoList;
+	}
+	
+	public Collection<Acomodacao> pesquisar(String parametro) {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE 1 = 1";
+		
+		consulta += " AND numero LIKE :parametro OR nome LIKE :parametro ORDER BY id ASC";
+		parameters.put("parametro", "%" + parametro + "%");
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao item = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(item);
+		}
+		
+		return acomodacaoList;
+	}
+	
+	public Collection<Acomodacao> pesquisarAcomodacao(String numero, String nome) {
+		Collection<Acomodacao> acomodacaoList = new ArrayList<Acomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_ACOMODACAO WHERE 1 = 1";
+		
+		if (numero != null) {
+			consulta += " AND numero LIKE :numero ORDER BY id ASC";
+			parameters.put("numero", "%" + numero + "%");
+		} else {
+			consulta += " AND nome LIKE :nome ORDER BY id ASC";
+			parameters.put("nome", "%" + nome + "%");
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+		
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+		
+		for(int x = 0; x < query.list().size(); x++) {
+			Acomodacao item = (Acomodacao) query.list().get(x);
+			acomodacaoList.add(item);
+		}
+		
+		return acomodacaoList;
+	}
+}

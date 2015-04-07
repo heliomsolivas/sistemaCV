@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="f" %>
+
+<html lang="pt-br">
+	<head>
+		<title><f:message key="nomeSistema"/></title>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script type="text/javascript" src="<c:url value="/js/funcoesValidacao.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/jquery.maskedinput-1.2.2.js"/>">></script>
+		<script type="text/javascript">
+			$(document).ready(function () {			
+				$("#dataVencimento1").kendoDatePicker({
+				     format: "dd/MM/yyyy HH:mm"
+				});
+				$("#dataPagamento1").kendoDatePicker({
+				     format: "dd/MM/yyyy HH:mm"
+				});
+				$("#valor1").kendoNumericTextBox({
+                        format: "c",
+                        decimals: 3
+                });
+                $("#desconto1").kendoNumericTextBox({
+                        format: "c",
+                        decimals: 3
+                });
+                $("#multa1").kendoNumericTextBox({
+                        format: "c",
+                        decimals: 3
+                });                
+                $("#juros1").kendoNumericTextBox({
+                        format: "c",
+                        decimals: 3
+                });                
+                 $("#valorTotal1").kendoNumericTextBox({
+                        format: "c",
+                        decimals: 3
+                });
+			});
+			
+			function alterarContaPagar() {
+				// funcao para salvar formulario
+		        validator =   $("#formAlterarContaPagar").kendoValidator({ // aqui e chamda a funcao que valida o formulario
+			     messages: {
+			         // mensagem para campo requerido
+		         	required: "<f:message key= "campoObrigatorio"/>"
+			         // 		validacao de email testar
+			         //  	 email: function(input) {
+			         //       return getMessage(input);
+			         //   }
+			     } }).data("kendoValidator"); 
+					if (validator.validate()) {  // se nao tiver nenhum campo obrigatorio sem preencher executa a funcao para salvar
+					 	$.ajax({
+						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+						type: "POST",
+						url: "<c:url value="/financeiro/alterarContaPagar"/>",
+						data: $("#formAlterarContaPagar").serialize(),
+						success: function(retorno) {
+									$("#consultarContaPagar").data("kendoWindow").destroy();
+									$("#listaContaPagar").load("<c:url value="/financeiro/listaContaPagar"/>");
+								 }
+						});	 
+			    	} 
+			}
+		</script>
+	</head>
+	<body class="divConteudo">
+    	<form id="formAlterarContaPagar" name="formAlterarContaPagar" action="#">
+    		<table border="0" cellspacing="0" cellpadding="0" style="width: 600px;">
+    			<tr valign="bottom" style="height: 25px;">
+    				<td rowspan="30" style="width: 15px;"></td>
+	   				<td style="width: 195px;">
+	   					Conta Bancária
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Categoria da Conta
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Espécie
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+	   					<input type="hidden" value="${contaPagar.id}" name="contaPagar.id"/>
+	   					<select name="contaPagar.contaBancaria.id" style="width: 175px;">
+							<option value="${contaPagar.contaBancaria.id}">${contaPagar.contaBancaria.agencia} / ${contaPagar.contaBancaria.numeroConta}</option>
+							<c:forEach items="${contaBancariaList}" var="item">
+							<option value="${item.id}">${item.agencia} / ${item.numeroConta}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+   						<select value="${contaPagar.categoria.nome}" name="contaPagar.categoria.id" style="width: 175px;">
+   							<option value="${contaPagar.categoria.id}">${contaPagar.categoria.nome}</option>
+							<c:forEach items="${categoriaList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<select value="${contaPagar.especie.nome}" name="contaPagar.especie.id" style="width: 175px;">
+	   						<option value="${contaPagar.especie.id}">${contaPagar.especie.nome}</option>
+							<c:forEach items="${especieList}" var="item">
+							<option value="${item.id}">${item.nome}</option>
+							</c:forEach>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					Número do Documento
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Documento Cancelado?
+	   				</td> 
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="2" style="width: 390px;">
+	   					<input type="text" class="k-textbox" value="${contaPagar.numeroDocumento}"name="contaPagar.numeroDocumento" required style="width: 370px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<select value="${contaPagar.cancelado}" name="contaPagar.cancelado" required style="width: 175px;">
+							<option value="true" <c:if test="${contaPagar.cancelado == true}">selected</c:if>>Sim</option>
+							<option value="false" <c:if test="${contaPagar.cancelado == false}">selected</c:if>>Não</option>
+						</select>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					Data Vencimento
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Data Pagamento
+	   				</td>
+   					<td style="width: 195px;">
+	   					Valor
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<input id="dataVencimento1" type="text" value="<f:formatDate value="${contaPagar.dataVencimento.time}" pattern="dd/MM/yyyy HH:mm:ss"/>" name="contaPagar.dataVencimento" required style="width: 175px;"/>	   			 					
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="dataPagamento1" type="text" value="<f:formatDate value="${contaPagar.dataPagamento.time}" pattern="dd/MM/yyyy HH:mm:ss"/>" name="contaPagar.dataPagamento" style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="valor1" type="text" min="0" value="${contaPagar.valorString}" name="contaPagar.valor" placeholder="R$ 00,00" required style="width: 175px;"/>
+	   				</td>   				
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td style="width: 195px;">
+	   					Desconto
+	   				</td>
+	   				<td style="width: 195px;">
+	   					Multa
+	   				</td>
+   					<td style="width: 195px;">
+	   					Juros
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td style="width: 195px;">
+   						<input id="desconto1" type="text" min="0" value="${contaPagar.descontoString}"name="contaPagar.desconto" placeholder="R$ 00,00" required style="width: 175px;"/>	   			 					
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="multa1" type="text" min="0" value="${contaPagar.multaString}"name="contaPagar.multa" placeholder="R$ 00,00" required style="width: 175px;"/>
+	   				</td>
+	   				<td style="width: 195px;">
+	   					<input id="juros1" type="text" min="0" value="${contaPagar.jurosString}"name="contaPagar.juros" placeholder="R$ 00,00" required style="width: 175px;"/>
+	   				</td>   				
+	   			</tr>
+	   			<tr valign="bottom" style="height: 25px;">
+	   				<td colspan="3" style="width: 585px;">
+	   					Observações
+	   				</td>
+	   			</tr>
+	   			<tr style="height: 10px;">
+	   				<td colspan="3" style="width: 585px;">
+	   					<textarea class="k-textbox" name="contaPagar.observacao" style="width: 565px; height: 60px;">${contaPagar.observacao}</textarea>
+	   				</td>
+	   			</tr>
+	   			<tr valign="bottom" style="height: 30px;">
+            		<td colspan="3">
+            			<label style="width: 175px; margin-left: 395px;">
+            				<b>Valor Total</b>
+            			</label>
+            		</td>
+            	</tr>
+	   			<tr style="height: 10px;">
+            		<td colspan="3">
+            			<span style="width: 120px; margin-left: 395px;">
+            				<input id="valorTotal1" type="text" min="0" value="${contaPagar.valorTotalString}" name="contaPagar.valorTotal" placeholder="R$ 00,00" required style="width: 175px;"/>
+            			</span>
+            		</td>
+            	</tr>
+            	<tr style="height: 100px;">
+            		<td colspan="3" style="text-align: center;">
+	            		<button type="button" class="k-button" onclick="alterarContaPagar()"><span class='k-icon k-update'></span>Alterar</button>
+            		</td>
+            	</tr>
+	   		</table>
+	    </form>
+	</body>
+</html>

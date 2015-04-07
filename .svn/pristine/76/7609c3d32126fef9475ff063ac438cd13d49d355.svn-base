@@ -1,0 +1,57 @@
+// document.ready();
+$(function() {    
+	$("#contaCaixaList").load(caminhoAbsoluto + "financeiro/contaCaixa/pesquisar", {agencia: null, bancoNumero: null});
+	
+	$("#agencia").keyup(function() {
+		var parametro = $(this).val();
+		        		 	
+		if (parametro != ''){
+			$("#contaCaixaList").load(caminhoAbsoluto + "financeiro/contaCaixa/pesquisar", {agencia: parametro, bancoNumero: null});
+		} else {
+			$("#contaCaixaList").load(caminhoAbsoluto + "financeiro/contaCaixa/pesquisar", {agencia: null, bancoNumero: null});
+		}
+	});
+	
+	$("#bancoNumero").keyup(function(){
+		var parametro = $(this).val();
+				
+		if (parametro != ''){						
+			$("#contaCaixaList").load(caminhoAbsoluto + "financeiro/contaCaixa/pesquisar", {agencia: null, bancoNumero: parametro});
+		} else {
+			$("#contaCaixaList").load(caminhoAbsoluto + "financeiro/contaCaixa/pesquisar", {agencia: null, bancoNumero: null});
+		}
+	});
+});
+
+// Funções Gravar - Alterar
+function gravarContaCaixa() {
+    validator =  $("#formContaCaixa").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaCaixa/gravar",
+			data: $("#formContaCaixa").serialize(),
+			success: function(retorno) {
+						$("#cadastrarContaCaixa").data("kendoWindow").destroy();
+						$("#listaContaCaixa").load(caminhoAbsoluto + "financeiro/contaCaixa/lista");
+					 }
+		});
+	}
+}
+
+function alterarContaCaixa() {
+    validator =  $("#formAlterarContaCaixa").kendoValidator({ messages: { required: "Campo Obrigatório" } }).data("kendoValidator");
+	if (validator.validate()) {
+	 	$.ajax({
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			type: "POST",
+			url: caminhoAbsoluto + "financeiro/contaCaixa/gravar",
+			data: $("#formAlterarContaCaixa").serialize(),
+			success: function(retorno) {						
+						$("#consultarContaCaixa").data("kendoWindow").destroy();
+						$("#listaContaCaixa").load(caminhoAbsoluto + "financeiro/contaCaixa/lista");
+					 }
+		});
+	}
+}

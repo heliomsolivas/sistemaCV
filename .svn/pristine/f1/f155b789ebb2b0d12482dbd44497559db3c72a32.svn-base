@@ -1,0 +1,54 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.TipoAcomodacao;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoTipoAcomodacao extends Dao<TipoAcomodacao>{
+	
+	public DaoTipoAcomodacao (Session session) {
+		super(session, TipoAcomodacao.class);
+	}
+
+	public Collection<TipoAcomodacao> pesquisarTipoAcomodacao(Long codigo, String nome) {
+		Collection<TipoAcomodacao> tipoAcomodacaoList = new ArrayList<TipoAcomodacao>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		String consulta = "FROM HOTEL_TIPOACOMODACAO WHERE 1 = 1";
+		
+		if (codigo != null) {
+			consulta += " AND id = :codigo ORDER BY id ASC";
+			parameters.put("codigo", codigo);			
+		} else {
+			consulta += " AND nome LIKE :nome ORDER BY id ASC";
+			parameters.put("nome", "%" + nome + "%");			
+		}
+		
+		Query query = super.getSession().createQuery(consulta);
+
+		Iterator<String> iter = parameters.keySet().iterator();
+		
+		while (iter.hasNext()) {
+			String nome2 = iter.next();
+			query.setParameter(nome2, parameters.get(nome2));
+		}
+
+		for(int x = 0; x < query.list().size(); x++) {
+			TipoAcomodacao item = (TipoAcomodacao) query.list().get(x);
+			tipoAcomodacaoList.add(item);
+		}
+
+		return tipoAcomodacaoList;
+	}
+}

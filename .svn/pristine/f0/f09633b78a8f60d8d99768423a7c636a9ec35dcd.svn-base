@@ -1,0 +1,223 @@
+package agenda.bean;
+
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import clientes.bean.Hospedagem;
+import clientes.bean.Hospede;
+
+@Entity(name = "AGENDA_RESERVA")
+@Table(name = "AGENDA_RESERVA")
+public class Reserva implements Serializable {
+
+	private static final long serialVersionUID = 7851691715225582767L;
+	
+	private Long id;
+	private Hotel hotel;
+	private Hospede hospede;
+	private Situacao situacao;
+	private Hospedagem hospedagem;
+	private Calendar dataReserva;
+	private Calendar dataCancelamento;
+	private Calendar dataPrevisaoCheckIn;
+	private Calendar dataPrevisaoCheckOut;
+	private Integer numeroDiarias;
+	private Integer numeroPessoas;
+	private Double valorDiaria;
+	private Double valorTotal;
+	private Boolean reembolsoCancelamento;
+	private Boolean checkOutEstendidoGratuito;
+	private String observacao;
+	private Collection<ReservaAcomodacao> reservaAcomodacaoList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_paciente", nullable = false)
+	public Hospede getPaciente() {
+		return hospede;
+	}
+
+	public void setPaciente(Hospede hospede) {
+		this.hospede = hospede;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_situacao", nullable = false)
+	public Situacao getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(Situacao situacao) {
+		this.situacao = situacao;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_hospede", nullable = false)
+	public Hospede getHospede() {
+		return hospede;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "fk_hospedagem", nullable = true)
+	public Hospedagem getHospedagem() {
+		return hospedagem;
+	}
+
+	public void setHospedagem(Hospedagem hospedagem) {
+		this.hospedagem = hospedagem;
+	}
+
+	public void setHospede(Hospede hospede) {
+		this.hospede = hospede;
+	}	
+
+	@Column(name = "dataReserva", nullable = false)
+	public Calendar getDataReserva() {
+		return dataReserva;
+	}
+
+	public void setDataReserva(Calendar dataReserva) {
+		this.dataReserva = dataReserva;
+	}
+
+	@Column(name = "dataCancelamento", nullable = false)
+	public Calendar getDataCancelamento() {
+		return dataCancelamento;
+	}
+
+	public void setDataCancelamento(Calendar dataCancelamento) {
+		this.dataCancelamento = dataCancelamento;
+	}
+
+	@Column(name = "dataPrevisaoCheckIn", nullable = false)
+	public Calendar getDataPrevisaoCheckIn() {
+		return dataPrevisaoCheckIn;
+	}
+
+	public void setDataPrevisaoCheckIn(Calendar dataPrevisaoCheckIn) {
+		this.dataPrevisaoCheckIn = dataPrevisaoCheckIn;
+	}
+
+	@Column(name = "dataPrevisaoCheckOut", nullable = false)
+	public Calendar getDataPrevisaoCheckOut() {
+		return dataPrevisaoCheckOut;
+	}
+
+	public void setDataPrevisaoCheckOut(Calendar dataPrevisaoCheckOut) {
+		this.dataPrevisaoCheckOut = dataPrevisaoCheckOut;
+	}
+
+	@Column(name = "numeroDiarias", nullable = false)
+	public Integer getNumeroDiarias() {
+		return numeroDiarias;
+	}
+
+	public void setNumeroDiarias(Integer numeroDiarias) {
+		this.numeroDiarias = numeroDiarias;
+	}
+
+	@Column(name = "numeroPessoas", nullable = false)
+	public Integer getNumeroPessoas() {
+		return numeroPessoas;
+	}
+
+	public void setNumeroPessoas(Integer numeroPessoas) {
+		this.numeroPessoas = numeroPessoas;
+	}
+
+	@Column(name = "valorDiaria", nullable = false)
+	public Double getValorDiaria() {
+		return valorDiaria;
+	}
+
+	public void setValorDiaria(Double valorDiaria) {
+		this.valorDiaria = valorDiaria;
+	}
+
+	@Column(name = "valorTotal", nullable = false)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	@Column(name = "reembolsoCancelamento", nullable = false)
+	public Boolean getReembolsoCancelamento() {
+		return reembolsoCancelamento;
+	}
+
+	public void setReembolsoCancelamento(Boolean reembolsoCancelamento) {
+		this.reembolsoCancelamento = reembolsoCancelamento;
+	}
+
+	@Column(name = "checkOutEstendidoGratuito", nullable = false)
+	public Boolean getCheckOutEstendidoGratuito() {
+		return checkOutEstendidoGratuito;
+	}
+
+	public void setCheckOutEstendidoGratuito(Boolean checkOutEstendidoGratuito) {
+		this.checkOutEstendidoGratuito = checkOutEstendidoGratuito;
+	}
+
+	@Column(name = "observacao", length = 5000, nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}	
+	
+	@OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ReservaAcomodacao> getReservaAcomodacaoList() {
+		return reservaAcomodacaoList;
+	}
+
+	public void setReservaAcomodacaoList(Collection<ReservaAcomodacao> reservaAcomodacaoList) {
+		this.reservaAcomodacaoList = reservaAcomodacaoList;
+	}
+	
+	@Transient
+	public String getCodigo() {
+		return new DecimalFormat("00000").format(this.id);
+	}
+
+}

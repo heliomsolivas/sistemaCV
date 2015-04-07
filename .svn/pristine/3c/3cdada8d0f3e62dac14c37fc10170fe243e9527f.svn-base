@@ -1,0 +1,114 @@
+package compras.bean;
+
+import hotel.bean.Hotel;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import estoque.bean.Fornecedor;
+
+@Entity(name = "COMPRAS_ORDEMCOMPRA")
+@Table(name = "COMPRAS_ORDEMCOMPRA")
+public class OrdemCompra implements Serializable {
+
+	private static final long serialVersionUID = -7263047802090858336L;
+
+	private Long id;
+	private Hotel hotel;
+	private Fornecedor fornecedor;
+	private String observacao;
+	private Calendar dataPedido;
+	private Calendar dataEntrega;
+	private Double valorTotal;
+	private Collection<ItemOrdemCompra> itemOrdemCompraList;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel", nullable = false)
+	public Hotel getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "fk_fornecedor", nullable = false)
+	public Fornecedor getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedor fornecedor) {
+		this.fornecedor = fornecedor;
+	}
+
+	@Column(name = "observacao", length = 5000, nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	@Column(name = "dataPedido", nullable = false)
+	public Calendar getDataPedido() {
+		return dataPedido;
+	}
+
+	public void setDataPedido(Calendar dataPedido) {
+		this.dataPedido = dataPedido;
+	}
+
+	@Column(name = "dataEntrega", nullable = true)
+	public Calendar getDataEntrega() {
+		return dataEntrega;
+	}
+
+	public void setDataEntrega(Calendar dataEntrega) {
+		this.dataEntrega = dataEntrega;
+	}
+
+	@Column(name = "valorTotal", nullable = false)
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	@OneToMany(mappedBy = "ordemCompra", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Collection<ItemOrdemCompra> getItemOrdemCompraList() {
+		return itemOrdemCompraList;
+	}
+
+	public void setItemOrdemCompraList(
+			Collection<ItemOrdemCompra> itemOrdemCompraList) {
+		this.itemOrdemCompraList = itemOrdemCompraList;
+	}
+
+}

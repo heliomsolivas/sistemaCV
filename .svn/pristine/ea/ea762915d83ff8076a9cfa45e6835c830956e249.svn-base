@@ -1,0 +1,17 @@
+package hotel.dao;
+
+import generic.dao.Dao;
+import hotel.bean.Status;
+
+import org.hibernate.Session;
+
+import br.com.caelum.vraptor.ioc.Component;
+
+@Component
+public class DaoStatus  extends Dao<Status>{
+	
+	public DaoStatus(Session session) {
+		super(session, Status.class);
+	}
+
+}
